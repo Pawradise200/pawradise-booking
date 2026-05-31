@@ -607,6 +607,7 @@ function calcForm() {
     }
   }
   const grand=oTotal+dcFee+addons;
+  window._grandTotal = grand;  // 讓 submitForm 可以讀取
   html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
   card.innerHTML=html;
   ps.style.display='block';
@@ -657,6 +658,7 @@ async function submitForm() {
     transport:document.querySelector('input[name=f-tr]:checked')?.value||'none',
     trDistrict:document.getElementById('f-tr-district')?.value||'',
     trAddress:document.getElementById('f-tr-addr')?.value||'',
+    totalAmount: window._grandTotal || 0,
     status:'待審批',
   };
 
