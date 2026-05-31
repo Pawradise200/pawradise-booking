@@ -1,0 +1,135 @@
+/* Pawradise Design System — Colors & Type
+ * Sources: Pawradise crest logo (gold + navy), DAKI Pet Academy mascot
+ * sheet (cream + warm brown + orange), and the S1 Game Library web app
+ * (Nunito + warm cream surface + category accent palette).
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Fredoka:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap');
+
+:root {
+  /* --- Brand core ---------------------------------------------------- */
+  --pw-navy:        #2C4A6E; /* deep, professional teal-navy from crest field & UI primary */
+  --pw-navy-deep:   #1F3552; /* logo outer outline, headings on cream */
+  --pw-navy-light:  #4A7BAF; /* hover/secondary, link blue */
+  --pw-gold:        #F4B860; /* mascot/dog+cat fill, primary accent */
+  --pw-gold-deep:   #E08850; /* Daki tan, hover state for gold */
+  --pw-cream:       #F5F0E8; /* the canvas — main app surface */
+  --pw-cream-soft:  #FAF5EE; /* mood-tag / inner surfaces */
+  --pw-cream-deep:  #EDE6D8; /* dividers / quiet borders on cream */
+  --pw-paper:       #FFFFFF; /* card surface */
+  --pw-ink:         #1F3552; /* primary copy — logo navy deep */
+  --pw-ink-soft:    #2C4A6E; /* body — logo navy */
+  --pw-ink-mute:    #6B7A8F; /* secondary — cool gray w/ navy hint */
+  --pw-ink-faint:   #A8B2C0; /* meta, captions */
+  --pw-ink-ghost:   #C8D0DA; /* labels in cream zones */
+
+  /* --- DAKI mascot palette ------------------------------------------ */
+  --pw-brown:       #7B5538; /* dachshund body */
+  --pw-brown-deep:  #5C3E27; /* outline */
+  --pw-tan:         #D9994A; /* mascot belly + ears */
+  --pw-heart:       #EF6E6E; /* heart prop */
+
+  /* --- Category accents (from S1 game library) ---------------------- */
+  --pw-cat-sniff:   #6B8E3D; /* sage / olive green — sniffing games (warmer, brand-friendly) */
+  --pw-cat-lick:    #FF8C42; /* orange — licking */
+  --pw-cat-puzzle:  #0E7490; /* deep teal — puzzles (cool intellectual counterpoint) */
+  --pw-cat-frozen:  #60A5FA; /* ice blue — frozen */
+  --pw-cat-explore: #3B82F6; /* primary blue — exploration */
+  --pw-cat-bond:    #F4A6B8; /* light pink — human/dog bonding (soft, warm, mascot-friendly) */
+
+  /* --- Semantic / status -------------------------------------------- */
+  --pw-success:     #15803D;  --pw-success-bg: #DCFCE7;
+  --pw-warn:        #A16207;  --pw-warn-bg:    #FEF9C3;
+  --pw-danger:      #B91C1C;  --pw-danger-bg:  #FEE2E2;
+  --pw-info:        #1D4ED8;  --pw-info-bg:    #DBEAFE;
+  --pw-violet:      #6D28D9;  --pw-violet-bg:  #EDE9FE;
+
+  /* --- Spatial -------------------------------------------------------- */
+  --pw-r-xs: 6px;   /* tiny pills, level badges */
+  --pw-r-sm: 8px;   /* mood tag, warn box */
+  --pw-r-md: 12px;  /* inputs, illus frame */
+  --pw-r-lg: 18px;  /* cards (--card-r in source) */
+  --pw-r-xl: 24px;  /* hero panels */
+  --pw-r-pill: 999px;
+
+  --pw-space-1: 4px;
+  --pw-space-2: 8px;
+  --pw-space-3: 12px;
+  --pw-space-4: 16px;
+  --pw-space-5: 24px;
+  --pw-space-6: 32px;
+  --pw-space-7: 48px;
+
+  /* --- Elevation ------------------------------------------------------ */
+  --pw-shadow-card:   0 4px 20px rgba(92, 62, 39, 0.12);
+  --pw-shadow-hover:  0 8px 28px rgba(92, 62, 39, 0.18);
+  --pw-shadow-header: 0 2px 16px rgba(44, 28, 16, 0.28);
+  --pw-shadow-pop:    0 12px 40px rgba(92, 62, 39, 0.20);
+  --pw-shadow-inset:  inset 0 0 0 1.5px var(--pw-cream-deep);
+
+  /* --- Border standards ---------------------------------------------- */
+  --pw-stroke: 1.5px;        /* default hair-line on cream */
+  --pw-stroke-focus: 2px;    /* inputs / chips */
+
+  /* --- Type system --------------------------------------------------- */
+  --pw-font-sans:    'Nunito', 'Helvetica Neue', system-ui, sans-serif;
+  --pw-font-display: 'Fredoka', 'Nunito', sans-serif;          /* mascot/wordmark vibe */
+  --pw-font-serif:   'Cormorant Garamond', Georgia, serif;     /* for crest banner / quotes */
+
+  /* Headings always deep navy or ink, weight ≥800 */
+  --pw-leading-tight: 1.2;
+  --pw-leading-snug:  1.35;
+  --pw-leading-body:  1.55;
+  --pw-leading-loose: 1.7;
+}
+
+/* ------ Semantic type roles -------------------------------------------
+ * Apply on elements directly. Sizes use rem; assume 16px root. */
+
+.pw-display {
+  font-family: var(--pw-font-display);
+  font-weight: 700;
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
+  line-height: var(--pw-leading-tight);
+  color: var(--pw-navy-deep);
+  letter-spacing: -0.01em;
+}
+.pw-h1 { font-family: var(--pw-font-sans); font-weight: 900; font-size: 2rem;    line-height: 1.2;  color: var(--pw-ink); }
+.pw-h2 { font-family: var(--pw-font-sans); font-weight: 900; font-size: 1.5rem;  line-height: 1.25; color: var(--pw-ink); }
+.pw-h3 { font-family: var(--pw-font-sans); font-weight: 800; font-size: 1.125rem;line-height: 1.3;  color: var(--pw-ink); }
+.pw-h4 { font-family: var(--pw-font-sans); font-weight: 800; font-size: 0.875rem;line-height: 1.3;  color: var(--pw-ink); }
+
+.pw-body  { font-family: var(--pw-font-sans); font-weight: 500; font-size: 0.875rem; line-height: var(--pw-leading-body); color: var(--pw-ink-soft); }
+.pw-small { font-family: var(--pw-font-sans); font-weight: 600; font-size: 0.75rem;  line-height: var(--pw-leading-snug); color: var(--pw-ink-mute); }
+.pw-meta  { font-family: var(--pw-font-sans); font-weight: 700; font-size: 0.6875rem;line-height: 1.3; color: var(--pw-ink-faint); }
+.pw-eyebrow {
+  font-family: var(--pw-font-sans);
+  font-weight: 900;
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pw-ink-ghost);
+}
+.pw-banner {
+  font-family: var(--pw-font-serif);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pw-gold);
+  text-shadow: 0 2px 0 var(--pw-navy-deep);
+}
+
+/* ------ Reusable surfaces --------------------------------------------- */
+.pw-card {
+  background: var(--pw-paper);
+  border-radius: var(--pw-r-lg);
+  box-shadow: var(--pw-shadow-card);
+  overflow: hidden;
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.pw-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--pw-shadow-hover);
+}
+
+.pw-canvas { background: var(--pw-cream); color: var(--pw-ink-soft); font-family: var(--pw-font-sans); }

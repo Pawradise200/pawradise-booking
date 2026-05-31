@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pawradise · 前台系統</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a18;font-size:15px;min-height:100vh;}
+
+/* ── PIN SCREEN ── */
+.pin-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+.pin-screen.hidden{display:none;}
+.pin-logo{font-size:32px;font-weight:800;margin-bottom:6px;}
+.pin-sub{font-size:13px;color:#888;margin-bottom:2rem;}
+.pin-box{background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:320px;text-align:center;border:.5px solid #e0e0da;}
+.pin-title{font-size:15px;font-weight:600;margin-bottom:1.25rem;color:#555;}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:1.5rem;}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:#e0e0da;transition:background .15s;}
+.pin-dot.filled{background:#1a1a18;}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.pin-key{padding:16px;font-size:20px;font-weight:500;border:.5px solid #ddd;border-radius:10px;cursor:pointer;background:#fff;transition:background .1s;}
+.pin-key:hover{background:#f5f5f0;}
+.pin-key:active{background:#e8e8e4;}
+.pin-key.del{font-size:16px;color:#888;}
+.pin-error{font-size:13px;color:#e24b4a;margin-top:12px;min-height:20px;}
+
+/* ── MAIN SYSTEM ── */
+.main-screen{display:none;}
+.main-screen.show{display:block;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:.5px solid #e8e8e4;position:sticky;top:0;z-index:10;}
+.top-bar-title{font-size:15px;font-weight:600;}
+.logout-btn{font-size:12px;color:#aaa;cursor:pointer;background:none;border:.5px solid #ddd;padding:4px 10px;border-radius:6px;}
+
+.tabs{display:flex;background:#fff;border-bottom:.5px solid #eee;overflow-x:auto;}
+.tab{padding:11px 20px;font-size:13px;font-weight:500;color:#888;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.tab.active{color:#1a1a18;border-bottom-color:#1a1a18;}
+.panel{display:none;max-width:680px;margin:0 auto;padding:1.25rem 1rem 3rem;}
+.panel.active{display:block;}
+
+.sec{background:#fff;border-radius:12px;border:.5px solid #e0e0da;padding:1.25rem 1.5rem;margin-bottom:.75rem;}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:.07em;color:#888;text-transform:uppercase;margin-bottom:12px;}
+.field{margin-bottom:10px;}
+.field:last-child{margin-bottom:0;}
+.field label{font-size:13px;color:#555;display:block;margin-bottom:4px;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+input[type=text],input[type=tel],input[type=number],input[type=date],input[type=datetime-local],select{width:100%;padding:8px 10px;border:.5px solid #ddd;border-radius:8px;font-size:14px;background:#fff;outline:none;-webkit-appearance:none;}
+input:focus,select:focus{border-color:#1a1a18;}
+input[readonly]{background:#f5f5f0;color:#555;}
+
+.btn-search{padding:9px 18px;background:#1a1a18;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;}
+.btn-search:hover{background:#333;}
+.lookup-row{display:flex;gap:8px;}
+.lookup-row input{flex:1;}
+.found-bar{background:#eaf3de;color:#3b6d11;border-radius:8px;padding:8px 12px;font-size:13px;margin-top:8px;display:none;}
+.hint{font-size:11px;color:#aaa;margin-top:3px;}
+
+/* Client summary card */
+.client-card{background:#f8f8f5;border-radius:10px;border:.5px solid #e8e8e4;padding:1rem 1.25rem;margin-top:10px;display:none;}
+.client-card.show{display:block;}
+.client-rows{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:13px;}
+.client-row label{font-size:11px;color:#aaa;display:block;margin-bottom:2px;}
+.client-row span{font-weight:500;color:#1a1a18;}
+
+/* Package cards */
+.pkg-card{border-radius:10px;border:.5px solid #e8e8e4;padding:.75rem 1rem;margin-bottom:8px;cursor:pointer;transition:all .15s;}
+.pkg-card:hover{border-color:#185fa5;}
+.pkg-card.selected{border-color:#185fa5;background:#e6f1fb;}
+.pkg-card-title{font-size:14px;font-weight:600;}
+.pkg-card-sub{font-size:12px;color:#888;margin-top:2px;}
+
+/* Price card */
+.price-card{background:#f8f8f5;border-radius:10px;border:.5px solid #e8e8e4;padding:1rem 1.25rem;}
+.price-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:#666;border-bottom:.5px solid #f0f0ec;}
+.price-row:last-child{border-bottom:none;}
+.price-row.total{font-size:17px;font-weight:600;color:#1a1a18;border-top:1px solid #ddd;border-bottom:none;margin-top:6px;padding-top:10px;}
+.price-row.disc{color:#3b6d11;}
+.price-row.dc{color:#854f0b;}
+.price-row.addon{color:#185fa5;}
+.size-chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;margin-right:6px;}
+.chip-s{background:#eaf3de;color:#3b6d11;}
+.chip-m{background:#e6f1fb;color:#185fa5;}
+.chip-l{background:#faeeda;color:#854f0b;}
+.chip-g{background:#fcebeb;color:#a32d2d;}
+
+/* Addon section */
+.addon-section{background:#f0f6ff;border-radius:10px;border:.5px solid #c5d9f5;padding:1rem 1.25rem;margin-bottom:.75rem;}
+.addon-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;}
+.addon-row:last-child{margin-bottom:0;}
+.addon-label{min-width:90px;color:#555;font-weight:500;}
+.section-divider{display:flex;align-items:center;gap:8px;margin:.75rem 0;}
+.section-divider span{font-size:11px;font-weight:600;letter-spacing:.06em;color:#aaa;text-transform:uppercase;white-space:nowrap;}
+.section-divider::before,.section-divider::after{content:'';flex:1;border-top:.5px solid #ddd;}
+
+/* WA templates */
+.wa-preview{background:#e9f5e1;border-radius:12px;padding:1rem 1.25rem;font-size:13px;line-height:1.8;white-space:pre-wrap;color:#1a1a18;border:.5px solid #c5e0b0;}
+.copy-btn{font-size:12px;padding:6px 16px;cursor:pointer;border:.5px solid #ddd;border-radius:6px;background:#fff;margin-top:8px;}
+.copy-btn:hover{background:#f5f5f0;}
+.bal-display{background:#f0fff4;border:.5px solid #c5e0b0;border-radius:8px;padding:8px 12px;font-size:13px;margin-top:8px;display:none;}
+
+@media(max-width:500px){.r2,.r3{grid-template-columns:1fr;}.client-rows{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ PIN SCREEN ══ -->
+<div class="pin-screen" id="pinScreen">
+  <div class="pin-logo">PAWRADISE</div>
+  <div class="pin-sub">前台系統登入</div>
+  <div class="pin-box">
+    <div class="pin-title">請輸入 PIN 碼</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key" onclick="pinKey('')" style="visibility:hidden;"></button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-error" id="pinError"></div>
+  </div>
+</div>
+
+<!-- ══ MAIN SYSTEM ══ -->
+<div class="main-screen" id="mainScreen">
+  <div class="top-bar">
+    <div class="top-bar-title">前台系統</div>
+    <button class="logout-btn" onclick="logout()">登出</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('lookup')">🔍 客戶查詢</div>
+    <div class="tab" onclick="switchTab('pricing')">💰 計費</div>
+    <div class="tab" onclick="switchTab('templates')">📤 WA Templates</div>
+  </div>
+
+  <!-- ── TAB: 客戶查詢 ── -->
+  <div class="panel active" id="panel-lookup">
+    <div class="sec">
+      <div class="sec-label">🔍 搜尋客戶</div>
+      <div class="lookup-row">
+        <input type="tel" id="int-phone" placeholder="輸入 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter')intLookup()"/>
+        <button class="btn-search" onclick="intLookup()">搜尋</button>
+      </div>
+      <div class="found-bar" id="int-found">✓ 找到記錄：<strong id="int-found-name"></strong></div>
+      <div class="client-card" id="clientCard">
+        <div class="client-rows">
+          <div class="client-row"><label>毛孩</label><span id="cc-dog">—</span></div>
+          <div class="client-row"><label>品種 / 體重</label><span id="cc-detail">—</span></div>
+          <div class="client-row"><label>主人</label><span id="cc-owner">—</span></div>
+          <div class="client-row"><label>WhatsApp</label><span id="cc-phone">—</span></div>
+          <div class="client-row"><label>電郵</label><span id="cc-email">—</span></div>
+          <div class="client-row"><label>性別 / 絕育</label><span id="cc-gender">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Package display -->
+    <div class="sec" id="pkgSection" style="display:none;">
+      <div class="sec-label">🎫 套票記錄</div>
+      <div class="r2">
+        <div class="field"><label>套票類型</label><input type="text" id="int-pkg-type" readonly/></div>
+        <div class="field"><label>有效期至</label><input type="text" id="int-pkg-expiry" readonly/></div>
+        <div class="field"><label>套票總值</label><input type="text" id="int-pkg-total" readonly/></div>
+        <div class="field">
+          <label>現有餘額 ($)</label>
+          <input type="number" id="int-pkg-bal" placeholder="輸入最新餘額" onchange="updateBalDisplay()"/>
+          <div class="bal-display" id="bal-display"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health/diet notes -->
+    <div class="sec" id="notesSection" style="display:none;">
+      <div class="sec-label">🩺 照顧備忘</div>
+      <div class="field"><label>健康狀況</label><input type="text" id="int-health" readonly/></div>
+      <div class="field"><label>飲食習慣</label><input type="text" id="int-diet" readonly/></div>
+      <div class="field"><label>藥物需求</label><input type="text" id="int-meds" readonly/></div>
+      <div class="field"><label>特別照顧</label><input type="text" id="int-notes" readonly/></div>
+    </div>
+  </div><!-- /panel-lookup -->
+
+  <!-- ── TAB: 計費 ── -->
+  <div class="panel" id="panel-pricing">
+    <div class="sec">
+      <div class="sec-label">💳 套票方案</div>
+      <div class="pkg-card selected" id="pkg-normal" onclick="selectPkg('normal')">
+        <div class="pkg-card-title">散單</div><div class="pkg-card-sub">按次收費，不使用套票</div>
+      </div>
+      <div class="pkg-card" id="pkg-8400" onclick="selectPkg('8400',8000,8400)">
+        <div class="pkg-card-title">買 $8,000 送 $400 <span style="font-size:12px;color:#3b6d11;">→ 總值 $8,400</span></div>
+        <div class="pkg-card-sub">有效期2年 · 可用於所有服務</div>
+      </div>
+      <div class="pkg-card" id="pkg-19400" onclick="selectPkg('19400',18000,19400)">
+        <div class="pkg-card-title">買 $18,000 送 $1,400 <span style="font-size:12px;color:#3b6d11;">→ 總值 $19,400</span></div>
+        <div class="pkg-card-sub">有效期2年 · 可用於所有服務</div>
+      </div>
+      <div class="pkg-card" id="pkg-30800" onclick="selectPkg('30800',28000,30800)">
+        <div class="pkg-card-title">買 $28,000 送 $2,800 <span style="font-size:12px;color:#3b6d11;">→ 總值 $30,800</span></div>
+        <div class="pkg-card-sub">有效期2年 · 可用於所有服務</div>
+      </div>
+      <div id="pkg-existing-wrap" style="display:none;margin-top:10px;">
+        <div class="r2">
+          <div class="field"><label>套票總值</label><input type="text" id="pkg-total-val" readonly style="font-weight:600;"/></div>
+          <div class="field"><label>現有餘額 ($)</label>
+            <input type="number" id="pkg-balance" placeholder="例：12500" onchange="calcAll()"/>
+            <div style="font-size:12px;color:#3b6d11;margin-top:4px;" id="pkg-bal-note"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">📋 住宿計費</div>
+      <div class="r2">
+        <div class="field"><label>Check-in</label><input type="datetime-local" id="int-ci" oninput="calcAll()"/></div>
+        <div class="field"><label>Check-out</label><input type="datetime-local" id="int-co" oninput="calcAll()"/></div>
+      </div>
+      <div class="r2">
+        <div class="field"><label>體重 (kg)</label><input type="number" id="int-w" placeholder="確認體重" step="0.1" oninput="calcAll()"/></div>
+        <div class="field"><label>同房狗數</label>
+          <select id="int-room" onchange="calcAll()">
+            <option value="1">1隻</option><option value="2">2隻</option><option value="3">3隻（9折）</option>
+          </select></div>
+      </div>
+    </div>
+
+    <div class="addon-section">
+      <div class="section-divider"><span>美容</span></div>
+      <div class="addon-row">
+        <span class="addon-label">美容類型</span>
+        <select id="gr-type" onchange="calcGrooming()" style="flex:1;">
+          <option value="none">不需要</option><option value="basic">Basic 基本</option><option value="fullset">Full Set 全套</option>
+        </select>
+      </div>
+      <div id="gr-extra-row" style="display:none;">
+        <div class="addon-row">
+          <span class="addon-label">剪毛類型</span>
+          <select id="gr-cut" onchange="calcGrooming()" style="flex:1;">
+            <option value="none">不加剪毛</option><option value="razor">全剷剪毛</option>
+            <option value="half">半手剪</option><option value="full">全手剪（Full Set only）</option>
+          </select>
+        </div>
+        <div class="addon-row">
+          <span class="addon-label">解結/去死毛</span>
+          <input type="number" id="gr-dematting" placeholder="額外費用 $60–$520" style="flex:1;" onchange="calcAll()"/>
+        </div>
+      </div>
+      <div class="addon-row" id="gr-price-row" style="display:none;">
+        <span class="addon-label">美容小計</span>
+        <strong id="gr-price-display" style="color:#185fa5;">$0</strong>
+      </div>
+      <div class="section-divider"><span>接送</span></div>
+      <div class="addon-row">
+        <span class="addon-label">接送類型</span>
+        <select id="tr-type" onchange="updateTransport()" style="flex:1;">
+          <option value="none">不需要</option><option value="pickup">接</option>
+          <option value="dropoff">送</option><option value="both">接 + 送</option>
+        </select>
+      </div>
+      <div id="tr-district-wrap" style="display:none;">
+        <div class="addon-row">
+          <span class="addon-label">地區</span>
+          <select id="tr-district" onchange="calcTransportInt()" style="flex:1;">
+            <option value="">選擇地區</option>
+            <optgroup label="香港島">
+              <option value="200">堅尼地城/西營盤</option><option value="190">灣仔/銅鑼灣</option>
+              <option value="200">北角/太古城</option><option value="210">柴灣/小西灣</option>
+              <option value="220">香港仔/數碼港</option><option value="260">淺水灣</option><option value="290">赤柱/石澳</option>
+            </optgroup>
+            <optgroup label="九龍">
+              <option value="120">油尖旺/西九龍</option><option value="140">深水埗/長沙灣</option>
+              <option value="160">九龍城/啟德</option><option value="190">黃大仙/鑽石山</option><option value="200">觀塘/藍田</option>
+            </optgroup>
+            <optgroup label="新界">
+              <option value="190">荃灣/葵涌</option><option value="210">大圍/沙田</option>
+              <option value="220">將軍澳/坑口</option><option value="270">大埔/馬鞍山</option>
+              <option value="290">屯門</option><option value="350">元朗</option><option value="340">粉嶺/上水</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="addon-row">
+          <span class="addon-label">接送小計</span>
+          <strong id="tr-price-display" style="color:#185fa5;">$0</strong>
+        </div>
+      </div>
+      <div class="section-divider"><span>學院課堂</span></div>
+      <div class="addon-row">
+        <span class="addon-label">堂數</span>
+        <select id="ac-count" onchange="calcAll()" style="width:120px;">
+          <option value="0">不需要</option>
+          <option value="1">1 堂</option><option value="2">2 堂</option><option value="3">3 堂</option>
+          <option value="4">4 堂</option><option value="5">5 堂</option><option value="6">6 堂</option>
+        </select>
+        <span style="font-size:12px;color:#888;margin-left:8px;">× $622</span>
+        <strong id="ac-price-display" style="color:#185fa5;margin-left:auto;">$0</strong>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">💰 費用總覽</div>
+      <div class="price-card" id="int-price">
+        <div class="price-row" style="color:#aaa;font-style:italic;border:none;">填寫體重及日期後自動計算</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">🔗 生成 WhatsApp 訊息</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button onclick="genWA('new')" style="flex:1;padding:9px;font-size:13px;cursor:pointer;border:.5px solid #ddd;border-radius:8px;background:#fff;">新客 Form 連結</button>
+        <button onclick="genWA('returning')" style="flex:1;padding:9px;font-size:13px;cursor:pointer;border:.5px solid #185fa5;border-radius:8px;background:#e6f1fb;color:#185fa5;">舊客連結</button>
+      </div>
+      <div id="gen-output" style="display:none;">
+        <div class="field" style="margin-bottom:8px;"><label>連結</label>
+          <input type="text" id="link-val" readonly style="font-size:12px;font-family:monospace;"/></div>
+        <div class="field"><label>WhatsApp 訊息</label>
+          <div class="wa-preview" id="wa-gen"></div></div>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('wa-gen').textContent)">📋 複製訊息</button>
+      </div>
+    </div>
+  </div><!-- /panel-pricing -->
+
+  <!-- ── TAB: WA Templates ── -->
+  <div class="panel" id="panel-templates">
+    <div class="sec">
+      <div class="sec-label">📤 Template 1 — 報價確認</div>
+      <div class="wa-preview">Hi [名字]，感謝查詢 Pawradise 🤍
+
+今次預約報價如下：
+🐾 [毛孩名字]（[品種] · [體重]kg）
+📅 [Check-in] → [Check-out]（[X]晚）
+🏨 住宿費用：$[金額]
+[附加項目逐行列出]
+
+💰 總費用：$[總金額]
+
+請點擊以下連結完成登記：
+👉 [form 連結]
+
+如有任何問題歡迎隨時查詢 🙌🏻</div>
+      <div style="font-size:12px;color:#aaa;margin-top:6px;">所有欄位由前台系統自動填入</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">✅ Template 2 — 成功預約確認</div>
+      <div class="wa-preview" id="tmpl2">🎉 預約成功！Thank you for choosing Pawradise 🤍
+
+📋 預約詳情：
+🐾 毛孩：[名字]
+📅 Check-in：[日期時間]
+📅 Check-out：[日期時間]
+💰 Total：$[金額]
+✅ 已收款
+
+📍 地址：16-17/F, Stone Rise, 200 Nathan Road, TST
+⏰ Check-in/out 時間：9am – 8pm
+⚠️ 如 12pm 後離開將收取當日日托費用
+
+入住前請查閱：
+📋 寄養條款及細則：[連結]
+🧳 入住準備須知：[連結]
+
+期待見到 [毛孩名字] 🐶</div>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('tmpl2').textContent)">📋 複製</button>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">🔔 Template 3 — 入住前一天提醒</div>
+      <div class="wa-preview" id="tmpl3">Hi [名字] 🐾
+
+提提你，[毛孩名字] 明天 [Check-in日期時間] Check-in！
+
+📍 地址：16-17/F, Stone Rise, 200 Nathan Road, TST
+🧳 入住準備須知：[連結]
+
+如有任何問題歡迎隨時聯絡 🙌🏻</div>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('tmpl3').textContent)">📋 複製</button>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">🎓 Template 4 — 學院課堂確認</div>
+      <div class="wa-preview" id="tmpl4">Hi [名字] 🎓
+
+感謝為 [毛孩名字] 報名 Pawradise 社交學院！
+
+📋 課堂詳情：
+📅 課堂：[課堂日期及時間]
+🐾 毛孩：[名字]
+💰 學費：$[金額]
+
+📍 地址：16-17/F, Stone Rise, 200 Nathan Road, TST
+
+請提前轉賬學費並 WhatsApp 付款截圖至 9459 6420。
+
+期待見到 [毛孩名字] 🐾</div>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('tmpl4').textContent)">📋 複製</button>
+    </div>
+  </div><!-- /panel-templates -->
+
+</div><!-- /main-screen -->
+
+<script>
+// ★ 請在此更改 PIN 碼（預設：1234）★
+const CORRECT_PIN = '1234';
+
+// Apps Script URL（與客戶表單共用）
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
+
+const PRICING = {
+  small:  { overnight:420, daycare:320 },
+  medium: { overnight:480, daycare:380 },
+  large:  { overnight:550, daycare:450 },
+  giant:  { overnight:680, daycare:580 }
+};
+const GROOMING = {
+  small:  { basic:480,  fullset:680,  razor:220, half:320, fullcut:450  },
+  medium: { basic:680,  fullset:880,  razor:250, half:380, fullcut:520  },
+  large:  { basic:880,  fullset:1080, razor:400, half:650, fullcut:880  },
+  giant:  { basic:1080, fullset:1580, razor:600, half:780, fullcut:980  }
+};
+let currentPkg = 'normal';
+let pinEntry = '';
+
+function getSizeKey(w){ if(!w||w<=0)return null; if(w<8)return'small'; if(w<18)return'medium'; if(w<28)return'large'; return'giant'; }
+function getSizeLabel(k){ return{small:'Small <8kg',medium:'Medium 8–18kg',large:'Large 18–28kg',giant:'Giant ≥28kg'}[k]||''; }
+function getSizeChipClass(k){ return{small:'chip-s',medium:'chip-m',large:'chip-l',giant:'chip-g'}[k]||''; }
+
+// ── PIN ──────────────────────────────────────────────────────────
+function pinKey(n) {
+  if (!n || pinEntry.length >= 4) return;
+  pinEntry += n;
+  updatePinDots();
+  if (pinEntry.length === 4) {
+    setTimeout(() => {
+      if (pinEntry === CORRECT_PIN) {
+        document.getElementById('pinScreen').classList.add('hidden');
+        document.getElementById('mainScreen').classList.add('show');
+      } else {
+        document.getElementById('pinError').textContent = 'PIN 碼錯誤，請重試';
+        pinEntry = '';
+        updatePinDots();
+      }
+    }, 150);
+  }
+}
+function pinDel() {
+  pinEntry = pinEntry.slice(0, -1);
+  document.getElementById('pinError').textContent = '';
+  updatePinDots();
+}
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('d' + i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+function logout() {
+  pinEntry = '';
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('mainScreen').classList.remove('show');
+  document.getElementById('pinScreen').classList.remove('hidden');
+}
+
+// ── TAB SWITCHING ────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+}
+
+// ── CUSTOMER LOOKUP ──────────────────────────────────────────────
+async function intLookup() {
+  const phone = document.getElementById('int-phone').value.trim();
+  if (!/^\d{8}$/.test(phone)) return;
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
+    const json = await res.json();
+    if (json.found && json.data) {
+      const d = json.data;
+      document.getElementById('int-found-name').textContent = d.ownerName + ' / ' + d.dogName;
+      document.getElementById('int-found').style.display = 'block';
+      document.getElementById('cc-dog').textContent    = d.dogName || '—';
+      document.getElementById('cc-detail').textContent = (d.breed||'') + ' · ' + (d.weight||'')+'kg';
+      document.getElementById('cc-owner').textContent  = d.ownerName || '—';
+      document.getElementById('cc-phone').textContent  = d.phone || '—';
+      document.getElementById('cc-email').textContent  = d.email || '—';
+      document.getElementById('cc-gender').textContent = (d.gender||'') + ' / ' + (d.neutered==='是'?'已絕育':'未絕育');
+      document.getElementById('clientCard').classList.add('show');
+      // Health notes
+      document.getElementById('int-health').value = d.health || '';
+      document.getElementById('int-diet').value   = d.diet   || '';
+      document.getElementById('int-meds').value   = d.meds   || '';
+      document.getElementById('int-notes').value  = d.notes  || '';
+      document.getElementById('notesSection').style.display = 'block';
+      // Package
+      if (d.pkgTotal && Number(d.pkgTotal) > 0) {
+        document.getElementById('int-pkg-type').value   = d.pkgType || '';
+        document.getElementById('int-pkg-expiry').value = d.pkgExpiry || '';
+        document.getElementById('int-pkg-total').value  = '$' + Number(d.pkgTotal).toLocaleString();
+        document.getElementById('int-pkg-bal').value    = d.pkgBalance || '';
+        document.getElementById('pkgSection').style.display = 'block';
+        updateBalDisplay();
+      } else {
+        document.getElementById('pkgSection').style.display = 'none';
+      }
+      // Pre-fill pricing tab weight
+      document.getElementById('int-w').value = d.weight || '';
+    } else {
+      document.getElementById('int-found').style.display = 'none';
+      document.getElementById('clientCard').classList.remove('show');
+      document.getElementById('pkgSection').style.display = 'none';
+      document.getElementById('notesSection').style.display = 'none';
+    }
+  } catch(e) {
+    alert('查詢失敗，請檢查網絡連接');
+  }
+}
+
+function updateBalDisplay() {
+  const bal = parseInt(document.getElementById('int-pkg-bal').value) || 0;
+  const d = document.getElementById('bal-display');
+  if (bal > 0) { d.style.display = 'block'; d.textContent = '現有套票餘額：$' + bal.toLocaleString(); }
+  else { d.style.display = 'none'; }
+}
+
+// ── PACKAGE SELECTION ────────────────────────────────────────────
+function selectPkg(id, paid, total) {
+  currentPkg = id;
+  document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pkg-' + id).classList.add('selected');
+  const wrap = document.getElementById('pkg-existing-wrap');
+  if (id === 'normal') { wrap.style.display = 'none'; }
+  else { wrap.style.display = 'block'; document.getElementById('pkg-total-val').value = '$' + total.toLocaleString(); }
+  calcAll();
+}
+
+// ── GROOMING ─────────────────────────────────────────────────────
+function calcGrooming() {
+  const w = parseFloat(document.getElementById('int-w').value);
+  const sk = getSizeKey(w);
+  const grType = document.getElementById('gr-type').value;
+  const extraRow = document.getElementById('gr-extra-row');
+  const priceRow = document.getElementById('gr-price-row');
+  if (grType === 'none') { extraRow.style.display='none'; priceRow.style.display='none'; calcAll(); return; }
+  extraRow.style.display = 'block';
+  if (!sk) { priceRow.style.display='none'; calcAll(); return; }
+  const g = GROOMING[sk];
+  const grCut = document.getElementById('gr-cut').value;
+  const dm = parseFloat(document.getElementById('gr-dematting').value) || 0;
+  let base = grType === 'basic' ? g.basic : g.fullset;
+  let cutAdd = 0;
+  if (grCut==='razor') cutAdd=g.razor;
+  else if (grCut==='half') cutAdd=g.half;
+  else if (grCut==='full'&&grType==='fullset') cutAdd=g.fullcut;
+  const total = Math.round((base+cutAdd)*0.9) + dm;
+  document.getElementById('gr-price-display').textContent = '$' + total;
+  priceRow.style.display = 'flex';
+  calcAll();
+}
+function updateTransport() {
+  document.getElementById('tr-district-wrap').style.display =
+    document.getElementById('tr-type').value === 'none' ? 'none' : 'block';
+  calcTransportInt();
+}
+function calcTransportInt() {
+  const trType = document.getElementById('tr-type').value;
+  const dp = parseInt(document.getElementById('tr-district').value) || 0;
+  const total = trType === 'both' ? dp*2 : dp;
+  document.getElementById('tr-price-display').textContent = '$' + total;
+  calcAll();
+}
+
+// ── MAIN PRICING CALC ─────────────────────────────────────────────
+function calcAll() {
+  const w    = parseFloat(document.getElementById('int-w').value);
+  const ci   = document.getElementById('int-ci').value;
+  const co   = document.getElementById('int-co').value;
+  const room = parseInt(document.getElementById('int-room').value) || 1;
+  const card = document.getElementById('int-price');
+  if (!w||!ci||!co) { card.innerHTML='<div class="price-row" style="color:#aaa;font-style:italic;border:none;">填寫體重及日期後自動計算</div>'; return; }
+  const sk = getSizeKey(w);
+  if (!sk) return;
+  const pd = PRICING[sk];
+  const ciD=new Date(ci), coD=new Date(co);
+  if (coD<=ciD) return;
+  const nights = Math.floor((coD-ciD)/86400000);
+  const lateOut = (coD.getHours()+coD.getMinutes()/60)>=12;
+  const roomDisc = room>=3?0.9:1;
+  let disc=1, discLabel='';
+  if (nights>=14){disc=0.95;discLabel='14晚以上 95折';}
+  const base = nights*pd.overnight;
+  const oTotal = Math.round(base*disc*roomDisc);
+  const dcFee  = lateOut?pd.daycare:0;
+
+  let html = `<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
+  if (disc<1||roomDisc<1) html+=`<div class="price-row disc"><span>${discLabel}${room>=3?' 同房9折':''}</span><span>-$${base-oTotal}</span></div>`;
+  if (lateOut) html+=`<div class="price-row dc"><span>日托</span><span>+$${dcFee}</span></div>`;
+
+  let addons=0;
+  const grType=document.getElementById('gr-type').value;
+  if (grType!=='none'&&sk) {
+    const g=GROOMING[sk];
+    const grCut=document.getElementById('gr-cut').value;
+    const dm=parseFloat(document.getElementById('gr-dematting').value)||0;
+    let grBase=grType==='basic'?g.basic:g.fullset;
+    let cutAdd=0;
+    if(grCut==='razor')cutAdd=g.razor;
+    else if(grCut==='half')cutAdd=g.half;
+    else if(grCut==='full'&&grType==='fullset')cutAdd=g.fullcut;
+    const grTotal=Math.round((grBase+cutAdd)*0.9)+dm;
+    html+=`<div class="price-row addon"><span>✂️ 美容</span><span>$${grTotal}</span></div>`;
+    addons+=grTotal;
+  }
+  const trType=document.getElementById('tr-type').value;
+  if (trType!=='none') {
+    const dp=parseInt(document.getElementById('tr-district').value)||0;
+    const trTotal=trType==='both'?dp*2:dp;
+    if(trTotal>0){html+=`<div class="price-row addon"><span>🚗 接送</span><span>$${trTotal}</span></div>`;addons+=trTotal;}
+  }
+  const acCount=parseInt(document.getElementById('ac-count').value)||0;
+  if(acCount>0){
+    const acFee=acCount*622;
+    html+=`<div class="price-row addon"><span>🎓 學院 ${acCount} 堂</span><span>$${acFee}</span></div>`;
+    addons+=acFee;
+    document.getElementById('ac-price-display').textContent='$'+acFee;
+  } else { document.getElementById('ac-price-display').textContent='$0'; }
+
+  const grand=oTotal+dcFee+addons;
+  const bal=currentPkg!=='normal'?(parseInt(document.getElementById('pkg-balance').value)||0):0;
+  if (bal>0) {
+    const deduct=Math.min(bal,grand);
+    html+=`<div class="price-row disc"><span>套票扣除</span><span>-$${deduct}</span></div>`;
+    html+=`<div class="price-row total"><span>總金額</span><span>$${grand-deduct}</span></div>`;
+    html+=`<div class="price-row" style="font-size:12px;color:#888;"><span>套票餘額（扣後）</span><span>$${bal-deduct}</span></div>`;
+    document.getElementById('pkg-bal-note').textContent='扣除後餘額：$'+(bal-deduct).toLocaleString();
+  } else {
+    html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
+    document.getElementById('pkg-bal-note').textContent='';
+  }
+  card.innerHTML=html;
+}
+
+// ── WA GENERATION ────────────────────────────────────────────────
+function genWA(type) {
+  const name  = document.getElementById('cc-owner')?.textContent || '[主人]';
+  const dog   = document.getElementById('cc-dog')?.textContent   || '[毛孩]';
+  const link  = type==='new'
+    ? location.href.replace('staff','hotel-booking')
+    : location.href.replace('staff','hotel-booking');
+  document.getElementById('link-val').value = link;
+  const msg = `Hi ${name}，感謝查詢 Pawradise 🤍\n\n請點擊以下連結完成登記：\n👉 ${link}\n\n如有任何問題歡迎隨時查詢 🙌🏻`;
+  document.getElementById('wa-gen').textContent = msg;
+  document.getElementById('gen-output').style.display = 'block';
+}
+</script>
+</body>
+</html>
