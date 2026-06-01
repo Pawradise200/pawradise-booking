@@ -548,9 +548,10 @@ function calcForm() {
   if (!sk) { ps.style.display='none'; return; }
   const pd = PRICING[sk];
 
-  // ── 晚數：只計日期差，不受時間影響 ──
-  const ciDate = new Date(ciDateVal);
-  const coDate = new Date(coDateVal);
+  // ── 晚數：只計日期差，不受時間影響（手動解析避免 iOS UTC 問題）──
+  function parseLocalDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+  const ciDate = parseLocalDate(ciDateVal);
+  const coDate = parseLocalDate(coDateVal);
   const nights = Math.round((coDate - ciDate) / 86400000);
 
   if (nights <= 0) {
