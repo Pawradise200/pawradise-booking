@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="pawradise-tokens.css">
 <link rel="stylesheet" href="pawradise.css">
 <style>
-/* page-specific */
 .lead{font-size:13px;font-weight:600;color:var(--pw-ink-mute);line-height:1.6;margin:2px 0 16px;padding:0 2px;}
 .pkg-info-card{display:none;background:var(--pw-paper);border-radius:var(--pw-r-lg);
   box-shadow:var(--pw-shadow-card);padding:18px 20px;margin-bottom:14px;
@@ -43,8 +42,6 @@
 .f-ac-row{display:flex;align-items:center;gap:11px;margin-top:5px;}
 .f-ac-row select{flex:1;}
 .ac-price-tag{font-size:14px;font-weight:900;color:var(--pw-navy-light);white-space:nowrap;}
-
-/* success popup modal */
 .modal-ov{position:fixed;inset:0;background:rgba(44,74,110,.45);display:none;
   align-items:center;justify-content:center;padding:20px;z-index:200;}
 .modal-ov.show{display:flex;animation:mfade .2s ease;}
@@ -74,7 +71,6 @@
 </style>
 </head>
 <body>
-
 <!-- ═══ ICON SPRITE ═══ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="ico-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
@@ -109,7 +105,6 @@
 </header>
 
 <div class="container">
-
   <p class="lead">請先填寫以下資料（曾使用服務的客戶輸入電話可自動帶入資料），前台同事會於收到預約邀請後跟你聯絡確認，如有任何問題歡迎 WhatsApp 聯絡查詢。</p>
 
   <!-- ① 快速查詢 -->
@@ -254,7 +249,6 @@
   <!-- ⑥ 附加服務 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-plus"/></svg>附加服務</div>
-
     <div class="section-divider"><span>美容服務</span></div>
     <div class="field"><label>離開前需要美容服務？ <span class="req">*</span></label>
       <div class="radio-group">
@@ -284,7 +278,6 @@
         <div class="warn-box" style="margin-top:10px;"><svg class="ico"><use href="#ico-alert"/></svg><span>如需解結 / 去死毛，將於接走時額外收費，職員會提前通知。</span></div>
       </div>
     </div>
-
     <div class="section-divider"><span>社交學院</span></div>
     <div class="field"><label>社交學院課堂（$622 / 堂）</label>
       <div class="f-ac-row">
@@ -297,7 +290,6 @@
         <div class="ac-price-tag" id="f-ac-price"></div>
       </div>
     </div>
-
     <div class="section-divider"><span>接送服務</span></div>
     <div class="field"><label>需要接送服務？ <span class="req">*</span></label>
       <div class="radio-group">
@@ -379,10 +371,9 @@
     <button class="btn-primary" onclick="submitForm()" id="submitBtn"><svg class="ico ico-sm"><use href="#ico-paw"/></svg>提交預約申請</button>
     <div class="submit-result" id="submitResult"></div>
   </div>
+</div>
 
-</div><!-- /container -->
-
-<!-- ═══ 提交成功提示 ═══ -->
+<!-- 提交成功提示 -->
 <div class="modal-ov" id="successModal">
   <div class="modal-card">
     <div class="modal-head">
@@ -407,7 +398,6 @@
 </div>
 
 <script>
-// ══ CONFIG ═══════════════════════════════════════════════════════
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
 
 const PRICING = {
@@ -422,6 +412,7 @@ const GROOMING = {
   large:  { basic:880,  fullset:1080, razor:400, half:650, fullcut:880  },
   giant:  { basic:1080, fullset:1580, razor:600, half:780, fullcut:980  }
 };
+
 let isReturning = false;
 
 function getSizeKey(w){ if(!w||w<=0)return null; if(w<8)return'small'; if(w<18)return'medium'; if(w<28)return'large'; return'giant'; }
@@ -479,16 +470,15 @@ function prefillReturning(d) {
   document.getElementById('f-health-detail').style.display='none';
   document.getElementById('f-health-readonly').style.display='block';
   document.getElementById('f-health-ro').value=d.health||'沒有';
-  document.getElementById('f-diet').value = d.diet||'';
-  document.getElementById('f-meds').value = d.meds||'';
-  document.getElementById('f-notes').value = d.notes||'';
+  document.getElementById('f-diet').value=d.diet||'';
+  document.getElementById('f-meds').value=d.meds||'';
+  document.getElementById('f-notes').value=d.notes||'';
   ['f-diet','f-meds','f-notes'].forEach(id=>{
     const el=document.getElementById(id);
     if(el){ el.readOnly=true; el.classList.add('prefilled'); }
   });
   document.getElementById('remarks-field').style.display='block';
   document.getElementById('returning-badge').style.display='block';
-
   const pkgCard=document.getElementById('pkgInfoCard');
   if(d.pkgBalance!=null && Number(d.pkgTotal)>0){
     const bal=Number(d.pkgBalance), total=Number(d.pkgTotal);
@@ -542,75 +532,93 @@ function showTransport(show){ document.getElementById('f-tr-detail').style.displ
 // ══ PRICING ENGINE ════════════════════════════════════════════════
 function calcForm() {
   const w    = parseFloat(document.getElementById('f-weight')?.value);
-  const ciD  = getDateTime('f-ci-date','f-ci-time');
   const coD  = getDateTime('f-co-date','f-co-time');
   const ps   = document.getElementById('f-price-section');
   const card = document.getElementById('f-price-card');
-  if (!w||!ciD||!coD){ ps.style.display='none'; return; }
-  const sk=getSizeKey(w);
-  if(!sk){ ps.style.display='none'; return; }
-  const pd=PRICING[sk];
-  if(coD<=ciD){
+
+  const ciDateVal = document.getElementById('f-ci-date').value;
+  const coDateVal = document.getElementById('f-co-date').value;
+  const ciTimeVal = document.getElementById('f-ci-time').value;
+  const coTimeVal = document.getElementById('f-co-time').value;
+
+  if (!w || !ciDateVal || !coDateVal || !ciTimeVal || !coTimeVal) {
+    ps.style.display='none'; return;
+  }
+  const sk = getSizeKey(w);
+  if (!sk) { ps.style.display='none'; return; }
+  const pd = PRICING[sk];
+
+  // ── 晚數：只計日期差，不受時間影響 ──
+  const ciDate = new Date(ciDateVal);
+  const coDate = new Date(coDateVal);
+  const nights = Math.round((coDate - ciDate) / 86400000);
+
+  if (nights <= 0) {
     card.innerHTML='<div class="price-empty" style="color:var(--pw-danger);">Check-out 必須在 Check-in 之後</div>';
     ps.style.display='block'; return;
   }
-  const nights=Math.floor((coD-ciD)/86400000);
-  const lateOut=(coD.getHours()+coD.getMinutes()/60)>=12;
-  let disc=1,discLabel='';
-  if(nights>=14){disc=0.95;discLabel='14晚以上 95折';}
-  const base=nights*pd.overnight;
-  const oTotal=Math.round(base*disc);
-  const dcFee=lateOut?pd.daycare:0;
-  let html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
-  if(disc<1) html+=`<div class="price-row disc"><span>${discLabel}</span><span>-$${base-oTotal}</span></div>`;
-  if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
-  let addons=0;
 
-  // Grooming
-  const grSel=document.querySelector('input[name=f-gr]:checked');
-  if(grSel&&grSel.value==='yes'&&GROOMING[sk]){
-    const grType=document.getElementById('f-gr-type')?.value||'';
-    const grCut=document.getElementById('f-gr-cut')?.value||'none';
-    if(grType){
-      const g=GROOMING[sk];
-      let grBase=grType==='basic'?g.basic:g.fullset;
-      let cutAdd=0;
-      if(grCut==='razor')cutAdd=g.razor;
-      else if(grCut==='half')cutAdd=g.half;
-      else if(grCut==='full'&&grType==='fullset')cutAdd=g.fullcut;
-      const grTotal=Math.round((grBase+cutAdd)*0.9);
-      const grLabel=(grType==='basic'?'Basic':'Full Set')+(grCut!=='none'?' + '+({razor:'全剷',half:'半手剪',full:'全手剪'}[grCut]||''):'');
-      html+=`<div class="price-row addon"><span>美容（${grLabel}）住宿9折</span><span>$${grTotal}</span></div>`;
-      addons+=grTotal;
+  // ── 日托：12:30 或之後才收費（嚴格大於12:00）──
+  const lateOut = coD ? (coD.getHours() + coD.getMinutes() / 60) > 12 : false;
+
+  let disc=1, discLabel='';
+  if (nights >= 14) { disc=0.95; discLabel='14晚以上 95折'; }
+  const base   = nights * pd.overnight;
+  const oTotal = Math.round(base * disc);
+  const dcFee  = lateOut ? pd.daycare : 0;
+
+  let html = `<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
+  if (disc < 1) html += `<div class="price-row disc"><span>${discLabel}</span><span>-$${base - oTotal}</span></div>`;
+  if (lateOut)  html += `<div class="price-row dc"><span>日托（12:30後 check-out）</span><span>+$${dcFee}</span></div>`;
+
+  let addons = 0;
+
+  // 美容
+  const grSel = document.querySelector('input[name=f-gr]:checked');
+  if (grSel && grSel.value==='yes' && GROOMING[sk]) {
+    const grType = document.getElementById('f-gr-type')?.value || '';
+    const grCut  = document.getElementById('f-gr-cut')?.value  || 'none';
+    if (grType) {
+      const g = GROOMING[sk];
+      let grBase = grType==='basic' ? g.basic : g.fullset;
+      let cutAdd = 0;
+      if (grCut==='razor') cutAdd=g.razor;
+      else if (grCut==='half') cutAdd=g.half;
+      else if (grCut==='full' && grType==='fullset') cutAdd=g.fullcut;
+      const grTotal = Math.round((grBase + cutAdd) * 0.9);
+      const grLabel = (grType==='basic'?'Basic':'Full Set') + (grCut!=='none'?' + '+({razor:'全剷',half:'半手剪',full:'全手剪'}[grCut]||''):'');
+      html += `<div class="price-row addon"><span>美容（${grLabel}）住宿9折</span><span>$${grTotal}</span></div>`;
+      addons += grTotal;
     }
   }
 
-  // Academy
-  const acCount=parseInt(document.getElementById('f-ac')?.value)||0;
-  if(acCount>0){
-    const acFee=acCount*622;
-    html+=`<div class="price-row addon"><span>學院課堂 ${acCount} 堂</span><span>$${acFee}</span></div>`;
-    addons+=acFee;
-    const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent='$'+acFee;
+  // 學院
+  const acCount = parseInt(document.getElementById('f-ac')?.value) || 0;
+  if (acCount > 0) {
+    const acFee = acCount * 622;
+    html += `<div class="price-row addon"><span>學院課堂 ${acCount} 堂</span><span>$${acFee}</span></div>`;
+    addons += acFee;
+    const ap = document.getElementById('f-ac-price'); if(ap) ap.textContent='$'+acFee;
   } else { const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent=''; }
 
-  // Transport
-  const trSel=document.querySelector('input[name=f-tr]:checked');
-  if(trSel&&trSel.value!=='none'){
-    const distEl=document.getElementById('f-tr-district');
-    const dp=parseInt(distEl?.value)||0;
-    if(dp>0){
-      const trTotal=trSel.value==='both'?dp*2:dp;
-      const distName=distEl.options[distEl.selectedIndex]?.text||'';
-      html+=`<div class="price-row addon"><span>接送（${distName}）${trSel.value==='both'?'× 2':''}</span><span>$${trTotal}</span></div>`;
-      addons+=trTotal;
+  // 接送
+  const trSel = document.querySelector('input[name=f-tr]:checked');
+  if (trSel && trSel.value !== 'none') {
+    const distEl = document.getElementById('f-tr-district');
+    const dp = parseInt(distEl?.value) || 0;
+    if (dp > 0) {
+      const trTotal = trSel.value==='both' ? dp*2 : dp;
+      const distName = distEl.options[distEl.selectedIndex]?.text || '';
+      html += `<div class="price-row addon"><span>接送（${distName}）${trSel.value==='both'?'× 2':''}</span><span>$${trTotal}</span></div>`;
+      addons += trTotal;
     }
   }
-  const grand=oTotal+dcFee+addons;
-  window._grandTotal = grand;  // 讓 submitForm 可以讀取
-  html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
-  card.innerHTML=html;
-  ps.style.display='block';
+
+  const grand = oTotal + dcFee + addons;
+  window._grandTotal = grand;
+  html += `<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
+  card.innerHTML = html;
+  ps.style.display = 'block';
 }
 
 // ══ SUBMIT ════════════════════════════════════════════════════════
@@ -628,11 +636,9 @@ async function submitForm() {
   const coD=getDateTime('f-co-date','f-co-time');
   if(!ciD||!coD){alert('請填寫入住及離開日期時間');return;}
   if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
-
   const btn=document.getElementById('submitBtn');
   const res=document.getElementById('submitResult');
   btn.disabled=true; btn.textContent='提交中…';
-
   const payload={
     action:'submit_hotel',
     customerType:isReturning?'舊客':'新客',
@@ -661,7 +667,6 @@ async function submitForm() {
     totalAmount: window._grandTotal || 0,
     status:'待審批',
   };
-
   try {
     await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
     res.className='submit-result success';
@@ -675,7 +680,6 @@ async function submitForm() {
   }
 }
 
-// ══ SUCCESS MODAL ═══════════════════════════════════
 function showSuccessModal(){ document.getElementById('successModal').classList.add('show'); }
 function closeSuccessModal(){ document.getElementById('successModal').classList.remove('show'); }
 document.getElementById('successModal').addEventListener('click',function(e){
