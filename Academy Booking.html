@@ -369,58 +369,44 @@
 
 </div>
 
-// ══ 替換 Academy Booking.html 裡的整個 <script> 區塊 ══════════
-// 從 <script> 到 </script> 全部替換為以下內容
-
+<script>
+// ══ CONFIG ═══════════════════════════════════════════════════════
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
 
 const CFG = {
+  classes: [
+    { id:'S1-0602', label:'S1 · 2 Jun 2026 (Tue)',              time:'週二',               enrolled:15, max:20, type:'S1' },
+    { id:'S1-0604', label:'S1 · 4 Jun 2026 (Thu)',              time:'週四',               enrolled:20, max:20, type:'S1' },
+    { id:'S1-0607', label:'S1 · 7 Jun 2026 (Sun)',              time:'週日',               enrolled:20, max:20, type:'S1' },
+    { id:'S1-0610', label:'S1 · 10 Jun 2026 (Wed)',             time:'週三',               enrolled:12, max:20, type:'S1' },
+    { id:'S1-0612', label:'S1 · 12 Jun 2026 (Fri)',             time:'週五',               enrolled:13, max:20, type:'S1' },
+    { id:'S1-0613', label:'S1 · 13 Jun 2026 (Sat)',             time:'週六',               enrolled:19, max:20, type:'S1' },
+    { id:'S1-0616', label:'S1 · 16 Jun 2026 (Tue)',             time:'週二',               enrolled:20, max:20, type:'S1' },
+    { id:'S1-0618', label:'S1 · 18 Jun 2026 (Thu)',             time:'週四',               enrolled:20, max:20, type:'S1' },
+    { id:'S1-0621', label:'S1 · 21 Jun 2026 (Sun)',             time:'週日',               enrolled:20, max:20, type:'S1' },
+    { id:'S1-0624', label:'S1 · 24 Jun 2026 (Wed)',             time:'週三',               enrolled:17, max:20, type:'S1' },
+    { id:'S1-0626', label:'S1 · 26 Jun 2026 (Fri)',             time:'週五',               enrolled:12, max:20, type:'S1' },
+    { id:'S1-0627', label:'S1 · 27 Jun 2026 (Sat)',             time:'週六',               enrolled:17, max:20, type:'S1' },
+    { id:'S1-0630', label:'S1 · 30 Jun 2026 (Tue)',             time:'週二',               enrolled:10, max:20, type:'S1' },
+    { id:'S2-0611', label:'S2 · 11 Jun 2026 (Thu) · 第一堂',   time:'週四 19:00–20:30',   enrolled:2,  max:6,  type:'S2' },
+    { id:'S2-0614', label:'S2 · 14 Jun 2026 (Sun) · 第一堂',   time:'週日 12:00–13:30',   enrolled:4,  max:6,  type:'S2' },
+    { id:'S2-0621', label:'S2 · 21 Jun 2026 (Sun) · 第二堂',   time:'週日 19:00–20:30',   enrolled:2,  max:6,  type:'S2' },
+  ],
   times: ['9:00–9:30am','9:30–10:00am','10:00–10:30am','10:30–11:00am','11:00–11:30am','11:30–12:00pm'],
 };
 
-let loadedClasses = [];
-let lookupActive  = false;
+let lookupActive = false;
 
-// ══ 載入課堂名額 ══════════════════════════════════════════════
-async function loadClasses() {
-  try {
-    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
-    const json = await res.json();
-    loadedClasses = json.classes || [];
-  } catch(e) {
-    // 讀取失敗時用靜態備份
-    loadedClasses = [
-      { id:'S1-0602', label:'S1 · 2 Jun 2026 (Tue)',            time:'週二',             enrolled:15, max:20, type:'S1' },
-      { id:'S1-0604', label:'S1 · 4 Jun 2026 (Thu)',            time:'週四',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0607', label:'S1 · 7 Jun 2026 (Sun)',            time:'週日',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0610', label:'S1 · 10 Jun 2026 (Wed)',           time:'週三',             enrolled:12, max:20, type:'S1' },
-      { id:'S1-0612', label:'S1 · 12 Jun 2026 (Fri)',           time:'週五',             enrolled:13, max:20, type:'S1' },
-      { id:'S1-0613', label:'S1 · 13 Jun 2026 (Sat)',           time:'週六',             enrolled:19, max:20, type:'S1' },
-      { id:'S1-0616', label:'S1 · 16 Jun 2026 (Tue)',           time:'週二',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0618', label:'S1 · 18 Jun 2026 (Thu)',           time:'週四',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0621', label:'S1 · 21 Jun 2026 (Sun)',           time:'週日',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0624', label:'S1 · 24 Jun 2026 (Wed)',           time:'週三',             enrolled:17, max:20, type:'S1' },
-      { id:'S1-0626', label:'S1 · 26 Jun 2026 (Fri)',           time:'週五',             enrolled:12, max:20, type:'S1' },
-      { id:'S1-0627', label:'S1 · 27 Jun 2026 (Sat)',           time:'週六',             enrolled:17, max:20, type:'S1' },
-      { id:'S1-0630', label:'S1 · 30 Jun 2026 (Tue)',           time:'週二',             enrolled:10, max:20, type:'S1' },
-      { id:'S2-0611', label:'S2 · 11 Jun 2026 (Thu) · 第一堂', time:'週四 19:00–20:30', enrolled:2,  max:6,  type:'S2' },
-      { id:'S2-0614', label:'S2 · 14 Jun 2026 (Sun) · 第一堂', time:'週日 12:00–13:30', enrolled:4,  max:6,  type:'S2' },
-      { id:'S2-0621', label:'S2 · 21 Jun 2026 (Sun) · 第二堂', time:'週日 19:00–20:30', enrolled:2,  max:6,  type:'S2' },
-    ];
-  }
-  buildClasses();
-}
-
-// ══ BUILD UI ══════════════════════════════════════════════════
+// ══ BUILD UI ═════════════════════════════════════════════════════
 function buildClasses() {
-  document.getElementById('classList').innerHTML = loadedClasses.map(c => {
+  document.getElementById('classList').innerHTML = CFG.classes.map(c => {
     const r = Math.max(0, c.max - c.enrolled);
     const st = r <= 0 ? 'full' : r <= 3 ? 'few' : 'open';
     const full = st === 'full';
     const badgeTxt = full ? '已滿額' : `剩 ${r} 位`;
     const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
     return `<div class="cls-opt${full ? ' full' : ''}">
-      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-id="${c.id}" data-type="${c.type}"${full ? ' disabled' : ''}>
+      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-type="${c.type}"${full ? ' disabled' : ''}>
       <label class="cls-card" for="${c.id}">
         <div class="chkbox"><svg width="11" height="9" viewBox="0 0 10 8" fill="none">
           <path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -453,7 +439,7 @@ function buildTimes() {
     </div>`).join('');
 }
 
-// ══ LOOKUP ════════════════════════════════════════════════════
+// ══ LOOKUP ════════════════════════════════════════════════════════
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
@@ -502,7 +488,7 @@ function clearLookup() {
   lookupActive = false;
 }
 
-// ══ TRANSPORT ════════════════════════════════════════════════
+// ══ TRANSPORT WITH 八折 PRICING ══════════════════════════════════
 function calcTransport() {
   const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
   const detail = document.getElementById('trDetail');
@@ -523,7 +509,7 @@ function calcTransport() {
   priceBox.style.display = 'block';
 }
 
-// ══ VALIDATION ═══════════════════════════════════════════════
+// ══ VALIDATION ════════════════════════════════════════════════════
 function vf(id, fail, eid) {
   document.getElementById(id)?.classList.toggle('error', fail);
   document.getElementById(eid)?.classList.toggle('show', fail);
@@ -549,15 +535,13 @@ function validate() {
   return ok;
 }
 
-// ══ SUBMIT ═══════════════════════════════════════════════════
+// ══ SUBMIT ════════════════════════════════════════════════════════
 document.getElementById('mainForm').addEventListener('submit', async e => {
   e.preventDefault();
   if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
-
-  const checkedClasses = [...document.querySelectorAll('input[name=cls]:checked')];
 
   const payload = {
     action:       'submit_academy',
@@ -569,13 +553,12 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
     dogName:      document.getElementById('dogName').value.trim(),
     dogBreed:     document.getElementById('dogBreed').value.trim(),
     courseLevel:  document.getElementById('courseLevel').value,
-    classes:      checkedClasses.map(c => c.value).join(' | '),
-    classIds:     checkedClasses.map(c => c.dataset.id),
+    classes:      [...document.querySelectorAll('input[name=cls]:checked')].map(c => c.value).join(' | '),
     arrivalTime:  document.querySelector('input[name=arr]:checked')?.value || '',
     transport:    document.querySelector('input[name=transport]:checked')?.value || '不需要',
     trDistrict:   document.getElementById('trDistrict')?.value || '',
     trAddress:    document.getElementById('trAddress').value.trim(),
-    trFee:        (document.getElementById('trPriceAmt')?.textContent || '').replace('$','') || '0',
+    trFee:        document.getElementById('trPriceAmt')?.textContent || '$0',
     remarks:      document.getElementById('remarks').value.trim(),
     status:       '待審批',
   };
@@ -588,8 +571,17 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...payload, ref }),
     });
-    document.getElementById('mainForm').style.display  = 'none';
-    document.querySelector('.notice').style.display    = 'none';
+
+    // Notion CRM 同步（背景執行，不影響預約流程）
+    fetch('https://script.google.com/macros/s/AKfycbzO0L2UM3BcnsYhKaNFz2gcJWqoCgrxtK-ZBT_gKNkyHvVAutyTSfll4pWfyc-kXRVT7g/exec', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, ref }),
+    }).catch(() => {});
+
+    document.getElementById('mainForm').style.display = 'none';
+    document.querySelector('.notice').style.display   = 'none';
     document.getElementById('sDog').textContent = payload.dogName;
     document.getElementById('sRef').textContent = ref;
     document.getElementById('successScreen').classList.add('show');
@@ -601,8 +593,9 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
   }
 });
 
-// ══ INIT ═════════════════════════════════════════════════════
-loadClasses();  // 動態載入名額（取代 buildClasses()）
+// ══ INIT ══════════════════════════════════════════════════════════
+buildClasses();
 buildTimes();
+</script>
 </body>
 </html>
