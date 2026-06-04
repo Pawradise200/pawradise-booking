@@ -199,6 +199,18 @@
 
 @media(max-width:480px){.time-grid{grid-template-columns:1fr 1fr;}.transport-opts{grid-template-columns:1fr;}}
 @media(max-width:380px){.time-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── 多狗選擇器 ─────────────────────────────────────── */
+.dog-selector{margin-top:10px;display:none;}
+.dog-selector.show{display:block;}
+.dog-selector-label{font-size:11px;font-weight:800;color:var(--pw-ink-mute);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.dog-cards{display:flex;flex-wrap:wrap;gap:8px;}
+.dog-card{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--pw-cream-deep);background:var(--pw-paper);cursor:pointer;transition:border-color .15s,box-shadow .15s;min-width:130px;}
+.dog-card:hover{border-color:var(--pw-navy);box-shadow:0 0 0 2px rgba(22,42,74,.08);}
+.dog-card.selected{border-color:var(--pw-navy);background:var(--pw-navy-soft,#eef1f7);box-shadow:0 0 0 2px rgba(22,42,74,.13);}
+.dog-card-avatar{width:34px;height:34px;border-radius:50%;background:var(--pw-gold-soft,#fdf6e3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.dog-card-name{font-size:13px;font-weight:800;color:var(--pw-ink);}
+.dog-card-breed{font-size:11px;color:var(--pw-ink-mute);margin-top:1px;}
 </style>
 </head>
 <body>
@@ -257,6 +269,11 @@
       <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
     </div>
     <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
+    <!-- ★ 多狗選擇器 -->
+    <div class="dog-selector" id="dogSelector">
+      <div class="dog-selector-label">請選擇預約的狗狗</div>
+      <div class="dog-cards" id="dogCards"></div>
+    </div>
     <div class="pkg-wrap" id="pkgWrap">
       <div class="pkg-wrap-title"><svg class="ico"><use href="#ico-cap"/></svg>課堂額度 · 出席追蹤</div>
       <div id="pkgList"></div>
@@ -661,28 +678,28 @@ function buildTimes() {
 }
 
 // ══ LOOKUP ════════════════════════════════════════════════════════
+// ★ 儲存當前查詢到的所有狗狗資料及主人資料
+let currentOwner = null;
+let currentDogs  = [];
+
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
+  document.getElementById('dogSelector').classList.remove('show');
   if (!/^\d{8}$/.test(phone)) {
     document.getElementById('notfoundMsg').classList.add('show');
     return;
   }
-  // 示範模式：直接載入示範記錄，不查詢後台
   if (DEMO_MODE) {
-    fillRecord({ ...demoRecordFor(phone), phone });
+    const d = { ...demoRecordFor(phone), phone };
+    handleLookupResult({ found: true, data: d });
     return;
   }
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
-    if (json.found && json.data) {
-      fillRecord(json.data);
-    } else {
-      document.getElementById('notfoundMsg').classList.add('show');
-      lookupActive = false;
-    }
+    handleLookupResult(json);
   } catch(e) {
     document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
     document.getElementById('notfoundMsg').classList.add('show');
@@ -690,28 +707,105 @@ async function doLookup() {
   }
 }
 
-function fillRecord(d) {
-  // 預填資料但保持可編輯，客戶可手動更改
-  [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
-   ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
-   ['dogDob', d.dob || '']].forEach(([id, val]) => {
+function handleLookupResult(json) {
+  if (!json.found) {
+    document.getElementById('notfoundMsg').classList.add('show');
+    lookupActive = false;
+    return;
+  }
+
+  // 新格式：owner + dogs[]
+  if (json.owner && json.dogs) {
+    currentOwner = json.owner;
+    currentDogs  = json.dogs;
+    // 先填主人資料（姓名、電話、電郵）
+    fillOwner(json.owner);
+    // 顯示找到記錄
+    document.getElementById('foundName').textContent = json.owner.ownerName;
+    document.getElementById('foundDog').textContent  = '';
+    document.getElementById('foundMsg').classList.add('show');
+
+    if (json.dogs.length === 1) {
+      // 只有一隻狗，直接填入
+      selectDog(json.dogs[0]);
+    } else {
+      // 多隻狗，顯示選擇器
+      renderDogSelector(json.dogs);
+    }
+
+  } else if (json.data) {
+    // 舊格式相容
+    currentOwner = json.data;
+    currentDogs  = [json.data];
+    fillRecord(json.data);
+  }
+}
+
+// 填主人資料（鎖定）
+function fillOwner(owner) {
+  [['ownerName', owner.ownerName], ['whatsapp', owner.phone], ['email', owner.email || '']].forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (el && val) { el.value = val; el.classList.add('prefilled'); }
+    if (el && val) { el.value = val; el.classList.add('prefilled'); el.readOnly = true; }
   });
-  [['dogGender', d.gender], ['dogNeutered', d.neutered]].forEach(([id, val]) => {
+}
+
+// 渲染狗狗選擇卡片
+function renderDogSelector(dogs) {
+  const selector = document.getElementById('dogSelector');
+  const cards    = document.getElementById('dogCards');
+  cards.innerHTML = dogs.map((dog, idx) => `
+    <div class="dog-card" onclick="selectDog(currentDogs[${idx}], this)">
+      <div class="dog-card-avatar">🐶</div>
+      <div>
+        <div class="dog-card-name">${dog.dogName || '未命名'}</div>
+        <div class="dog-card-breed">${dog.breed || ''}</div>
+      </div>
+    </div>`).join('');
+  selector.classList.add('show');
+}
+
+// 選擇狗狗後填入表單
+function selectDog(dog, cardEl) {
+  // 更新選中卡片樣式
+  document.querySelectorAll('.dog-card').forEach(c => c.classList.remove('selected'));
+  if (cardEl) cardEl.classList.add('selected');
+
+  // 填狗狗資料（可編輯）
+  [['dogName', dog.dogName], ['dogBreed', dog.breed || ''],
+   ['dogWeight', dog.weight || ''], ['dogDob', dog.dob || '']].forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (el && val) { el.value = val; el.classList.add('prefilled'); }
+    if (el) { el.value = val || ''; el.classList.add('prefilled'); el.readOnly = false; }
+  });
+  [['dogGender', dog.gender], ['dogNeutered', dog.neutered]].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) { el.value = val; }
   });
   // 健康狀況
-  if (d.health != null) {
-    const hasHealth = d.health && d.health !== '沒有' && d.health !== 'no';
+  if (dog.health != null) {
+    const hasHealth = dog.health && dog.health !== '沒有' && dog.health !== 'no';
     const sel = document.getElementById('dogHealthSel');
-    sel.value = hasHealth ? 'yes' : 'no'; sel.classList.add('prefilled');
+    if (sel) { sel.value = hasHealth ? 'yes' : 'no'; }
     const det = document.getElementById('healthDetailField');
-    det.style.display = hasHealth ? 'block' : 'none';
-    if (hasHealth) { const t = document.getElementById('dogHealthText'); t.value = d.health; t.classList.add('prefilled'); }
+    if (det) det.style.display = hasHealth ? 'block' : 'none';
+    if (hasHealth) {
+      const t = document.getElementById('dogHealthText');
+      if (t) t.value = dog.health;
+    }
   }
-  if (d.courseLevel) { document.getElementById('courseLevel').value = d.courseLevel; applyCourseFilter(); }
+  if (dog.courseLevel) { document.getElementById('courseLevel').value = dog.courseLevel; applyCourseFilter(); }
+
+  // 更新找到記錄顯示
+  document.getElementById('foundDog').textContent = dog.dogName;
+  document.getElementById('returning-badge').style.display = 'block';
+
+  // 顯示課堂追蹤
+  renderPackages(dog);
+  lookupActive = true;
+}
+
+function fillRecord(d) {
+  fillOwner(d);
+  selectDog(d, null);
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
@@ -721,10 +815,14 @@ function fillRecord(d) {
 }
 
 function clearLookup() {
+  currentOwner = null;
+  currentDogs  = [];
   document.getElementById('lookupPhone').value = '';
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
   document.getElementById('returning-badge').style.display = 'none';
+  document.getElementById('dogSelector').classList.remove('show');
+  document.getElementById('dogCards').innerHTML = '';
   const pw = document.getElementById('pkgWrap');
   pw.classList.remove('show');
   document.getElementById('pkgList').innerHTML = '';
@@ -850,16 +948,14 @@ function renderMonthly(p) {
 function renderBooked(booked) {
   if (!Array.isArray(booked) || !booked.length) return '';
   const MON = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-  const DAYS = ['日','一','二','三','四','五','六'];
   const today = new Date(); today.setHours(0,0,0,0);
   const rows = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
     const dt = new Date(b.date);
     const past = dt < today;
-    const dayLabel = '星期' + DAYS[dt.getDay()];
     return `<div class="booked-row">
       <div class="booked-date"><b>${dt.getDate()}</b><span>${MON[dt.getMonth()]}</span></div>
       <div class="booked-info">
-        <div class="booked-title">${dayLabel}</div>
+        <div class="booked-title">${b.title || '課堂'}</div>
       </div>
       <div class="booked-pill${past ? ' past' : ''}">${past ? '已完成' : '已預約'}</div>
     </div>`;
