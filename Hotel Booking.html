@@ -71,6 +71,18 @@
 .modal-wa{display:flex;gap:9px;font-size:12px;font-weight:600;color:var(--pw-ink-mute);line-height:1.55;}
 .modal-wa .ico{color:var(--pw-gold-deep);width:16px;height:16px;flex-shrink:0;margin-top:1px;}
 .modal-card .btn-primary{margin-top:2px;}
+
+/* ── 多狗選擇器 ─────────────────────────────────────── */
+.dog-selector{margin-top:10px;display:none;}
+.dog-selector.show{display:block;}
+.dog-selector-label{font-size:11px;font-weight:800;color:var(--pw-ink-mute);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.dog-cards{display:flex;flex-wrap:wrap;gap:8px;}
+.dog-card{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--pw-cream-deep);background:var(--pw-paper);cursor:pointer;transition:border-color .15s,box-shadow .15s;min-width:130px;}
+.dog-card:hover{border-color:var(--pw-navy);box-shadow:0 0 0 2px rgba(22,42,74,.08);}
+.dog-card.selected{border-color:var(--pw-navy);background:var(--pw-navy-soft,#eef1f7);box-shadow:0 0 0 2px rgba(22,42,74,.13);}
+.dog-card-avatar{width:34px;height:34px;border-radius:50%;background:var(--pw-gold-soft,#fdf6e3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.dog-card-name{font-size:13px;font-weight:800;color:var(--pw-ink);}
+.dog-card-breed{font-size:11px;color:var(--pw-ink-mute);margin-top:1px;}
 </style>
 </head>
 <body>
@@ -120,6 +132,11 @@
       <button class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
     </div>
     <div class="lookup-result" id="lookupResult"></div>
+    <!-- ★ 多狗選擇器 -->
+    <div class="dog-selector" id="dogSelector">
+      <div class="dog-selector-label">請選擇預約的狗狗</div>
+      <div class="dog-cards" id="dogCards"></div>
+    </div>
   </div>
 
   <!-- 套票資料卡 -->
@@ -427,7 +444,7 @@ let isReturning = false;
 // ══ 示範模式 ══════════════════════════════════════════════════════
 // DEMO_MODE = true 時，搜尋任何 8 位電話即會載入以下示範舊客記錄
 // （包括套票餘額），方便預覽功能。正式上線請改為 false。
-const DEMO_MODE = false;
+const DEMO_MODE = true;
 const DEMO_RECORD = {
   ownerName: '陳大文', phone: '90000001', email: 'taaiman@gmail.com',
   dogName: '肥髀', breed: '松鼠犬', weight: '4.1',
@@ -450,8 +467,12 @@ function getDateTime(dateId, timeId) {
 }
 
 // ══ CUSTOMER LOOKUP ══════════════════════════════════════════════
+// ★ 儲存當前查詢到的狗狗資料
+let hotelCurrentOwner = null;
+let hotelCurrentDogs  = [];
+
 async function doLookup() {
-  const phone = document.getElementById('lookupPhone').value.trim();
+  const phone    = document.getElementById('lookupPhone').value.trim();
   const resultEl = document.getElementById('lookupResult');
   if (!/^\d{8}$/.test(phone)) {
     resultEl.className = 'lookup-result notfound';
@@ -460,31 +481,137 @@ async function doLookup() {
   }
   resultEl.className = 'lookup-result loading';
   resultEl.innerHTML = '<svg class="ico"><use href="#ico-search"/></svg>搜尋中…';
-  // 示範模式：直接載入示範記錄，不查詢後台
+  document.getElementById('dogSelector').classList.remove('show');
+
   if (DEMO_MODE) {
     const d = { ...DEMO_RECORD, phone };
-    prefillReturning(d);
-    resultEl.className = 'lookup-result found';
-    resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${d.ownerName} / ${d.dogName}`;
+    handleHotelLookup({ found: true, data: d }, resultEl);
     return;
   }
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
-    if (json.found && json.data) {
-      prefillReturning(json.data);
-      resultEl.className = 'lookup-result found';
-      resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.data.ownerName} / ${json.data.dogName}`;
-    } else {
-      clearPrefill();
-      resultEl.className = 'lookup-result notfound';
-      resultEl.innerHTML = '<svg class="ico"><use href="#ico-info"/></svg>找不到記錄，請繼續填寫新客資料';
-    }
+    handleHotelLookup(json, resultEl);
   } catch(e) {
     clearPrefill();
     resultEl.className = 'lookup-result notfound';
     resultEl.innerHTML = '<svg class="ico"><use href="#ico-alert"/></svg>查詢失敗，請繼續填寫或聯絡前台協助';
   }
+}
+
+function handleHotelLookup(json, resultEl) {
+  if (!json.found) {
+    clearPrefill();
+    resultEl.className = 'lookup-result notfound';
+    resultEl.innerHTML = '<svg class="ico"><use href="#ico-info"/></svg>找不到記錄，請繼續填寫新客資料';
+    return;
+  }
+
+  // 新格式：owner + dogs[]
+  if (json.owner && json.dogs) {
+    hotelCurrentOwner = json.owner;
+    hotelCurrentDogs  = json.dogs;
+    // 填主人資料（鎖定）
+    hotelFillOwner(json.owner);
+    // 顯示套票（跟主人掛鈎）
+    showHotelPkg(json.owner);
+
+    if (json.dogs.length === 1) {
+      hotelSelectDog(json.dogs[0], null);
+      resultEl.className = 'lookup-result found';
+      resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.owner.ownerName} / ${json.dogs[0].dogName}`;
+    } else {
+      hotelRenderDogSelector(json.dogs);
+      resultEl.className = 'lookup-result found';
+      resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.owner.ownerName}，請選擇毛孩`;
+    }
+
+  } else if (json.data) {
+    // 舊格式相容
+    prefillReturning(json.data);
+    resultEl.className = 'lookup-result found';
+    resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.data.ownerName} / ${json.data.dogName}`;
+  }
+}
+
+function hotelFillOwner(owner) {
+  [['f-owner', owner.ownerName], ['f-phone', owner.phone], ['f-email', owner.email || '']].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) { el.value = val; el.readOnly = true; el.classList.add('prefilled'); }
+  });
+  isReturning = true;
+  document.getElementById('returning-badge').style.display = 'block';
+}
+
+function showHotelPkg(owner) {
+  const pkgCard = document.getElementById('pkgInfoCard');
+  if (owner.pkgTotal && Number(owner.pkgTotal) > 0) {
+    const bal   = Number(owner.pkgBalance) || 0;
+    const total = Number(owner.pkgTotal);
+    const usedPct = Math.round(((total - bal) / total) * 100);
+    let expiry = owner.pkgExpiry ? new Date(owner.pkgExpiry) : null;
+    if (owner.pkgPurchase) {
+      const yrs = Number(owner.pkgValidYears ?? 2);
+      expiry = new Date(owner.pkgPurchase);
+      expiry.setFullYear(expiry.getFullYear() + yrs);
+    }
+    const expired = expiry && expiry < new Date();
+    const exStr   = expiry ? expiry.toLocaleDateString('zh-HK', {year:'numeric',month:'short',day:'numeric'}) : '不適用';
+    const balEl   = document.getElementById('pkgBalance');
+    balEl.textContent = '$' + bal.toLocaleString();
+    balEl.className   = 'pkg-row-val balance' + (bal < 500 ? ' warn' : '');
+    document.getElementById('pkgType').textContent  = owner.pkgType  || '套票';
+    document.getElementById('pkgTotal').textContent = '$' + total.toLocaleString();
+    document.getElementById('pkgExpiry').textContent  = exStr;
+    document.getElementById('pkgExpiry').className    = 'pkg-row-val expiry' + (expired ? ' warn' : '');
+    document.getElementById('pkgUsedPct').textContent = usedPct + '% 已用';
+    document.getElementById('pkgBarFill').style.width = usedPct + '%';
+    const badge = document.getElementById('pkgBadge');
+    if (expired)      { badge.textContent='已過期';   badge.style.background='var(--pw-danger-bg)'; badge.style.color='var(--pw-danger)'; }
+    else if (bal<500) { badge.textContent='餘額不足'; badge.style.background='var(--pw-warn-bg)';   badge.style.color='var(--pw-warn)'; }
+    else              { badge.textContent='有效';     badge.style.background='var(--pw-success-bg)';badge.style.color='var(--pw-success)'; }
+    pkgCard.classList.add('show');
+  } else {
+    pkgCard.classList.remove('show');
+  }
+}
+
+function hotelRenderDogSelector(dogs) {
+  const selector = document.getElementById('dogSelector');
+  const cards    = document.getElementById('dogCards');
+  cards.innerHTML = dogs.map((dog, idx) => `
+    <div class="dog-card" onclick="hotelSelectDog(hotelCurrentDogs[${idx}], this)">
+      <div class="dog-card-avatar">🐶</div>
+      <div>
+        <div class="dog-card-name">${dog.dogName || '未命名'}</div>
+        <div class="dog-card-breed">${dog.breed || ''}</div>
+      </div>
+    </div>`).join('');
+  selector.classList.add('show');
+}
+
+function hotelSelectDog(dog, cardEl) {
+  document.querySelectorAll('.dog-card').forEach(c => c.classList.remove('selected'));
+  if (cardEl) cardEl.classList.add('selected');
+
+  // 填狗狗資料（部分鎖定，部分可編輯）
+  [['f-dogname', dog.dogName], ['f-breed', dog.breed]].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) { el.value = val || ''; el.readOnly = true; el.classList.add('prefilled'); }
+  });
+  const wEl = document.getElementById('f-weight'); if (wEl) { wEl.value = dog.weight || ''; }
+  const gEl = document.getElementById('f-gender'); if (gEl && dog.gender) gEl.value = dog.gender;
+  const nEl = document.getElementById('f-neutered'); if (nEl && dog.neutered) nEl.value = dog.neutered;
+  document.getElementById('dob-field').style.display = 'none';
+  document.getElementById('health-sel-wrap').style.display = 'none';
+  document.getElementById('f-health-detail').style.display = 'none';
+  document.getElementById('f-health-readonly').style.display = 'block';
+  document.getElementById('f-health-ro').value = dog.health || '沒有';
+  const dietEl = document.getElementById('f-diet'); if (dietEl) { dietEl.value = dog.diet || ''; dietEl.readOnly = false; }
+  const medsEl = document.getElementById('f-meds'); if (medsEl) { medsEl.value = dog.meds || ''; medsEl.readOnly = false; }
+  const notesEl= document.getElementById('f-notes'); if (notesEl) { notesEl.value = dog.notes || ''; notesEl.readOnly = false; }
+  document.getElementById('remarks-field').style.display = 'none';
+  calcForm();
 }
 
 function prefillReturning(d) {
@@ -543,19 +670,25 @@ function prefillReturning(d) {
 }
 
 function clearPrefill() {
-  isReturning=false;
-  ['f-owner','f-phone','f-email','f-dogname','f-breed','f-weight'].forEach(id=>{
-    const el=document.getElementById(id); if(el){el.readOnly=false;el.classList.remove('prefilled');}
+  isReturning = false;
+  hotelCurrentOwner = null;
+  hotelCurrentDogs  = [];
+  ['f-owner','f-phone','f-email','f-dogname','f-breed'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.readOnly=false;el.classList.remove('prefilled');}
   });
+  const wEl=document.getElementById('f-weight'); if(wEl){wEl.value='';wEl.readOnly=false;}
   document.getElementById('dob-field').style.display='block';
   document.getElementById('health-sel-wrap').style.display='block';
   document.getElementById('f-health-readonly').style.display='none';
   ['f-diet','f-meds','f-notes'].forEach(id=>{
-    const el=document.getElementById(id); if(el){el.readOnly=false;el.classList.remove('prefilled');}
+    const el=document.getElementById(id); if(el){el.value='';el.readOnly=false;el.classList.remove('prefilled');}
   });
   document.getElementById('remarks-field').style.display='none';
   document.getElementById('returning-badge').style.display='none';
   document.getElementById('pkgInfoCard').classList.remove('show');
+  document.getElementById('dogSelector').classList.remove('show');
+  document.getElementById('dogCards').innerHTML='';
 }
 
 // ══ UI HELPERS ═══════════════════════════════════════════════════
