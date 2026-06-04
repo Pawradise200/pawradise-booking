@@ -85,6 +85,13 @@
 
 /* Class list */
 .class-list{display:flex;flex-direction:column;gap:8px;}
+.cls-empty{display:flex;align-items:center;gap:9px;padding:15px 16px;border:var(--pw-stroke) dashed var(--pw-cream-deep);
+  border-radius:var(--pw-r-md);background:var(--pw-cream-soft);font-size:12.5px;font-weight:700;
+  color:var(--pw-ink-mute);line-height:1.5;}
+.cls-empty .ico{width:16px;height:16px;color:var(--pw-ink-ghost);flex-shrink:0;stroke-width:2.1;}
+.cls-scope{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:9px 13px;border-radius:var(--pw-r-sm);
+  background:var(--pw-info-bg);color:var(--pw-info);font-size:12px;font-weight:800;line-height:1.45;}
+.cls-scope .ico{width:15px;height:15px;flex-shrink:0;stroke-width:2.1;}
 .cls-opt{position:relative;}
 .cls-opt input[type=checkbox]{position:absolute;opacity:0;pointer-events:none;}
 .cls-card{display:flex;align-items:center;gap:12px;padding:12px 14px;
@@ -297,9 +304,44 @@
           <div class="err-msg" id="e-breed">請輸入品種</div>
         </div>
       </div>
+      <div class="r3">
+        <div class="field">
+          <label>體重 (kg) <span class="req">*</span></label>
+          <input type="number" id="dogWeight" placeholder="例：8.5" step="0.1" min="0">
+          <div class="err-msg" id="e-weight">請輸入體重</div>
+        </div>
+        <div class="field">
+          <label>性別 <span class="req">*</span></label>
+          <select id="dogGender"><option value="">選擇</option><option>男（M）</option><option>女（F）</option></select>
+          <div class="err-msg" id="e-gender">請選擇性別</div>
+        </div>
+        <div class="field">
+          <label>已絕育 <span class="req">*</span></label>
+          <select id="dogNeutered"><option value="">選擇</option><option>是</option><option>否</option></select>
+          <div class="err-msg" id="e-neutered">請選擇</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>出生日期 <span class="req">*</span></label>
+        <input type="date" id="dogDob">
+        <div class="hint">用作分組及課堂安排參考。</div>
+        <div class="err-msg" id="e-dob">請選擇出生日期</div>
+      </div>
+      <div class="field">
+        <label>健康狀況 <span class="req">*</span></label>
+        <select id="dogHealthSel" onchange="document.getElementById('healthDetailField').style.display=this.value==='yes'?'block':'none'">
+          <option value="">請選擇</option><option value="no">沒有</option><option value="yes">有</option>
+        </select>
+        <div class="err-msg" id="e-health">請選擇健康狀況</div>
+      </div>
+      <div class="field" id="healthDetailField" style="display:none;">
+        <label>請說明健康狀況 <span class="req">*</span></label>
+        <textarea id="dogHealthText" placeholder="例：對雞肉敏感、每天需服心臟藥一粒"></textarea>
+        <div class="err-msg" id="e-health-text">請說明健康狀況</div>
+      </div>
       <div class="field">
         <label>課程級別 <span class="req">*</span></label>
-        <select id="courseLevel">
+        <select id="courseLevel" onchange="applyCourseFilter()">
           <option value="">請選擇</option>
           <option value="S1">S1 狗狗學期班</option>
           <option value="S2">S2 情緒重建系統小組班</option>
@@ -502,6 +544,7 @@ let lookupActive = false;
 const DEMO_MODE = false;
 const DEMO_BASE = {
   ownerName: '陳大文', email: 'wangwang@email.com', dogName: '旺旺', breed: '柴犬',
+  weight: '8.5', gender: '男（M）', neutered: '是', dob: '2024-03-12', health: '沒有',
 };
 const DEMO_TERM = {
   ...DEMO_BASE, courseLevel: 'S1',
@@ -533,8 +576,38 @@ function demoRecordFor(phone) {
 }
 
 // ══ BUILD UI ═════════════════════════════════════════════════════
-function buildClasses() {
-  document.getElementById('classList').innerHTML = CFG.classes.map(c => {
+// 每個課程級別對應可報讀的課堂類型
+const LEVEL_TYPES = {
+  'S1': ['S1'], 'S2': ['S2'], 'S1+S2': ['S1','S2'],
+  'Light Explorer': ['S1'], 'Active Explorer': ['S1'], 'Ultimate Explorer': ['S1'],
+};
+const LEVEL_SCOPE = {
+  'S1':'此級別只可報讀 S1 狗狗學期班課堂', 'S2':'此級別只可報讀 S2 情緒重建小組班課堂',
+  'S1+S2':'此組合可報讀 S1 及 S2 課堂',
+  'Light Explorer':'月費計劃可報讀 S1 課堂', 'Active Explorer':'月費計劃可報讀 S1 課堂',
+  'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
+};
+
+// 依所選課程級別重建可選課堂列表
+function applyCourseFilter() {
+  const lvl = document.getElementById('courseLevel').value;
+  buildClasses(LEVEL_TYPES[lvl] || null, lvl);
+  onClassChange();
+}
+
+function buildClasses(allowedTypes, level) {
+  const listEl = document.getElementById('classList');
+  if (!allowedTypes) {
+    listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>請先於上方選擇「課程級別」，系統會顯示對應的課堂日期。</div>';
+    return;
+  }
+  const classes = CFG.classes.filter(c => allowedTypes.includes(c.type));
+  if (!classes.length) {
+    listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>暫時未有對應此級別的課堂，請 WhatsApp 9459 6420 查詢。</div>';
+    return;
+  }
+  const scope = LEVEL_SCOPE[level] ? `<div class="cls-scope"><svg class="ico"><use href="#ico-info"/></svg>${LEVEL_SCOPE[level]}</div>` : '';
+  listEl.innerHTML = scope + classes.map(c => {
     const r = Math.max(0, c.max - c.enrolled);
     const st = r <= 0 ? 'full' : r <= 3 ? 'few' : 'open';
     const full = st === 'full';
@@ -618,12 +691,27 @@ async function doLookup() {
 }
 
 function fillRecord(d) {
+  // 預填資料但保持可編輯，客戶可手動更改
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
-   ['dogName', d.dogName], ['dogBreed', d.breed || '']].forEach(([id, val]) => {
+   ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
+   ['dogDob', d.dob || '']].forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (el && val) { el.value = val; el.classList.add('prefilled'); el.readOnly = true; }
+    if (el && val) { el.value = val; el.classList.add('prefilled'); }
   });
-  if (d.courseLevel) document.getElementById('courseLevel').value = d.courseLevel;
+  [['dogGender', d.gender], ['dogNeutered', d.neutered]].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) { el.value = val; el.classList.add('prefilled'); }
+  });
+  // 健康狀況
+  if (d.health != null) {
+    const hasHealth = d.health && d.health !== '沒有' && d.health !== 'no';
+    const sel = document.getElementById('dogHealthSel');
+    sel.value = hasHealth ? 'yes' : 'no'; sel.classList.add('prefilled');
+    const det = document.getElementById('healthDetailField');
+    det.style.display = hasHealth ? 'block' : 'none';
+    if (hasHealth) { const t = document.getElementById('dogHealthText'); t.value = d.health; t.classList.add('prefilled'); }
+  }
+  if (d.courseLevel) { document.getElementById('courseLevel').value = d.courseLevel; applyCourseFilter(); }
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
@@ -640,11 +728,17 @@ function clearLookup() {
   const pw = document.getElementById('pkgWrap');
   pw.classList.remove('show');
   document.getElementById('pkgList').innerHTML = '';
-  ['ownerName','whatsapp','email','dogName','dogBreed'].forEach(id => {
+  ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('prefilled'); el.readOnly = false; }
   });
+  ['dogGender','dogNeutered','dogHealthSel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('prefilled'); }
+  });
+  document.getElementById('healthDetailField').style.display = 'none';
   document.getElementById('courseLevel').value = '';
+  applyCourseFilter();
   lookupActive = false;
 }
 
@@ -807,6 +901,11 @@ function validate() {
   const e = document.getElementById('email').value.trim();
   const d = document.getElementById('dogName').value.trim();
   const b = document.getElementById('dogBreed').value.trim();
+  const wt = document.getElementById('dogWeight').value.trim();
+  const gd = document.getElementById('dogGender').value;
+  const nu = document.getElementById('dogNeutered').value;
+  const db = document.getElementById('dogDob').value;
+  const hs = document.getElementById('dogHealthSel').value;
   const l = document.getElementById('courseLevel').value;
   const c = [...document.querySelectorAll('input[name=cls]:checked')];
   let ok = true;
@@ -815,6 +914,12 @@ function validate() {
   ok = vf('email',      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),    'e-email') && ok;
   ok = vf('dogName',    !d,                                         'e-dog')   && ok;
   ok = vf('dogBreed',   !b,                                         'e-breed') && ok;
+  ok = vf('dogWeight',  !wt || Number(wt) <= 0,                    'e-weight') && ok;
+  ok = vf('dogGender',  !gd,                                        'e-gender') && ok;
+  ok = vf('dogNeutered',!nu,                                        'e-neutered') && ok;
+  ok = vf('dogDob',     !db,                                        'e-dob') && ok;
+  ok = vf('dogHealthSel', !hs,                                      'e-health') && ok;
+  if (hs === 'yes') ok = vf('dogHealthText', !document.getElementById('dogHealthText').value.trim(), 'e-health-text') && ok;
   ok = vf('courseLevel',!l,                                         'e-level') && ok;
   document.getElementById('e-classes').classList.toggle('show', !c.length);
   if (!c.length) ok = false;
@@ -838,6 +943,12 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
     email:        document.getElementById('email').value.trim(),
     dogName:      document.getElementById('dogName').value.trim(),
     dogBreed:     document.getElementById('dogBreed').value.trim(),
+    dogWeight:    document.getElementById('dogWeight').value.trim(),
+    dogGender:    document.getElementById('dogGender').value,
+    dogNeutered:  document.getElementById('dogNeutered').value,
+    dogDob:       document.getElementById('dogDob').value,
+    dogHealth:    document.getElementById('dogHealthSel').value === 'yes'
+                    ? document.getElementById('dogHealthText').value.trim() : '沒有',
     courseLevel:  document.getElementById('courseLevel').value,
     classes:      [...document.querySelectorAll('input[name=cls]:checked')].map(c => c.value).join(' | '),
     arrivalTime:  document.querySelector('input[name=arr]:checked')?.value || '',
@@ -871,8 +982,15 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
 });
 
 // ══ INIT ══════════════════════════════════════════════════════════
-buildClasses();
+applyCourseFilter();
 buildTimes();
+// 客戶手動修改任何預填欄位時，移除「已預填」高亮
+['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', e => e.target.classList.remove('prefilled'));
+});
+['dogGender','dogNeutered','dogHealthSel'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', e => e.target.classList.remove('prefilled'));
+});
 </script>
 </body>
 </html>
