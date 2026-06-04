@@ -139,7 +139,7 @@
       <div class="pkg-bar-label"><span>已使用</span><span id="pkgUsedPct">—</span></div>
       <div class="pkg-bar-track"><div class="pkg-bar-fill" id="pkgBarFill" style="width:0%;"></div></div>
     </div>
-    <div class="pkg-note">套票餘額將於結帳時由前台確認扣除。如有查詢請 WhatsApp 9459 6420。</div>
+    <div class="pkg-note">套票餘額將於成功預約留位後由前台確認扣除，如有疑問請 WhatsApp 9459 6420 向前台同事查詢。</div>
   </div>
 
   <!-- ② 主人資料 -->
@@ -424,6 +424,20 @@ const GROOMING = {
 };
 let isReturning = false;
 
+// ══ 示範模式 ══════════════════════════════════════════════════════
+// DEMO_MODE = true 時，搜尋任何 8 位電話即會載入以下示範舊客記錄
+// （包括套票餘額），方便預覽功能。正式上線請改為 false。
+const DEMO_MODE = false;
+const DEMO_RECORD = {
+  ownerName: '陳大文', phone: '90000001', email: 'taaiman@gmail.com',
+  dogName: '肥髀', breed: '松鼠犬', weight: '4.1',
+  gender: '男（M）', neutered: '是',
+  health: '沒有', diet: '早晚各一份狗糧約 50g，喜歡雞肉零食',
+  meds: '', notes: '怕陌生人，不可與大型犬同房',
+  pkgType: '$5,000 儲值套票',
+  pkgTotal: 5000, pkgBalance: 1800, pkgPurchase: '2025-10-01', pkgValidYears: 2,
+};
+
 function getSizeKey(w){ if(!w||w<=0)return null; if(w<8)return'small'; if(w<18)return'medium'; if(w<28)return'large'; return'giant'; }
 function getSizeLabel(k){ return{small:'Small <8kg',medium:'Medium 8–18kg',large:'Large 18–28kg',giant:'Giant ≥28kg'}[k]||''; }
 function getSizeChipClass(k){ return{small:'chip-s',medium:'chip-m',large:'chip-l',giant:'chip-g'}[k]||''; }
@@ -446,6 +460,14 @@ async function doLookup() {
   }
   resultEl.className = 'lookup-result loading';
   resultEl.innerHTML = '<svg class="ico"><use href="#ico-search"/></svg>搜尋中…';
+  // 示範模式：直接載入示範記錄，不查詢後台
+  if (DEMO_MODE) {
+    const d = { ...DEMO_RECORD, phone };
+    prefillReturning(d);
+    resultEl.className = 'lookup-result found';
+    resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${d.ownerName} / ${d.dogName}`;
+    return;
+  }
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
@@ -493,7 +515,13 @@ function prefillReturning(d) {
   if(d.pkgBalance!=null && Number(d.pkgTotal)>0){
     const bal=Number(d.pkgBalance), total=Number(d.pkgTotal);
     const usedPct=Math.round(((total-bal)/total)*100);
-    const expiry=d.pkgExpiry?new Date(d.pkgExpiry):null;
+    // 有效期：如有購買日 pkgPurchase，按 pkgValidYears（預設 2 年）由購買日起計
+    let expiry=d.pkgExpiry?new Date(d.pkgExpiry):null;
+    if(d.pkgPurchase){
+      const yrs=Number(d.pkgValidYears??2);
+      expiry=new Date(d.pkgPurchase);
+      expiry.setFullYear(expiry.getFullYear()+yrs);
+    }
     const expired=expiry&&expiry<new Date();
     const exStr=expiry?expiry.toLocaleDateString('zh-HK',{year:'numeric',month:'short',day:'numeric'}):'不適用';
     const balEl=document.getElementById('pkgBalance');
@@ -607,7 +635,6 @@ function calcForm() {
     }
   }
   const grand=oTotal+dcFee+addons;
-  window._grandTotal = grand;  // 讓 submitForm 可以讀取
   html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
   card.innerHTML=html;
   ps.style.display='block';
@@ -658,21 +685,11 @@ async function submitForm() {
     transport:document.querySelector('input[name=f-tr]:checked')?.value||'none',
     trDistrict:document.getElementById('f-tr-district')?.value||'',
     trAddress:document.getElementById('f-tr-addr')?.value||'',
-    totalAmount: window._grandTotal || 0,
     status:'待審批',
   };
 
   try {
     await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-
-    // Notion CRM 同步（背景執行，不影響預約流程）
-    fetch('https://script.google.com/macros/s/AKfycbzO0L2UM3BcnsYhKaNFz2gcJWqoCgrxtK-ZBT_gKNkyHvVAutyTSfll4pWfyc-kXRVT7g/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    }).catch(() => {});
-
     res.className='submit-result success';
     res.textContent='預約申請已成功提交！請參閱下方提示，前台同事將於 24 小時內透過 WhatsApp 及電郵確認。';
     btn.textContent='已提交';
