@@ -850,14 +850,16 @@ function renderMonthly(p) {
 function renderBooked(booked) {
   if (!Array.isArray(booked) || !booked.length) return '';
   const MON = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const DAYS = ['日','一','二','三','四','五','六'];
   const today = new Date(); today.setHours(0,0,0,0);
   const rows = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
     const dt = new Date(b.date);
     const past = dt < today;
+    const dayLabel = '星期' + DAYS[dt.getDay()];
     return `<div class="booked-row">
       <div class="booked-date"><b>${dt.getDate()}</b><span>${MON[dt.getMonth()]}</span></div>
       <div class="booked-info">
-        <div class="booked-title">${b.title || '課堂'}</div>
+        <div class="booked-title">${dayLabel}</div>
       </div>
       <div class="booked-pill${past ? ' past' : ''}">${past ? '已完成' : '已預約'}</div>
     </div>`;
