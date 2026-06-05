@@ -27,6 +27,18 @@
   padding:10px 13px;font-size:13px;font-weight:700;color:var(--pw-warn);margin-top:11px;}
 .notfound-msg.show{display:block;}
 
+/* 示範模式提示 */
+.demo-hint{margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:7px;
+  background:var(--pw-cream-soft);border:1.5px dashed var(--pw-stroke);border-radius:var(--pw-r-md);padding:9px 11px;}
+.demo-hint-lbl{font-size:10.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--pw-ink-ghost);display:flex;align-items:center;gap:5px;margin-right:2px;}
+.demo-chip{background:var(--pw-paper);border:1.5px solid var(--pw-stroke);border-radius:var(--pw-r-pill);
+  padding:4px 11px;font-size:12px;font-weight:800;color:var(--pw-ink-soft);cursor:pointer;
+  font-family:var(--pw-font-sans);transition:all .18s;display:flex;align-items:center;gap:5px;}
+.demo-chip:hover{background:var(--pw-navy);color:#fff;border-color:var(--pw-navy);}
+.demo-chip b{font-weight:900;color:var(--pw-gold-deep);}
+.demo-chip:hover b{color:var(--pw-gold);}
+
 /* 套票 / 堂數追蹤 */
 .pkg-wrap{display:none;flex-direction:column;gap:10px;margin-top:12px;}
 .pkg-wrap.show{display:flex;}
@@ -200,17 +212,129 @@
 @media(max-width:480px){.time-grid{grid-template-columns:1fr 1fr;}.transport-opts{grid-template-columns:1fr;}}
 @media(max-width:380px){.time-grid{grid-template-columns:repeat(2,1fr);}}
 
-/* ── 多狗選擇器 ─────────────────────────────────────── */
-.dog-selector{margin-top:10px;display:none;}
-.dog-selector.show{display:block;}
-.dog-selector-label{font-size:11px;font-weight:800;color:var(--pw-ink-mute);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
-.dog-cards{display:flex;flex-wrap:wrap;gap:8px;}
-.dog-card{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--pw-cream-deep);background:var(--pw-paper);cursor:pointer;transition:border-color .15s,box-shadow .15s;min-width:130px;}
-.dog-card:hover{border-color:var(--pw-navy);box-shadow:0 0 0 2px rgba(22,42,74,.08);}
-.dog-card.selected{border-color:var(--pw-navy);background:var(--pw-navy-soft,#eef1f7);box-shadow:0 0 0 2px rgba(22,42,74,.13);}
-.dog-card-avatar{width:34px;height:34px;border-radius:50%;background:var(--pw-gold-soft,#fdf6e3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.dog-card-name{font-size:13px;font-weight:800;color:var(--pw-ink);}
-.dog-card-breed{font-size:11px;color:var(--pw-ink-mute);margin-top:1px;}
+/* ═════ 社交成長階梯 · 分級 ═════ */
+.grade-wrap{display:none;margin-top:12px;}
+.grade-wrap.show{display:block;}
+.gr-card{--gsoft:color-mix(in srgb,var(--g) 11%,#fff);--gline:color-mix(in srgb,var(--g) 26%,#fff);
+  border:var(--pw-stroke) solid var(--gline);border-radius:var(--pw-r-lg);background:var(--gsoft);overflow:hidden;}
+.gr-head{padding:15px 16px 0;}
+.gr-eyebrow{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:900;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--g);}
+.gr-eyebrow .ico{width:14px;height:14px;color:var(--g);stroke-width:2.2;}
+.gr-title{font-size:16px;font-weight:900;color:var(--pw-ink);line-height:1.35;margin-top:6px;}
+.gr-title b{color:var(--g);}
+.gr-body{padding:4px 16px 16px;}
+.gr-desc{font-size:12.5px;font-weight:600;color:var(--pw-ink-soft);line-height:1.65;}
+.gr-desc.pad{padding:0 16px;margin-top:10px;}
+/* horizontal rail */
+.gr-rail{position:relative;display:grid;grid-template-columns:repeat(5,1fr);padding:32px 6px 12px;}
+.gr-track{position:absolute;left:10%;right:10%;top:60px;height:3px;background:var(--pw-cream-deep);border-radius:3px;}
+.gr-track-fill{height:100%;background:var(--g);border-radius:3px;transition:width .5s ease;}
+.gr-node{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.gr-thumb-box{height:60px;display:flex;align-items:center;justify-content:center;}
+.gr-thumb{width:42px;height:42px;border-radius:50%;background:#fff;border:2px solid var(--pw-cream-deep);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;transition:.2s;}
+.gr-thumb img{width:88%;height:88%;object-fit:contain;}
+.gr-node.future .gr-thumb img,.gr-node.goal .gr-thumb img{filter:grayscale(.55);opacity:.5;}
+.gr-node.done .gr-thumb{border-color:var(--gline);}
+.gr-node.done .gr-thumb img{opacity:.92;}
+.gr-node.goal .gr-thumb{border-color:var(--pw-gold);border-style:dashed;}
+.gr-node.current .gr-thumb{width:54px;height:54px;border-color:var(--g);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff),0 6px 16px color-mix(in srgb,var(--g) 32%,transparent);}
+.gr-glyph{font-size:11.5px;font-weight:900;color:var(--pw-ink-faint);}
+.gr-lbl{font-size:9.5px;font-weight:700;color:var(--pw-ink-faint);line-height:1.15;text-align:center;}
+.gr-node.done .gr-glyph{color:var(--pw-ink-mute);}
+.gr-node.current .gr-glyph{color:var(--g);font-size:13px;}
+.gr-node.current .gr-lbl{color:var(--g);font-weight:800;}
+.gr-node.goal .gr-glyph{color:var(--pw-gold-deep);}
+.gr-pin{position:absolute;top:-24px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:3;
+  background:var(--g);color:#fff;font-size:9px;font-weight:900;padding:3px 8px;border-radius:var(--pw-r-pill);
+  box-shadow:0 3px 9px color-mix(in srgb,var(--g) 45%,transparent);}
+.gr-pin::after{content:'';position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:var(--g);border-bottom:0;}
+/* status row */
+.gr-status{display:flex;gap:12px;align-items:center;background:#fff;border-radius:var(--pw-r-md);
+  border:var(--pw-stroke) solid var(--gline);padding:12px 13px;margin-top:4px;}
+.gr-status-dino{width:64px;height:64px;flex-shrink:0;border-radius:var(--pw-r-md);background:var(--gsoft);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.gr-status-dino img{width:118%;height:118%;object-fit:contain;}
+.gr-badge{display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.03em;background:var(--g);color:#fff;
+  padding:3px 9px;border-radius:var(--pw-r-pill);margin-bottom:6px;}
+.gr-status-txt .gr-desc{margin:0;}
+/* goal line */
+.gr-goal{display:flex;align-items:center;gap:8px;margin-top:11px;padding:10px 13px;border-radius:var(--pw-r-sm);
+  background:#fff;border:var(--pw-stroke) dashed var(--pw-gold);font-size:12.5px;font-weight:800;
+  color:var(--pw-gold-deep);line-height:1.4;}
+.gr-goal b{color:var(--pw-ink);}
+.gr-goal .gr-star{color:var(--pw-gold);flex-shrink:0;}
+.gr-goal.top{border-style:solid;color:var(--pw-success);border-color:var(--pw-success);}
+.gr-goal.top .gr-star{color:var(--pw-success);}
+/* attendance */
+.gr-attend{margin-top:11px;}
+.gr-attend-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;font-weight:700;
+  color:var(--pw-ink-mute);margin-bottom:6px;}
+.gr-attend-top b{font-size:13px;font-weight:900;color:var(--pw-ink);}
+.gr-attend-bar{height:7px;border-radius:999px;background:var(--pw-cream-deep);overflow:hidden;}
+.gr-attend-bar div{height:100%;border-radius:999px;background:var(--g);transition:width .5s ease;}
+/* next step */
+.gr-next{margin-top:12px;background:#fff;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--gline);padding:13px 14px;}
+.gr-next-t{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900;color:var(--pw-ink);line-height:1.4;}
+.gr-next-t b{color:var(--g);}
+.gr-next-t .ico{width:16px;height:16px;color:var(--g);}
+.gr-next-list{list-style:none;margin:9px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.gr-next-list li{display:flex;align-items:flex-start;gap:8px;font-size:12px;font-weight:700;color:var(--pw-ink-soft);line-height:1.45;}
+.gr-next-list li::before{content:'';flex-shrink:0;margin-top:5px;width:6px;height:6px;border-radius:50%;background:var(--g);}
+.gr-cta-row{display:flex;gap:8px;margin-top:12px;}
+.gr-cta{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+  padding:10px 10px;border-radius:var(--pw-r-md);font-family:var(--pw-font-sans);font-size:12.5px;font-weight:800;
+  cursor:pointer;border:none;transition:.15s;text-align:center;line-height:1.2;}
+.gr-cta.primary{background:var(--g);color:#fff;box-shadow:0 3px 12px color-mix(in srgb,var(--g) 32%,transparent);}
+.gr-cta.primary:hover{filter:brightness(.94);}
+.gr-cta.ghost{background:#fff;color:var(--g);border:var(--pw-stroke) solid var(--gline);}
+.gr-cta.ghost:hover{background:var(--gsoft);}
+.gr-next.role{border-color:var(--pw-gold);background:color-mix(in srgb,var(--pw-gold) 10%,#fff);}
+.gr-next.role .gr-next-t{color:var(--pw-gold-deep);}
+.gr-next.role .gr-star{color:var(--pw-gold-deep);}
+/* vertical variant */
+.gr-hero{display:flex;align-items:center;gap:14px;padding:15px 16px 4px;}
+.gr-hero-badge{width:78px;height:78px;flex-shrink:0;border-radius:50%;background:#fff;border:3px solid var(--g);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 18px color-mix(in srgb,var(--g) 28%,transparent);}
+.gr-hero-badge img{width:120%;height:120%;object-fit:contain;}
+.gr-hero-grade{font-family:var(--pw-font-display);font-weight:700;font-size:40px;color:var(--g);line-height:1;}
+.gr-hero-grade small{font-family:var(--pw-font-sans);font-size:15px;font-weight:900;color:var(--pw-ink);}
+.gr-hero-en{font-size:11px;font-weight:800;letter-spacing:.03em;color:var(--pw-ink-faint);margin-top:5px;}
+.gr-goal-ribbon{display:flex;align-items:center;justify-content:center;gap:7px;margin:12px 16px 0;padding:9px 13px;
+  border-radius:var(--pw-r-pill);background:#fff;border:var(--pw-stroke) dashed var(--pw-gold);font-size:12px;font-weight:800;
+  color:var(--pw-gold-deep);text-align:center;}
+.gr-goal-ribbon b{color:var(--pw-ink);}
+.gr-goal-ribbon .gr-star{color:var(--pw-gold);flex-shrink:0;}
+.gr-goal-ribbon.top{border-style:solid;border-color:var(--pw-success);color:var(--pw-success);}
+.gr-goal-ribbon.top .gr-star{color:var(--pw-success);}
+.gr-climb{display:flex;flex-direction:column;padding:14px 16px 4px;}
+.gr-rung{display:flex;align-items:center;gap:12px;padding:8px 8px;position:relative;border-radius:var(--pw-r-md);}
+.gr-rung::before{content:'';position:absolute;left:31px;top:-4px;height:calc(100% + 8px);width:3px;background:var(--pw-cream-deep);z-index:0;}
+.gr-rung:first-child::before{top:50%;height:50%;}
+.gr-rung:last-child::before{height:calc(50% + 4px);}
+.gr-rung.done::before,.gr-rung.current::before{background:var(--g);}
+.gr-rung.goal::before{background:repeating-linear-gradient(var(--pw-gold) 0 5px,transparent 5px 11px);}
+.rung-mark{position:relative;z-index:1;width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#fff;
+  border:2px solid var(--pw-cream-deep);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.rung-mark img{width:120%;height:120%;object-fit:contain;}
+.gr-rung.goal .rung-mark img{filter:grayscale(.5);opacity:.55;}
+.gr-rung.goal .rung-mark{border-color:var(--pw-gold);border-style:dashed;}
+.gr-rung.done .rung-mark{border-color:var(--gline);}
+.gr-rung.current{background:var(--gsoft);}
+.gr-rung.current .rung-mark{width:54px;height:54px;border-color:var(--g);box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff);}
+.rung-txt{flex:1;min-width:0;}
+.rung-glyph{font-size:13.5px;font-weight:900;color:var(--pw-ink);}
+.rung-en{font-size:10.5px;font-weight:700;color:var(--pw-ink-faint);text-transform:uppercase;letter-spacing:.03em;}
+.gr-rung.goal .rung-glyph{color:var(--pw-ink-mute);}
+.gr-rung.current .rung-glyph{color:var(--g);}
+.rung-here{flex-shrink:0;background:var(--g);color:#fff;font-size:9.5px;font-weight:900;padding:4px 9px;
+  border-radius:var(--pw-r-pill);box-shadow:0 3px 9px color-mix(in srgb,var(--g) 40%,transparent);}
+.rung-goal{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;background:color-mix(in srgb,var(--pw-gold) 18%,#fff);
+  color:var(--pw-gold-deep);font-size:9.5px;font-weight:900;padding:4px 9px;border-radius:var(--pw-r-pill);}
+.rung-goal .gr-star{color:var(--pw-gold);}
 </style>
 </head>
 <body>
@@ -263,21 +387,25 @@
       <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
       <button type="button" class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
     </div>
+    <div class="demo-hint">
+      <span class="demo-hint-lbl"><svg class="ico ico-sm" style="width:14px;height:14px;"><use href="#ico-search"/></svg>示範號碼 · 撳一下試各級</span>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345670')"><b>C</b>反應型</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345672')"><b>B</b>膽小型</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345674')"><b>B+</b>適應期</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345676')"><b>A</b>社交型</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345678')"><b>A+</b>穩定犬</button>
+    </div>
     <div class="found-msg" id="foundMsg">
       <svg class="ico"><use href="#ico-check-circle"/></svg>
       <span>找到記錄：<b id="foundName"></b> — <span id="foundDog"></span></span>
       <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
     </div>
     <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
-    <!-- ★ 多狗選擇器 -->
-    <div class="dog-selector" id="dogSelector">
-      <div class="dog-selector-label">請選擇預約的狗狗</div>
-      <div class="dog-cards" id="dogCards"></div>
-    </div>
     <div class="pkg-wrap" id="pkgWrap">
       <div class="pkg-wrap-title"><svg class="ico"><use href="#ico-cap"/></svg>課堂額度 · 出席追蹤</div>
       <div id="pkgList"></div>
     </div>
+    <div class="grade-wrap" id="gradeWrap"></div>
   </div>
 
   <form id="mainForm" novalidate>
@@ -588,8 +716,28 @@ const DEMO_MONTHLY = {
       ] },
   ],
 };
+// 示範：以電話尾數對應五個分級（C / B / B+ / A / A+），方便逐一預覽。
+// （正式上線改為 DEMO_MODE=false，由後台 lookup 回傳 grade / semesterUsed / semesterTotal）
+const DEMO_PERSONA = {
+  'C':  { dogName:'大力',  breed:'邊境牧羊犬', used:3 },
+  'B':  { dogName:'妹豬',  breed:'貴婦犬',     used:5 },
+  'B+': { dogName:'旺旺',  breed:'柴犬',       used:7 },
+  'A':  { dogName:'Lucky', breed:'威爾斯哥基', used:8 },
+  'A+': { dogName:'公主',  breed:'貴婦犬',     used:9 },
+};
 function demoRecordFor(phone) {
-  return (Number(phone.slice(-1)) % 2 === 0) ? DEMO_TERM : DEMO_MONTHLY;
+  const order = ['C','B','B+','A','A+'];
+  const g = order[Math.min(4, Math.floor(Number(phone.slice(-1)) / 2))];
+  const p = DEMO_PERSONA[g];
+  return {
+    ...DEMO_BASE, dogName:p.dogName, breed:p.breed, courseLevel:'S1', grade:g,
+    semesterUsed:p.used, semesterTotal:9,
+    packages:[{ name:'S1 狗狗學期班 · 本學期共 9 堂', total:9, used:p.used, firstClass:'2026-05-05', validMonths:3, remindFrom:8,
+      booked:[
+        { date:'2026-06-14', title:`第 ${p.used + 1} 堂` },
+        { date:'2026-06-21', title:`第 ${p.used + 2} 堂` },
+      ].slice(0, Math.max(0, 9 - p.used)) }],
+  };
 }
 
 // ══ BUILD UI ═════════════════════════════════════════════════════
@@ -678,28 +826,38 @@ function buildTimes() {
 }
 
 // ══ LOOKUP ════════════════════════════════════════════════════════
-// ★ 儲存當前查詢到的所有狗狗資料及主人資料
-let currentOwner = null;
-let currentDogs  = [];
-
+// 示範：點選示範號碼 chip，自動填入並查詢，方便預覽各社交等級
+function demoLoad(phone) {
+  const inp = document.getElementById('lookupPhone');
+  if (inp) { inp.value = phone; }
+  doLookup();
+  requestAnimationFrame(() => {
+    const gw = document.getElementById('gradeWrap');
+    if (gw) window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
+  });
+}
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
-  document.getElementById('dogSelector').classList.remove('show');
   if (!/^\d{8}$/.test(phone)) {
     document.getElementById('notfoundMsg').classList.add('show');
     return;
   }
+  // 示範模式：直接載入示範記錄，不查詢後台
   if (DEMO_MODE) {
-    const d = { ...demoRecordFor(phone), phone };
-    handleLookupResult({ found: true, data: d });
+    fillRecord({ ...demoRecordFor(phone), phone });
     return;
   }
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
-    handleLookupResult(json);
+    if (json.found && json.data) {
+      fillRecord(json.data);
+    } else {
+      document.getElementById('notfoundMsg').classList.add('show');
+      lookupActive = false;
+    }
   } catch(e) {
     document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
     document.getElementById('notfoundMsg').classList.add('show');
@@ -707,125 +865,47 @@ async function doLookup() {
   }
 }
 
-function handleLookupResult(json) {
-  if (!json.found) {
-    document.getElementById('notfoundMsg').classList.add('show');
-    lookupActive = false;
-    return;
-  }
-
-  // 新格式：owner + dogs[]
-  if (json.owner && json.dogs) {
-    currentOwner = json.owner;
-    currentDogs  = json.dogs;
-    // 先填主人資料（姓名、電話、電郵）
-    fillOwner(json.owner);
-    // 顯示找到記錄
-    document.getElementById('foundName').textContent = json.owner.ownerName;
-    document.getElementById('foundDog').textContent  = '';
-    document.getElementById('foundMsg').classList.add('show');
-
-    if (json.dogs.length === 1) {
-      // 只有一隻狗，直接填入
-      selectDog(json.dogs[0]);
-    } else {
-      // 多隻狗，顯示選擇器
-      renderDogSelector(json.dogs);
-    }
-
-  } else if (json.data) {
-    // 舊格式相容
-    currentOwner = json.data;
-    currentDogs  = [json.data];
-    fillRecord(json.data);
-  }
-}
-
-// 填主人資料（鎖定）
-function fillOwner(owner) {
-  [['ownerName', owner.ownerName], ['whatsapp', owner.phone], ['email', owner.email || '']].forEach(([id, val]) => {
+function fillRecord(d) {
+  // 預填資料但保持可編輯，客戶可手動更改
+  [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
+   ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
+   ['dogDob', d.dob || '']].forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (el && val) { el.value = val; el.classList.add('prefilled'); el.readOnly = true; }
+    if (el && val) { el.value = val; el.classList.add('prefilled'); }
   });
-}
-
-// 渲染狗狗選擇卡片
-function renderDogSelector(dogs) {
-  const selector = document.getElementById('dogSelector');
-  const cards    = document.getElementById('dogCards');
-  cards.innerHTML = dogs.map((dog, idx) => `
-    <div class="dog-card" onclick="selectDog(currentDogs[${idx}], this)">
-      <div class="dog-card-avatar">🐶</div>
-      <div>
-        <div class="dog-card-name">${dog.dogName || '未命名'}</div>
-        <div class="dog-card-breed">${dog.breed || ''}</div>
-      </div>
-    </div>`).join('');
-  selector.classList.add('show');
-}
-
-// 選擇狗狗後填入表單
-function selectDog(dog, cardEl) {
-  // 更新選中卡片樣式
-  document.querySelectorAll('.dog-card').forEach(c => c.classList.remove('selected'));
-  if (cardEl) cardEl.classList.add('selected');
-
-  // 填狗狗資料（可編輯）
-  [['dogName', dog.dogName], ['dogBreed', dog.breed || ''],
-   ['dogWeight', dog.weight || ''], ['dogDob', dog.dob || '']].forEach(([id, val]) => {
+  [['dogGender', d.gender], ['dogNeutered', d.neutered]].forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (el) { el.value = val || ''; el.classList.add('prefilled'); el.readOnly = false; }
-  });
-  [['dogGender', dog.gender], ['dogNeutered', dog.neutered]].forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el && val) { el.value = val; }
+    if (el && val) { el.value = val; el.classList.add('prefilled'); }
   });
   // 健康狀況
-  if (dog.health != null) {
-    const hasHealth = dog.health && dog.health !== '沒有' && dog.health !== 'no';
+  if (d.health != null) {
+    const hasHealth = d.health && d.health !== '沒有' && d.health !== 'no';
     const sel = document.getElementById('dogHealthSel');
-    if (sel) { sel.value = hasHealth ? 'yes' : 'no'; }
+    sel.value = hasHealth ? 'yes' : 'no'; sel.classList.add('prefilled');
     const det = document.getElementById('healthDetailField');
-    if (det) det.style.display = hasHealth ? 'block' : 'none';
-    if (hasHealth) {
-      const t = document.getElementById('dogHealthText');
-      if (t) t.value = dog.health;
-    }
+    det.style.display = hasHealth ? 'block' : 'none';
+    if (hasHealth) { const t = document.getElementById('dogHealthText'); t.value = d.health; t.classList.add('prefilled'); }
   }
-  if (dog.courseLevel) { document.getElementById('courseLevel').value = dog.courseLevel; applyCourseFilter(); }
-
-  // 更新找到記錄顯示
-  document.getElementById('foundDog').textContent = dog.dogName;
-  document.getElementById('returning-badge').style.display = 'block';
-
-  // 顯示課堂追蹤
-  renderPackages(dog);
-  lookupActive = true;
-}
-
-function fillRecord(d) {
-  fillOwner(d);
-  selectDog(d, null);
+  if (d.courseLevel) { document.getElementById('courseLevel').value = d.courseLevel; applyCourseFilter(); }
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
   document.getElementById('returning-badge').style.display = 'block';
+  renderGrade(d);
   renderPackages(d);
   lookupActive = true;
 }
 
 function clearLookup() {
-  currentOwner = null;
-  currentDogs  = [];
   document.getElementById('lookupPhone').value = '';
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
   document.getElementById('returning-badge').style.display = 'none';
-  document.getElementById('dogSelector').classList.remove('show');
-  document.getElementById('dogCards').innerHTML = '';
   const pw = document.getElementById('pkgWrap');
   pw.classList.remove('show');
   document.getElementById('pkgList').innerHTML = '';
+  const gw = document.getElementById('gradeWrap');
+  gw.classList.remove('show'); gw.innerHTML = '';
   ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('prefilled'); el.readOnly = false; }
@@ -841,6 +921,139 @@ function clearLookup() {
 }
 
 // ══ 套票 / 堂數追蹤 ════════════════════════════════════════════════
+// ══ 社交成長階梯 · 分級 ══
+// 五級階梯：C → B → B+ → A → A+（參考「狗狗社交成長階梯」）
+const LEVELS = { 1:'建立安全感', 2:'建立社交信心', 3:'穩定社交能力' };
+const LADDER = [
+  { k:'C',  zh:'反應型', en:'Reactive',  img:'assets/dino-c.png',     level:1, g:'#4A7BAF',
+    desc:'%DOG% 見到其他狗狗時反應比較大。我哋會由「安全感」同「冷靜距離」開始，一步一步嚟，唔急。',
+    next:['學會喺狗群中保持冷靜觀察','建立安全距離','慢慢減少過度反應'] },
+  { k:'B',  zh:'膽小型', en:'Shy',       img:'assets/dino-b.png',     level:1, g:'#3B82F6',
+    desc:'%DOG% 比較慎重、容易退縮。畀少少時間同空間，佢會慢慢習慣其他狗狗嘅存在。',
+    next:['習慣其他狗狗嘅存在','建立安全感','準備慢慢接近其他狗'] },
+  { k:'B+', zh:'適應期', en:'Adjusting', img:'assets/dino-bplus.png', level:2, g:'#0E7490',
+    desc:'%DOG% 已經肯接近其他狗狗，社交信心正在建立緊！偶爾仲會緊張，多啲自然互動就會更穩定。',
+    next:['練習自然互動','接觸唔同性格嘅狗','學習基本社交禮貌'] },
+  { k:'A',  zh:'社交型', en:'Social',    img:'assets/dino-a.png',     level:3, g:'#15803D',
+    desc:'%DOG% 已經係社交型狗狗，可以友善咩同其他狗狗互動，情緒大致穩定。再鸞固一下就升上 A+！',
+    next:['穩定咩同唔同狗狗互動','喺唔同環境都保持冷靜','成為成熟社交犬'] },
+  { k:'A+', zh:'穩定犬', en:'Stable',    img:'assets/dino-aplus.png', level:3, g:'#E08850', role:true,
+    desc:'太叻喇！%DOG% 已經係 A+ 穩定犬，情緒非常穩定，可以同唔同狗狗和平相處，仲可以做其他同學嘅社交榜樣。',
+    next:['歡迎成為「社交榜樣」','陪伴新同學一齊學習社交','保持穩定，繼續享受玩樂'] },
+];
+const GR_STAR = '<svg class="gr-star" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 18.6 5.9 21.4l1.4-6.8L2.2 9.9l6.9-.8z"/></svg>';
+function gradeIndex(k){ return LADDER.findIndex(x => x.k === k); }
+
+function renderGrade(d){
+  const wrap = document.getElementById('gradeWrap');
+  const idx = gradeIndex(d.grade);
+  if (idx < 0) { wrap.classList.remove('show'); wrap.innerHTML = ''; return; }
+  const cur = LADDER[idx];
+  const dog = d.dogName || '狗狗';
+  let used = d.semesterUsed, total = d.semesterTotal;
+  if (used == null || total == null) {
+    const tp = (d.packages || []).find(p => p.kind !== 'monthly');
+    if (tp) { used = Number(tp.used ?? tp.classesUsed ?? 0); total = Number(tp.total ?? tp.classesTotal ?? 0); }
+  }
+  const build = window.GRADE_VARIANT === 2 ? gradeVertical : gradeHorizontal;
+  wrap.innerHTML = build(cur, idx, dog, used, total);
+  wrap.classList.add('show');
+}
+
+function distText(idx){
+  if (idx >= 4) return null;
+  const toAp = 4 - idx, toA = 3 - idx;
+  if (idx >= 3) return `仲差 <b>${toAp}</b> 級就登上 <b>A+ 穩定犬</b>`;
+  return `距離 <b>A 社交型</b> 仲差 <b>${toA}</b> 級，<b>A+ 穩定犬</b> 仲差 <b>${toAp}</b> 級`;
+}
+function attendBlock(used, total){
+  if (!total) return '';
+  const pct = Math.max(4, Math.round(used / total * 100));
+  return `<div class="gr-attend">
+    <div class="gr-attend-top"><span>本學期出席進度</span><b>${used} / ${total} 堂</b></div>
+    <div class="gr-attend-bar"><div style="width:${pct}%"></div></div>
+  </div>`;
+}
+function nextBlock(cur, idx, dog){
+  if (cur.role) {
+    return `<div class="gr-next role">
+      <div class="gr-next-t">${GR_STAR}<span>${dog} 已經登上最高一級！</span></div>
+      <ul class="gr-next-list">${cur.next.map(n => `<li>${n}</li>`).join('')}</ul>
+      <div class="gr-cta-row"><a class="gr-cta primary" href="https://wa.me/85294596420" target="_blank" rel="noopener">同導師傾傾</a></div>
+    </div>`;
+  }
+  const target = LADDER[Math.min(idx + 1, 4)];
+  return `<div class="gr-next">
+    <div class="gr-next-t"><svg class="ico"><use href="#ico-paw"/></svg><span>想升上 <b>${target.k}｜${target.zh}</b>？下一步可以…</span></div>
+    <ul class="gr-next-list">${cur.next.map(n => `<li>${n}</li>`).join('')}</ul>
+    <div class="gr-cta-row">
+      <button type="button" class="gr-cta primary" onclick="gotoBooking()">報名下一階段課堂</button>
+      <a class="gr-cta ghost" href="https://wa.me/85294596420" target="_blank" rel="noopener">同導師傾進度</a>
+    </div>
+  </div>`;
+}
+
+function gradeHorizontal(cur, idx, dog, used, total){
+  const nodes = LADDER.map((gx, i) => {
+    const cls = i < idx ? 'done' : i === idx ? 'current' : (gx.k === 'A' || gx.k === 'A+') ? 'goal' : 'future';
+    const pin = i === idx ? `<div class="gr-pin">你而家喺呢度</div>` : '';
+    return `<div class="gr-node ${cls}">${pin}
+      <div class="gr-thumb-box"><div class="gr-thumb"><img src="${gx.img}" alt="${gx.k}"></div></div>
+      <div class="gr-glyph">${gx.k}</div><div class="gr-lbl">${gx.zh}</div></div>`;
+  }).join('');
+  const dist = distText(idx);
+  const goal = dist
+    ? `<div class="gr-goal">${GR_STAR}<span>${dist}</span></div>`
+    : `<div class="gr-goal top">${GR_STAR}<span>${dog} 已經登上最高一級 A+！</span></div>`;
+  return `<div class="gr-card v-horiz" style="--g:${cur.g}">
+    <div class="gr-head">
+      <div class="gr-eyebrow"><svg class="ico"><use href="#ico-cap"/></svg>社交成長階梯 · 本學期</div>
+      <div class="gr-title">${dog} 現在是 <b>${cur.k}｜${cur.zh}</b> 狗狗</div>
+    </div>
+    <div class="gr-rail" style="padding-bottom:18px"><div class="gr-track"><div class="gr-track-fill" style="width:${idx / 4 * 100}%"></div></div>${nodes}</div>
+  </div>`;
+}
+
+function gradeVertical(cur, idx, dog, used, total){
+  const rungs = LADDER.slice().reverse().map(gx => {
+    const i = gradeIndex(gx.k);
+    const cls = i < idx ? 'done' : i === idx ? 'current' : 'goal';
+    const here = i === idx ? `<span class="rung-here">你而家喺呢度</span>` : '';
+    const gt = gx.k === 'A+' && i !== idx ? `<span class="rung-goal">${GR_STAR}目標</span>` : '';
+    return `<div class="gr-rung ${cls}">
+      <div class="rung-mark"><img src="${gx.img}" alt="${gx.k}"></div>
+      <div class="rung-txt"><div class="rung-glyph">${gx.k}｜${gx.zh}</div><div class="rung-en">${gx.en}</div></div>
+      ${here || gt}
+    </div>`;
+  }).join('');
+  const dist = distText(idx);
+  const ribbon = dist
+    ? `<div class="gr-goal-ribbon">${GR_STAR}<span>${dist}</span></div>`
+    : `<div class="gr-goal-ribbon top">${GR_STAR}<span>${dog} 已登上最高一級 A+</span></div>`;
+  return `<div class="gr-card v-vert" style="--g:${cur.g}">
+    <div class="gr-hero">
+      <div class="gr-hero-badge"><img src="${cur.img}" alt=""></div>
+      <div class="gr-hero-txt">
+        <div class="gr-eyebrow">${dog} · 本學期社交分級</div>
+        <div class="gr-hero-grade">${cur.k}<small>｜${cur.zh}</small></div>
+        <div class="gr-hero-en">${cur.en} · LEVEL ${cur.level} ${LEVELS[cur.level]}</div>
+      </div>
+    </div>
+    <p class="gr-desc pad">${cur.desc.replace('%DOG%', dog)}</p>
+    ${ribbon}
+    <div class="gr-climb">${rungs}</div>
+    <div class="gr-body" style="padding-top:0">
+      ${attendBlock(used, total)}
+      ${nextBlock(cur, idx, dog)}
+    </div>
+  </div>`;
+}
+
+function gotoBooking(){
+  const el = document.getElementById('courseLevel') || document.getElementById('classList');
+  if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 70, behavior:'smooth' });
+}
+
 function renderPackages(d) {
   const wrap = document.getElementById('pkgWrap');
   const list = document.getElementById('pkgList');
@@ -1080,8 +1293,21 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
 });
 
 // ══ INIT ══════════════════════════════════════════════════════════
+const _params = new URLSearchParams(location.search);
+window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
 applyCourseFilter();
 buildTimes();
+const _demo = _params.get('demo');
+if (_demo) {
+  const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
+  const inp = document.getElementById('lookupPhone');
+  if (inp) { inp.value = ph; doLookup(); }
+  requestAnimationFrame(() => {
+    const gw = document.getElementById('gradeWrap');
+    if (gw && gw.classList.contains('show'))
+      window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 64 });
+  });
+}
 // 客戶手動修改任何預填欄位時，移除「已預填」高亮
 ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
   document.getElementById(id)?.addEventListener('input', e => e.target.classList.remove('prefilled'));
