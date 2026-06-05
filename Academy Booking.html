@@ -1016,8 +1016,10 @@ function gradeIndex(k){ return LADDER.findIndex(x => x.k === k); }
 
 function renderGrade(d){
   const wrap = document.getElementById('gradeWrap');
+  dbg('renderGrade() grade="' + d.grade + '" idx=' + gradeIndex(d.grade));
   const idx = gradeIndex(d.grade);
-  if (idx < 0) { wrap.classList.remove('show'); wrap.innerHTML = ''; return; }
+  if (idx < 0) { dbg('❌ gradeIndex 返回 -1，找不到匹配，LADDER keys=' + LADDER.map(x=>x.k).join(',')); wrap.classList.remove('show'); wrap.innerHTML = ''; return; }
+  dbg('✅ gradeIndex=' + idx + ' cur.k=' + LADDER[idx].k);
   const cur = LADDER[idx];
   const dog = d.dogName || '狗狗';
   let used = d.semesterUsed, total = d.semesterTotal;
