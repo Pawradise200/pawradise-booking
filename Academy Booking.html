@@ -387,7 +387,7 @@
       <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
       <button type="button" class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
     </div>
-    <div class="demo-hint">
+    <div class="demo-hint" id="demoHint">
       <span class="demo-hint-lbl"><svg class="ico ico-sm" style="width:14px;height:14px;"><use href="#ico-search"/></svg>示範號碼 · 撳一下試各級</span>
       <button type="button" class="demo-chip" onclick="demoLoad('92345670')"><b>C</b>反應型</button>
       <button type="button" class="demo-chip" onclick="demoLoad('92345672')"><b>B</b>膽小型</button>
@@ -1294,6 +1294,8 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
 
 // ══ INIT ══════════════════════════════════════════════════════════
 const _params = new URLSearchParams(location.search);
+// 正式上線：DEMO_MODE = false 時，自動隱藏示範號碼提示列
+if (!DEMO_MODE) { const _dh = document.getElementById('demoHint'); if (_dh) _dh.style.display = 'none'; }
 window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
 applyCourseFilter();
 buildTimes();
