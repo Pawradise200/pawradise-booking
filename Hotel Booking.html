@@ -715,7 +715,12 @@ function calcForm() {
     card.innerHTML='<div class="price-empty" style="color:var(--pw-danger);">Check-out 必須在 Check-in 之後</div>';
     ps.style.display='block'; return;
   }
-  const nights=Math.floor((coD-ciD)/86400000);
+  const ciDate = new Date(document.getElementById('f-ci-date').value);
+const coDate = new Date(document.getElementById('f-co-date').value);
+
+const nights = Math.round(
+  (coDate - ciDate) / (1000 * 60 * 60 * 24)
+);
   const lateOut=(coD.getHours()+coD.getMinutes()/60)>=12;
   let disc=1,discLabel='';
   if(nights>=14){disc=0.95;discLabel='14晚以上 95折';}
