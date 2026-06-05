@@ -1299,8 +1299,32 @@ const _params = new URLSearchParams(location.search);
 // 正式上線：DEMO_MODE = false 時，自動隱藏示範號碼提示列
 if (!DEMO_MODE) { const _dh = document.getElementById('demoHint'); if (_dh) _dh.style.display = 'none'; }
 window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
-applyCourseFilter();
 buildTimes();
+
+// 從 Google Sheet 動態載入課堂名額
+async function loadClasses() {
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
+    const json = await res.json();
+    if (json.classes && json.classes.length) {
+      CFG.classes = json.classes.map(c => ({
+        id:       c.id,
+        label:    c.label,
+        time:     c.time,
+        area:     c.area || '',
+        enrolled: parseInt(c.enrolled) || 0,
+        max:      parseInt(c.max) || 20,
+        type:     c.type,
+        seq:      c.type === 'S2',
+      }));
+    }
+  } catch(e) {
+    console.warn('課堂載入失敗，使用本地資料');
+  } finally {
+    applyCourseFilter();
+  }
+}
+loadClasses();
 const _demo = _params.get('demo');
 if (_demo) {
   const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
