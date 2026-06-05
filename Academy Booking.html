@@ -912,9 +912,10 @@ function doLookup() {
     }
     const dog    = (json.dogs && json.dogs.length) ? json.dogs[0] : (json.data || {});
     const owner  = json.owner || {};
-    const record = Object.assign({}, owner, dog, {
-      grade: dog.grade || dog.behaviorLevel || owner.grade || '',
-    });
+    // behaviorLevel 可能是 'B+ 適應期' 格式，需提取純 key（空格前的部分）
+    const rawGrade = dog.grade || dog.behaviorLevel || owner.grade || '';
+    const grade    = rawGrade.split(/[\s｜|]/)[0].trim();
+    const record   = Object.assign({}, owner, dog, { grade });
     dbg('record.grade（社交分級）: "' + record.grade + '"');
     dbg('record.dogName: ' + record.dogName);
     dbg('→ 呼叫 fillRecord()');
