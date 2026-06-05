@@ -215,7 +215,9 @@
 /* ═════ 社交成長階梯 · 分級 ═════ */
 .grade-wrap{display:none;margin-top:12px;}
 .grade-wrap.show{display:block;}
-.gr-card{--gsoft:color-mix(in srgb,var(--g) 11%,#fff);--gline:color-mix(in srgb,var(--g) 26%,#fff);
+.gr-card{
+  --gsoft:#eef3f8;--gline:#c5d4e3;
+  --gsoft:color-mix(in srgb,var(--g) 11%,#fff);--gline:color-mix(in srgb,var(--g) 26%,#fff);
   border:var(--pw-stroke) solid var(--gline);border-radius:var(--pw-r-lg);background:var(--gsoft);overflow:hidden;}
 .gr-head{padding:15px 16px 0;}
 .gr-eyebrow{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:900;letter-spacing:.05em;
@@ -240,6 +242,7 @@
 .gr-node.done .gr-thumb img{opacity:.92;}
 .gr-node.goal .gr-thumb{border-color:var(--pw-gold);border-style:dashed;}
 .gr-node.current .gr-thumb{width:54px;height:54px;border-color:var(--g);
+  box-shadow:0 0 0 4px rgba(74,123,175,.2),0 6px 16px rgba(74,123,175,.32);
   box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff),0 6px 16px color-mix(in srgb,var(--g) 32%,transparent);}
 .gr-glyph{font-size:11.5px;font-weight:900;color:var(--pw-ink-faint);}
 .gr-lbl{font-size:9.5px;font-weight:700;color:var(--pw-ink-faint);line-height:1.15;text-align:center;}
@@ -249,6 +252,7 @@
 .gr-node.goal .gr-glyph{color:var(--pw-gold-deep);}
 .gr-pin{position:absolute;top:-24px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:3;
   background:var(--g);color:#fff;font-size:9px;font-weight:900;padding:3px 8px;border-radius:var(--pw-r-pill);
+  box-shadow:0 3px 9px rgba(74,123,175,.45);
   box-shadow:0 3px 9px color-mix(in srgb,var(--g) 45%,transparent);}
 .gr-pin::after{content:'';position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
   border:4px solid transparent;border-top-color:var(--g);border-bottom:0;}
@@ -288,17 +292,19 @@
 .gr-cta{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
   padding:10px 10px;border-radius:var(--pw-r-md);font-family:var(--pw-font-sans);font-size:12.5px;font-weight:800;
   cursor:pointer;border:none;transition:.15s;text-align:center;line-height:1.2;}
-.gr-cta.primary{background:var(--g);color:#fff;box-shadow:0 3px 12px color-mix(in srgb,var(--g) 32%,transparent);}
+.gr-cta.primary{background:var(--g);color:#fff;box-shadow:0 3px 12px rgba(74,123,175,.32);box-shadow:0 3px 12px color-mix(in srgb,var(--g) 32%,transparent);}
 .gr-cta.primary:hover{filter:brightness(.94);}
 .gr-cta.ghost{background:#fff;color:var(--g);border:var(--pw-stroke) solid var(--gline);}
 .gr-cta.ghost:hover{background:var(--gsoft);}
-.gr-next.role{border-color:var(--pw-gold);background:color-mix(in srgb,var(--pw-gold) 10%,#fff);}
+.gr-next.role{border-color:var(--pw-gold);background:#fdf6ec;background:color-mix(in srgb,var(--pw-gold) 10%,#fff);}
 .gr-next.role .gr-next-t{color:var(--pw-gold-deep);}
 .gr-next.role .gr-star{color:var(--pw-gold-deep);}
 /* vertical variant */
 .gr-hero{display:flex;align-items:center;gap:14px;padding:15px 16px 4px;}
 .gr-hero-badge{width:78px;height:78px;flex-shrink:0;border-radius:50%;background:#fff;border:3px solid var(--g);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 18px color-mix(in srgb,var(--g) 28%,transparent);}
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  box-shadow:0 6px 18px rgba(74,123,175,.28);
+  box-shadow:0 6px 18px color-mix(in srgb,var(--g) 28%,transparent);}
 .gr-hero-badge img{width:120%;height:120%;object-fit:contain;}
 .gr-hero-grade{font-family:var(--pw-font-display);font-weight:700;font-size:40px;color:var(--g);line-height:1;}
 .gr-hero-grade small{font-family:var(--pw-font-sans);font-size:15px;font-weight:900;color:var(--pw-ink);}
@@ -324,15 +330,21 @@
 .gr-rung.goal .rung-mark{border-color:var(--pw-gold);border-style:dashed;}
 .gr-rung.done .rung-mark{border-color:var(--gline);}
 .gr-rung.current{background:var(--gsoft);}
-.gr-rung.current .rung-mark{width:54px;height:54px;border-color:var(--g);box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff);}
+.gr-rung.current .rung-mark{width:54px;height:54px;border-color:var(--g);
+  box-shadow:0 0 0 4px rgba(74,123,175,.2);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff);}
 .rung-txt{flex:1;min-width:0;}
 .rung-glyph{font-size:13.5px;font-weight:900;color:var(--pw-ink);}
 .rung-en{font-size:10.5px;font-weight:700;color:var(--pw-ink-faint);text-transform:uppercase;letter-spacing:.03em;}
 .gr-rung.goal .rung-glyph{color:var(--pw-ink-mute);}
 .gr-rung.current .rung-glyph{color:var(--g);}
 .rung-here{flex-shrink:0;background:var(--g);color:#fff;font-size:9.5px;font-weight:900;padding:4px 9px;
-  border-radius:var(--pw-r-pill);box-shadow:0 3px 9px color-mix(in srgb,var(--g) 40%,transparent);}
-.rung-goal{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;background:color-mix(in srgb,var(--pw-gold) 18%,#fff);
+  border-radius:var(--pw-r-pill);
+  box-shadow:0 3px 9px rgba(74,123,175,.4);
+  box-shadow:0 3px 9px color-mix(in srgb,var(--g) 40%,transparent);}
+.rung-goal{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;
+  background:#fdf3df;
+  background:color-mix(in srgb,var(--pw-gold) 18%,#fff);
   color:var(--pw-gold-deep);font-size:9.5px;font-weight:900;padding:4px 9px;border-radius:var(--pw-r-pill);}
 .rung-goal .gr-star{color:var(--pw-gold);}
 </style>
@@ -1011,6 +1023,11 @@ function gradeHorizontal(cur, idx, dog, used, total){
       <div class="gr-title">${dog} 現在是 <b>${cur.k}｜${cur.zh}</b> 狗狗</div>
     </div>
     <div class="gr-rail" style="padding-bottom:18px"><div class="gr-track"><div class="gr-track-fill" style="width:${idx / 4 * 100}%"></div></div>${nodes}</div>
+    <div class="gr-body">
+      ${goal}
+      ${attendBlock(used, total)}
+      ${nextBlock(cur, idx, dog)}
+    </div>
   </div>`;
 }
 
