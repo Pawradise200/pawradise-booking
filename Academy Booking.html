@@ -413,6 +413,7 @@
       <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
     </div>
     <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
+    <div id="debugBox" style="display:none;margin-top:10px;padding:12px 14px;background:#1a1a2e;border-radius:8px;font-family:monospace;font-size:11px;color:#00ff88;line-height:1.7;white-space:pre-wrap;word-break:break-all;"></div>
     <div class="pkg-wrap" id="pkgWrap">
       <div class="pkg-wrap-title"><svg class="ico"><use href="#ico-cap"/></svg>課堂額度 · 出席追蹤</div>
       <div id="pkgList"></div>
@@ -848,24 +849,39 @@ function demoLoad(phone) {
     if (gw) window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
   });
 }
+function dbg(msg) {
+  const box = document.getElementById('debugBox');
+  if (!box) return;
+  box.style.display = 'block';
+  box.textContent += '[' + new Date().toLocaleTimeString() + '] ' + msg + '\n';
+}
+
 function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
+  const box = document.getElementById('debugBox');
+  if (box) { box.textContent = ''; box.style.display = 'none'; }
+
   if (!/^\d{8}$/.test(phone)) {
     document.getElementById('notfoundMsg').classList.add('show');
     return;
   }
-  // 示範模式：直接載入示範記錄，不查詢後台
+
   if (DEMO_MODE) {
+    dbg('DEMO_MODE: 直接載入示範記錄');
     fillRecord({ ...demoRecordFor(phone), phone });
     return;
   }
-  // JSONP 查詢：繞過 CORS（Apps Script GET 不支援 CORS header）
+
+  dbg('開始查詢電話：' + phone);
+  dbg('Apps Script URL：' + APPS_SCRIPT_URL.slice(0, 60) + '...');
+
   const cbName = '_pw_cb_' + Date.now();
   const script = document.createElement('script');
   const timer  = setTimeout(() => {
     cleanup();
+    dbg('❌ 查詢逾時（8秒）— Apps Script 無回應');
     document.getElementById('notfoundMsg').textContent = '查詢逾時，請稍後重試或 WhatsApp 聯絡我們。';
     document.getElementById('notfoundMsg').classList.add('show');
     lookupActive = false;
@@ -879,25 +895,38 @@ function doLookup() {
 
   window[cbName] = function(json) {
     cleanup();
+    dbg('✅ Apps Script 回應收到');
+    dbg('found: ' + json.found);
+    dbg('dogs: ' + (json.dogs ? json.dogs.length + ' 隻' : '無'));
+    if (json.dogs && json.dogs[0]) {
+      dbg('dog[0].behaviorLevel: ' + json.dogs[0].behaviorLevel);
+      dbg('dog[0].grade: ' + json.dogs[0].grade);
+      dbg('dog[0].packages: ' + (json.dogs[0].packages ? json.dogs[0].packages.length + ' 個' : '無'));
+    }
     if (!json || !json.found) {
+      dbg('❌ 找不到記錄');
       document.getElementById('notfoundMsg').textContent = '找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。';
       document.getElementById('notfoundMsg').classList.add('show');
       lookupActive = false;
       return;
     }
-    // Apps Script 回傳格式：{ found, owner, dogs[], data }
-    // 取第一隻狗作為主記錄，同時合併 owner 資料
     const dog    = (json.dogs && json.dogs.length) ? json.dogs[0] : (json.data || {});
     const owner  = json.owner || {};
     const record = Object.assign({}, owner, dog, {
       grade: dog.grade || dog.behaviorLevel || owner.grade || '',
     });
+    dbg('record.grade（社交分級）: "' + record.grade + '"');
+    dbg('record.dogName: ' + record.dogName);
+    dbg('→ 呼叫 fillRecord()');
     fillRecord(record);
   };
 
-  script.src = `${APPS_SCRIPT_URL}?action=lookup&phone=${encodeURIComponent(phone)}&callback=${cbName}`;
+  const url = `${APPS_SCRIPT_URL}?action=lookup&phone=${encodeURIComponent(phone)}&callback=${cbName}`;
+  dbg('發送 JSONP 請求...');
+  script.src = url;
   script.onerror = function() {
     cleanup();
+    dbg('❌ script.onerror — 請求失敗（網絡錯誤或 URL 錯誤）');
     document.getElementById('notfoundMsg').textContent = '查詢失敗，請稍後重試或 WhatsApp 聯絡我們。';
     document.getElementById('notfoundMsg').classList.add('show');
     lookupActive = false;
