@@ -852,8 +852,18 @@ async function doLookup() {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
-    if (json.found && json.data) {
-      fillRecord(json.data);
+   if (json.found) {
+      // 多狗客戶（json.data 為 null）→ 取第一隻狗 + 主人資料合並
+      const record = json.data ||
+        (json.dogs && json.dogs.length
+          ? Object.assign({}, json.dogs[0], json.owner || {})
+          : null);
+      if (record) {
+        fillRecord(record);
+      } else {
+        document.getElementById('notfoundMsg').classList.add('show');
+        lookupActive = false;
+      }
     } else {
       document.getElementById('notfoundMsg').classList.add('show');
       lookupActive = false;
