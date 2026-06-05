@@ -43,6 +43,7 @@
 .f-ac-row{display:flex;align-items:center;gap:11px;margin-top:5px;}
 .f-ac-row select{flex:1;}
 .ac-price-tag{font-size:14px;font-weight:900;color:var(--pw-navy-light);white-space:nowrap;}
+
 /* success popup modal */
 .modal-ov{position:fixed;inset:0;background:rgba(44,74,110,.45);display:none;
   align-items:center;justify-content:center;padding:20px;z-index:200;}
@@ -70,20 +71,10 @@
 .modal-wa{display:flex;gap:9px;font-size:12px;font-weight:600;color:var(--pw-ink-mute);line-height:1.55;}
 .modal-wa .ico{color:var(--pw-gold-deep);width:16px;height:16px;flex-shrink:0;margin-top:1px;}
 .modal-card .btn-primary{margin-top:2px;}
-/* ── 多狗選擇器 ─────────────────────────────────────── */
-.dog-selector{margin-top:10px;display:none;}
-.dog-selector.show{display:block;}
-.dog-selector-label{font-size:11px;font-weight:800;color:var(--pw-ink-mute);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
-.dog-cards{display:flex;flex-wrap:wrap;gap:8px;}
-.dog-card{display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--pw-cream-deep);background:var(--pw-paper);cursor:pointer;transition:border-color .15s,box-shadow .15s;min-width:130px;}
-.dog-card:hover{border-color:var(--pw-navy);box-shadow:0 0 0 2px rgba(22,42,74,.08);}
-.dog-card.selected{border-color:var(--pw-navy);background:var(--pw-navy-soft,#eef1f7);box-shadow:0 0 0 2px rgba(22,42,74,.13);}
-.dog-card-avatar{width:34px;height:34px;border-radius:50%;background:var(--pw-gold-soft,#fdf6e3);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.dog-card-name{font-size:13px;font-weight:800;color:var(--pw-ink);}
-.dog-card-breed{font-size:11px;color:var(--pw-ink-mute);margin-top:1px;}
 </style>
 </head>
 <body>
+
 <!-- ═══ ICON SPRITE ═══ -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="ico-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
@@ -109,14 +100,18 @@
 <symbol id="ico-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></symbol>
 <symbol id="ico-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
 </defs></svg>
+
 <header class="pw-header">
   <a class="back" href="Pawradise.html"><svg class="ico ico-sm"><use href="#ico-arrow-left"/></svg>返回</a>
   <div class="crest"><img src="assets/pawradise-crest.png" alt="Pawradise"></div>
   <div class="htitle"><b>酒店入住預約</b><span>過夜寄宿 | 日托服務</span></div>
   <div class="spacer"></div>
 </header>
+
 <div class="container">
+
   <p class="lead">請先填寫以下資料（曾使用服務的客戶輸入電話可自動帶入資料），前台同事會於收到預約邀請後跟你聯絡確認，如有任何問題歡迎 WhatsApp 聯絡查詢。</p>
+
   <!-- ① 快速查詢 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-search"/></svg>快速查詢</div>
@@ -125,12 +120,8 @@
       <button class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
     </div>
     <div class="lookup-result" id="lookupResult"></div>
-    <!-- ★ 多狗選擇器 -->
-    <div class="dog-selector" id="dogSelector">
-      <div class="dog-selector-label">請選擇預約的狗狗</div>
-      <div class="dog-cards" id="dogCards"></div>
-    </div>
   </div>
+
   <!-- 套票資料卡 -->
   <div class="pkg-info-card" id="pkgInfoCard">
     <div class="pkg-info-header">
@@ -150,6 +141,7 @@
     </div>
     <div class="pkg-note">套票餘額將於成功預約留位後由前台確認扣除，如有疑問請 WhatsApp 9459 6420 向前台同事查詢。</div>
   </div>
+
   <!-- ② 主人資料 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-user"/></svg>主人資料</div>
@@ -164,6 +156,7 @@
       <div class="err-msg" id="e-email">請輸入有效電郵地址</div>
     </div>
   </div>
+
   <!-- ③ 毛孩基本資料 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-paw"/></svg>毛孩基本資料</div>
@@ -185,6 +178,7 @@
       <div class="hint">需最少 4 個月大方可入住。</div>
     </div>
   </div>
+
   <!-- ④ 健康及照顧資料 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-health"/></svg>健康及照顧資料</div>
@@ -212,6 +206,7 @@
       <textarea id="f-remarks" placeholder="如體重、藥物有更新，或有任何特別要求請在此說明"></textarea>
     </div>
   </div>
+
   <!-- ⑤ 預約詳情 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>預約詳情</div>
@@ -255,9 +250,11 @@
       </div>
     </div>
   </div>
+
   <!-- ⑥ 附加服務 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-plus"/></svg>附加服務</div>
+
     <div class="section-divider"><span>美容服務</span></div>
     <div class="field"><label>離開前需要美容服務？ <span class="req">*</span></label>
       <div class="radio-group">
@@ -287,6 +284,7 @@
         <div class="warn-box" style="margin-top:10px;"><svg class="ico"><use href="#ico-alert"/></svg><span>如需解結 / 去死毛，將於接走時額外收費，職員會提前通知。</span></div>
       </div>
     </div>
+
     <div class="section-divider"><span>社交學院</span></div>
     <div class="field"><label>社交學院課堂（$622 / 堂）</label>
       <div class="f-ac-row">
@@ -299,6 +297,7 @@
         <div class="ac-price-tag" id="f-ac-price"></div>
       </div>
     </div>
+
     <div class="section-divider"><span>接送服務</span></div>
     <div class="field"><label>需要接送服務？ <span class="req">*</span></label>
       <div class="radio-group">
@@ -351,6 +350,7 @@
       </div>
     </div>
   </div>
+
   <!-- ⑦ 費用總覽 -->
   <div id="f-price-section" style="display:none;">
     <div class="sec">
@@ -368,6 +368,7 @@
       <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明毛孩名字及入住日期。</span></div>
     </div>
   </div>
+
   <!-- ⑧ 條款 + 提交 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-check-circle"/></svg>條款確認</div>
@@ -378,7 +379,9 @@
     <button class="btn-primary" onclick="submitForm()" id="submitBtn"><svg class="ico ico-sm"><use href="#ico-paw"/></svg>提交預約申請</button>
     <div class="submit-result" id="submitResult"></div>
   </div>
+
 </div><!-- /container -->
+
 <!-- ═══ 提交成功提示 ═══ -->
 <div class="modal-ov" id="successModal">
   <div class="modal-card">
@@ -402,9 +405,11 @@
     </div>
   </div>
 </div>
+
 <script>
 // ══ CONFIG ═══════════════════════════════════════════════════════
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
+
 const PRICING = {
   small:  { overnight:420, daycare:320 },
   medium: { overnight:480, daycare:380 },
@@ -419,10 +424,10 @@ const GROOMING = {
 };
 let isReturning = false;
 
-// ══ 示範模式 ═══════════════════════════════════════════════════
+// ══ 示範模式 ══════════════════════════════════════════════════════
 // DEMO_MODE = true 時，搜尋任何 8 位電話即會載入以下示範舊客記錄
 // （包括套票餘額），方便預覽功能。正式上線請改為 false。
-const DEMO_MODE = false;
+const DEMO_MODE = true;
 const DEMO_RECORD = {
   ownerName: '陳大文', phone: '90000001', email: 'taaiman@gmail.com',
   dogName: '肥髀', breed: '松鼠犬', weight: '4.1',
@@ -433,27 +438,9 @@ const DEMO_RECORD = {
   pkgTotal: 5000, pkgBalance: 1800, pkgPurchase: '2025-10-01', pkgValidYears: 2,
 };
 
-// ══ 工具函數 ══════════════════════════════════════════════════════
 function getSizeKey(w){ if(!w||w<=0)return null; if(w<8)return'small'; if(w<18)return'medium'; if(w<28)return'large'; return'giant'; }
 function getSizeLabel(k){ return{small:'Small <8kg',medium:'Medium 8–18kg',large:'Large 18–28kg',giant:'Giant ≥28kg'}[k]||''; }
 function getSizeChipClass(k){ return{small:'chip-s',medium:'chip-m',large:'chip-l',giant:'chip-g'}[k]||''; }
-
-// ★ 純日期解析（使用本地時間，避免時區誤差）
-// 傳入 'YYYY-MM-DD' 字串，返回本地午夜的 Date 物件
-function parseLocalDate(str) {
-  if (!str) return null;
-  const p = str.split('-');
-  if (p.length !== 3) return null;
-  return new Date(+p[0], +p[1] - 1, +p[2]);
-}
-
-// ★ 計算晚數（純日期，不含時間）
-function countNights(ciDateStr, coDateStr) {
-  const ci = parseLocalDate(ciDateStr);
-  const co = parseLocalDate(coDateStr);
-  if (!ci || !co) return 0;
-  return Math.round((co - ci) / 86400000);
-}
 
 function getDateTime(dateId, timeId) {
   const d = document.getElementById(dateId).value;
@@ -462,12 +449,9 @@ function getDateTime(dateId, timeId) {
   return new Date(`${d}T${t}:00`);
 }
 
-// ══ CUSTOMER LOOKUP ═══════════════════════════════════════════════
-let hotelCurrentOwner = null;
-let hotelCurrentDogs  = [];
-
+// ══ CUSTOMER LOOKUP ══════════════════════════════════════════════
 async function doLookup() {
-  const phone    = document.getElementById('lookupPhone').value.trim();
+  const phone = document.getElementById('lookupPhone').value.trim();
   const resultEl = document.getElementById('lookupResult');
   if (!/^\d{8}$/.test(phone)) {
     resultEl.className = 'lookup-result notfound';
@@ -476,131 +460,31 @@ async function doLookup() {
   }
   resultEl.className = 'lookup-result loading';
   resultEl.innerHTML = '<svg class="ico"><use href="#ico-search"/></svg>搜尋中…';
-  document.getElementById('dogSelector').classList.remove('show');
-
+  // 示範模式：直接載入示範記錄，不查詢後台
   if (DEMO_MODE) {
     const d = { ...DEMO_RECORD, phone };
-    handleHotelLookup({ found: true, data: d }, resultEl);
+    prefillReturning(d);
+    resultEl.className = 'lookup-result found';
+    resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${d.ownerName} / ${d.dogName}`;
     return;
   }
-
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
-    handleHotelLookup(json, resultEl);
+    if (json.found && json.data) {
+      prefillReturning(json.data);
+      resultEl.className = 'lookup-result found';
+      resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.data.ownerName} / ${json.data.dogName}`;
+    } else {
+      clearPrefill();
+      resultEl.className = 'lookup-result notfound';
+      resultEl.innerHTML = '<svg class="ico"><use href="#ico-info"/></svg>找不到記錄，請繼續填寫新客資料';
+    }
   } catch(e) {
     clearPrefill();
     resultEl.className = 'lookup-result notfound';
     resultEl.innerHTML = '<svg class="ico"><use href="#ico-alert"/></svg>查詢失敗，請繼續填寫或聯絡前台協助';
   }
-}
-
-function handleHotelLookup(json, resultEl) {
-  if (!json.found) {
-    clearPrefill();
-    resultEl.className = 'lookup-result notfound';
-    resultEl.innerHTML = '<svg class="ico"><use href="#ico-info"/></svg>找不到記錄，請繼續填寫新客資料';
-    return;
-  }
-  // 新格式：owner + dogs[]
-  if (json.owner && json.dogs) {
-    hotelCurrentOwner = json.owner;
-    hotelCurrentDogs  = json.dogs;
-    hotelFillOwner(json.owner);
-    showHotelPkg(json.owner);
-    if (json.dogs.length === 1) {
-      hotelSelectDog(json.dogs[0], null);
-      resultEl.className = 'lookup-result found';
-      resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.owner.ownerName} / ${json.dogs[0].dogName}`;
-    } else {
-      hotelRenderDogSelector(json.dogs);
-      resultEl.className = 'lookup-result found';
-      resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.owner.ownerName}，請選擇毛孩`;
-    }
-  } else if (json.data) {
-    // 舊格式相容
-    prefillReturning(json.data);
-    resultEl.className = 'lookup-result found';
-    resultEl.innerHTML = `<svg class="ico"><use href="#ico-check-circle"/></svg>找到記錄：${json.data.ownerName} / ${json.data.dogName}`;
-  }
-}
-
-function hotelFillOwner(owner) {
-  [['f-owner', owner.ownerName], ['f-phone', owner.phone], ['f-email', owner.email || '']].forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el && val) { el.value = val; el.readOnly = true; el.classList.add('prefilled'); }
-  });
-  isReturning = true;
-  document.getElementById('returning-badge').style.display = 'block';
-}
-
-function showHotelPkg(owner) {
-  const pkgCard = document.getElementById('pkgInfoCard');
-  if (owner.pkgTotal && Number(owner.pkgTotal) > 0) {
-    const bal   = Number(owner.pkgBalance) || 0;
-    const total = Number(owner.pkgTotal);
-    const usedPct = Math.round(((total - bal) / total) * 100);
-    let expiry = owner.pkgExpiry ? new Date(owner.pkgExpiry) : null;
-    if (owner.pkgPurchase) {
-      const yrs = Number(owner.pkgValidYears ?? 2);
-      expiry = new Date(owner.pkgPurchase);
-      expiry.setFullYear(expiry.getFullYear() + yrs);
-    }
-    const expired = expiry && expiry < new Date();
-    const exStr   = expiry ? expiry.toLocaleDateString('zh-HK', {year:'numeric',month:'short',day:'numeric'}) : '不適用';
-    const balEl   = document.getElementById('pkgBalance');
-    balEl.textContent = '$' + bal.toLocaleString();
-    balEl.className   = 'pkg-row-val balance' + (bal < 500 ? ' warn' : '');
-    document.getElementById('pkgType').textContent  = owner.pkgType  || '套票';
-    document.getElementById('pkgTotal').textContent = '$' + total.toLocaleString();
-    document.getElementById('pkgExpiry').textContent  = exStr;
-    document.getElementById('pkgExpiry').className    = 'pkg-row-val expiry' + (expired ? ' warn' : '');
-    document.getElementById('pkgUsedPct').textContent = usedPct + '% 已用';
-    document.getElementById('pkgBarFill').style.width = usedPct + '%';
-    const badge = document.getElementById('pkgBadge');
-    if (expired)      { badge.textContent='已過期';   badge.style.background='var(--pw-danger-bg)'; badge.style.color='var(--pw-danger)'; }
-    else if (bal<500) { badge.textContent='餘額不足'; badge.style.background='var(--pw-warn-bg)';   badge.style.color='var(--pw-warn)'; }
-    else              { badge.textContent='有效';     badge.style.background='var(--pw-success-bg)';badge.style.color='var(--pw-success)'; }
-    pkgCard.classList.add('show');
-  } else {
-    pkgCard.classList.remove('show');
-  }
-}
-
-function hotelRenderDogSelector(dogs) {
-  const selector = document.getElementById('dogSelector');
-  const cards    = document.getElementById('dogCards');
-  cards.innerHTML = dogs.map((dog, idx) => `
-    <div class="dog-card" onclick="hotelSelectDog(hotelCurrentDogs[${idx}], this)">
-      <div class="dog-card-avatar">🐶</div>
-      <div>
-        <div class="dog-card-name">${dog.dogName || '未命名'}</div>
-        <div class="dog-card-breed">${dog.breed || ''}</div>
-      </div>
-    </div>`).join('');
-  selector.classList.add('show');
-}
-
-function hotelSelectDog(dog, cardEl) {
-  document.querySelectorAll('.dog-card').forEach(c => c.classList.remove('selected'));
-  if (cardEl) cardEl.classList.add('selected');
-  [['f-dogname', dog.dogName], ['f-breed', dog.breed]].forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el) { el.value = val || ''; el.readOnly = true; el.classList.add('prefilled'); }
-  });
-  const wEl = document.getElementById('f-weight'); if (wEl) { wEl.value = dog.weight || ''; }
-  const gEl = document.getElementById('f-gender'); if (gEl && dog.gender) gEl.value = dog.gender;
-  const nEl = document.getElementById('f-neutered'); if (nEl && dog.neutered) nEl.value = dog.neutered;
-  document.getElementById('dob-field').style.display = 'none';
-  document.getElementById('health-sel-wrap').style.display = 'none';
-  document.getElementById('f-health-detail').style.display = 'none';
-  document.getElementById('f-health-readonly').style.display = 'block';
-  document.getElementById('f-health-ro').value = dog.health || '沒有';
-  const dietEl = document.getElementById('f-diet'); if (dietEl) { dietEl.value = dog.diet || ''; dietEl.readOnly = false; }
-  const medsEl = document.getElementById('f-meds'); if (medsEl) { medsEl.value = dog.meds || ''; medsEl.readOnly = false; }
-  const notesEl= document.getElementById('f-notes'); if (notesEl) { notesEl.value = dog.notes || ''; notesEl.readOnly = false; }
-  document.getElementById('remarks-field').style.display = 'none';
-  calcForm();
 }
 
 function prefillReturning(d) {
@@ -626,10 +510,12 @@ function prefillReturning(d) {
   });
   document.getElementById('remarks-field').style.display='block';
   document.getElementById('returning-badge').style.display='block';
+
   const pkgCard=document.getElementById('pkgInfoCard');
   if(d.pkgBalance!=null && Number(d.pkgTotal)>0){
     const bal=Number(d.pkgBalance), total=Number(d.pkgTotal);
     const usedPct=Math.round(((total-bal)/total)*100);
+    // 有效期：如有購買日 pkgPurchase，按 pkgValidYears（預設 2 年）由購買日起計
     let expiry=d.pkgExpiry?new Date(d.pkgExpiry):null;
     if(d.pkgPurchase){
       const yrs=Number(d.pkgValidYears??2);
@@ -657,28 +543,22 @@ function prefillReturning(d) {
 }
 
 function clearPrefill() {
-  isReturning = false;
-  hotelCurrentOwner = null;
-  hotelCurrentDogs  = [];
-  ['f-owner','f-phone','f-email','f-dogname','f-breed'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.value='';el.readOnly=false;el.classList.remove('prefilled');}
+  isReturning=false;
+  ['f-owner','f-phone','f-email','f-dogname','f-breed','f-weight'].forEach(id=>{
+    const el=document.getElementById(id); if(el){el.readOnly=false;el.classList.remove('prefilled');}
   });
-  const wEl=document.getElementById('f-weight'); if(wEl){wEl.value='';wEl.readOnly=false;}
   document.getElementById('dob-field').style.display='block';
   document.getElementById('health-sel-wrap').style.display='block';
   document.getElementById('f-health-readonly').style.display='none';
   ['f-diet','f-meds','f-notes'].forEach(id=>{
-    const el=document.getElementById(id); if(el){el.value='';el.readOnly=false;el.classList.remove('prefilled');}
+    const el=document.getElementById(id); if(el){el.readOnly=false;el.classList.remove('prefilled');}
   });
   document.getElementById('remarks-field').style.display='none';
   document.getElementById('returning-badge').style.display='none';
   document.getElementById('pkgInfoCard').classList.remove('show');
-  document.getElementById('dogSelector').classList.remove('show');
-  document.getElementById('dogCards').innerHTML='';
 }
 
-// ══ UI HELPERS ════════════════════════════════════════════════════
+// ══ UI HELPERS ═══════════════════════════════════════════════════
 function selectRadio(el,name){
   document.querySelectorAll('[name='+name+']').forEach(r=>r.closest('.radio-opt').classList.remove('selected'));
   el.classList.add('selected');
@@ -689,172 +569,145 @@ function showTransport(show){ document.getElementById('f-tr-detail').style.displ
 
 // ══ PRICING ENGINE ════════════════════════════════════════════════
 function calcForm() {
-  const w   = parseFloat(document.getElementById('f-weight')?.value);
-  const ciD = getDateTime('f-ci-date','f-ci-time');
-  const coD = getDateTime('f-co-date','f-co-time');
-  const ps  = document.getElementById('f-price-section');
-  const card= document.getElementById('f-price-card');
-
-  if (!w || !ciD || !coD) { ps.style.display='none'; return; }
-
-  const sk = getSizeKey(w);
-  if (!sk) { ps.style.display='none'; return; }
-
-  const pd = PRICING[sk];
-
-  if (coD <= ciD) {
-    card.innerHTML = '<div class="price-empty" style="color:var(--pw-danger);">Check-out 必須在 Check-in 之後</div>';
-    ps.style.display = 'block';
-    return;
+  const w    = parseFloat(document.getElementById('f-weight')?.value);
+  const ciD  = getDateTime('f-ci-date','f-ci-time');
+  const coD  = getDateTime('f-co-date','f-co-time');
+  const ps   = document.getElementById('f-price-section');
+  const card = document.getElementById('f-price-card');
+  if (!w||!ciD||!coD){ ps.style.display='none'; return; }
+  const sk=getSizeKey(w);
+  if(!sk){ ps.style.display='none'; return; }
+  const pd=PRICING[sk];
+  if(coD<=ciD){
+    card.innerHTML='<div class="price-empty" style="color:var(--pw-danger);">Check-out 必須在 Check-in 之後</div>';
+    ps.style.display='block'; return;
   }
+  const nights=Math.floor((coD-ciD)/86400000);
+  const lateOut=(coD.getHours()+coD.getMinutes()/60)>=12;
+  let disc=1,discLabel='';
+  if(nights>=14){disc=0.95;discLabel='14晚以上 95折';}
+  const base=nights*pd.overnight;
+  const oTotal=Math.round(base*disc);
+  const dcFee=lateOut?pd.daycare:0;
+  let html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
+  if(disc<1) html+=`<div class="price-row disc"><span>${discLabel}</span><span>-$${base-oTotal}</span></div>`;
+  if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
+  let addons=0;
 
-  // ★ 晚數：純日期計算，不受入住／離開時間影響
-  const nights = countNights(
-    document.getElementById('f-ci-date').value,
-    document.getElementById('f-co-date').value
-  );
-
-  if (nights <= 0) {
-    card.innerHTML = '<div class="price-empty" style="color:var(--pw-danger);">Check-out 必須在 Check-in 之後</div>';
-    ps.style.display = 'block';
-    return;
-  }
-
-  // 12:00 後離開收日托費
-  const lateOut = (coD.getHours() + coD.getMinutes() / 60) >= 12;
-
-  let disc = 1, discLabel = '';
-  if (nights >= 14) { disc = 0.95; discLabel = '14晚以上 95折'; }
-
-  const base   = nights * pd.overnight;
-  const oTotal = Math.round(base * disc);
-  const dcFee  = lateOut ? pd.daycare : 0;
-
-  let html = `<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
-  if (disc < 1) html += `<div class="price-row disc"><span>${discLabel}</span><span>-$${base - oTotal}</span></div>`;
-  if (lateOut)  html += `<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
-
-  let addons = 0;
-
-  // 美容
-  const grSel = document.querySelector('input[name=f-gr]:checked');
-  if (grSel && grSel.value === 'yes' && GROOMING[sk]) {
-    const grType = document.getElementById('f-gr-type')?.value || '';
-    const grCut  = document.getElementById('f-gr-cut')?.value  || 'none';
-    if (grType) {
-      const g = GROOMING[sk];
-      let grBase = grType === 'basic' ? g.basic : g.fullset;
-      let cutAdd = 0;
-      if (grCut === 'razor') cutAdd = g.razor;
-      else if (grCut === 'half') cutAdd = g.half;
-      else if (grCut === 'full' && grType === 'fullset') cutAdd = g.fullcut;
-      const grTotal = Math.round((grBase + cutAdd) * 0.9);
-      const grLabel = (grType === 'basic' ? 'Basic' : 'Full Set') + (grCut !== 'none' ? ' + ' + ({razor:'全剷',half:'半手剪',full:'全手剪'}[grCut] || '') : '');
-      html += `<div class="price-row addon"><span>美容（${grLabel}）住宿9折</span><span>$${grTotal}</span></div>`;
-      addons += grTotal;
+  // Grooming
+  const grSel=document.querySelector('input[name=f-gr]:checked');
+  if(grSel&&grSel.value==='yes'&&GROOMING[sk]){
+    const grType=document.getElementById('f-gr-type')?.value||'';
+    const grCut=document.getElementById('f-gr-cut')?.value||'none';
+    if(grType){
+      const g=GROOMING[sk];
+      let grBase=grType==='basic'?g.basic:g.fullset;
+      let cutAdd=0;
+      if(grCut==='razor')cutAdd=g.razor;
+      else if(grCut==='half')cutAdd=g.half;
+      else if(grCut==='full'&&grType==='fullset')cutAdd=g.fullcut;
+      const grTotal=Math.round((grBase+cutAdd)*0.9);
+      const grLabel=(grType==='basic'?'Basic':'Full Set')+(grCut!=='none'?' + '+({razor:'全剷',half:'半手剪',full:'全手剪'}[grCut]||''):'');
+      html+=`<div class="price-row addon"><span>美容（${grLabel}）住宿9折</span><span>$${grTotal}</span></div>`;
+      addons+=grTotal;
     }
   }
 
-  // 學院課堂
-  const acCount = parseInt(document.getElementById('f-ac')?.value) || 0;
-  if (acCount > 0) {
-    const acFee = acCount * 622;
-    html += `<div class="price-row addon"><span>學院課堂 ${acCount} 堂</span><span>$${acFee}</span></div>`;
-    addons += acFee;
-    const ap = document.getElementById('f-ac-price'); if (ap) ap.textContent = '$' + acFee;
-  } else {
-    const ap = document.getElementById('f-ac-price'); if (ap) ap.textContent = '';
-  }
+  // Academy
+  const acCount=parseInt(document.getElementById('f-ac')?.value)||0;
+  if(acCount>0){
+    const acFee=acCount*622;
+    html+=`<div class="price-row addon"><span>學院課堂 ${acCount} 堂</span><span>$${acFee}</span></div>`;
+    addons+=acFee;
+    const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent='$'+acFee;
+  } else { const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent=''; }
 
-  // 接送
-  const trSel = document.querySelector('input[name=f-tr]:checked');
-  if (trSel && trSel.value !== 'none') {
-    const distEl = document.getElementById('f-tr-district');
-    const dp = parseInt(distEl?.value) || 0;
-    if (dp > 0) {
-      const trTotal = trSel.value === 'both' ? dp * 2 : dp;
-      const distName = distEl.options[distEl.selectedIndex]?.text || '';
-      html += `<div class="price-row addon"><span>接送（${distName}）${trSel.value === 'both' ? '× 2' : ''}</span><span>$${trTotal}</span></div>`;
-      addons += trTotal;
+  // Transport
+  const trSel=document.querySelector('input[name=f-tr]:checked');
+  if(trSel&&trSel.value!=='none'){
+    const distEl=document.getElementById('f-tr-district');
+    const dp=parseInt(distEl?.value)||0;
+    if(dp>0){
+      const trTotal=trSel.value==='both'?dp*2:dp;
+      const distName=distEl.options[distEl.selectedIndex]?.text||'';
+      html+=`<div class="price-row addon"><span>接送（${distName}）${trSel.value==='both'?'× 2':''}</span><span>$${trTotal}</span></div>`;
+      addons+=trTotal;
     }
   }
-
-  const grand = oTotal + dcFee + addons;
-  html += `<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
-  card.innerHTML = html;
-  ps.style.display = 'block';
+  const grand=oTotal+dcFee+addons;
+  html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
+  card.innerHTML=html;
+  ps.style.display='block';
+  window._hotelTotal = grand; // 【問題1 & 2】儲存計算金額，提交時傳送
 }
 
 // ══ SUBMIT ════════════════════════════════════════════════════════
 async function submitForm() {
-  const required = [
-    {id:'f-owner', msg:'請填寫主人姓名'},
-    {id:'f-phone', msg:'請填寫 WhatsApp 號碼'},
+  const required=[
+    {id:'f-owner',msg:'請填寫主人姓名'},
+    {id:'f-phone',msg:'請填寫 WhatsApp 號碼'},
   ];
-  for (const r of required) { if (!document.getElementById(r.id)?.value) { alert(r.msg); return; } }
+  for(const r of required){ if(!document.getElementById(r.id)?.value){alert(r.msg);return;} }
+  const email=document.getElementById('f-email').value;
+  const emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  document.getElementById('e-email').classList.toggle('show',!emailOk);
+  if(!emailOk){ document.getElementById('f-email').focus(); return; }
+  const ciD=getDateTime('f-ci-date','f-ci-time');
+  const coD=getDateTime('f-co-date','f-co-time');
+  if(!ciD||!coD){alert('請填寫入住及離開日期時間');return;}
+  if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
 
-  const email  = document.getElementById('f-email').value;
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  document.getElementById('e-email').classList.toggle('show', !emailOk);
-  if (!emailOk) { document.getElementById('f-email').focus(); return; }
+  const btn=document.getElementById('submitBtn');
+  const res=document.getElementById('submitResult');
+  btn.disabled=true; btn.textContent='提交中…';
 
-  const ciD = getDateTime('f-ci-date','f-ci-time');
-  const coD = getDateTime('f-co-date','f-co-time');
-  if (!ciD || !coD) { alert('請填寫入住及離開日期時間'); return; }
-  if (!document.getElementById('f-terms').checked) { alert('請確認已閱讀並同意條款及細則'); return; }
-
-  const btn = document.getElementById('submitBtn');
-  const res  = document.getElementById('submitResult');
-  btn.disabled = true; btn.textContent = '提交中…';
-
-  const payload = {
-    action:        'submit_hotel',
-    customerType:  isReturning ? '舊客' : '新客',
-    ownerName:     document.getElementById('f-owner').value,
-    phone:         document.getElementById('f-phone').value,
-    email:         document.getElementById('f-email').value,
-    dogName:       document.getElementById('f-dogname').value,
-    breed:         document.getElementById('f-breed').value,
-    weight:        document.getElementById('f-weight').value,
-    gender:        document.getElementById('f-gender').value,
-    neutered:      document.getElementById('f-neutered').value,
-    dob:           document.getElementById('f-dob')?.value || '',
-    health:        document.getElementById('f-health-text')?.value || document.getElementById('f-health-ro')?.value || '',
-    diet:          document.getElementById('f-diet').value,
-    meds:          document.getElementById('f-meds').value,
-    notes:         document.getElementById('f-notes').value,
-    remarks:       document.getElementById('f-remarks')?.value || '',
-    checkIn:       `${document.getElementById('f-ci-date').value} ${document.getElementById('f-ci-time').value}`,
-    checkOut:      `${document.getElementById('f-co-date').value} ${document.getElementById('f-co-time').value}`,
-    grooming:      (document.querySelector('input[name=f-gr]:checked')?.value === 'yes')
-                     ? (document.getElementById('f-gr-type').value === 'basic' ? 'Basic' : 'Full Set')
-                     : '不需要',
-    academyCount:  document.getElementById('f-ac').value,
-    transport:     document.querySelector('input[name=f-tr]:checked')?.value || 'none',
-    trDistrict:    document.getElementById('f-tr-district')?.value || '',
-    trAddress:     document.getElementById('f-tr-addr')?.value || '',
-    status:        '待審批',
+  const payload={
+    action:'submit_hotel',
+    customerType:isReturning?'舊客':'新客',
+    ownerName:document.getElementById('f-owner').value,
+    phone:document.getElementById('f-phone').value,
+    email:document.getElementById('f-email').value,
+    dogName:document.getElementById('f-dogname').value,
+    breed:document.getElementById('f-breed').value,
+    weight:document.getElementById('f-weight').value,
+    gender:document.getElementById('f-gender').value,
+    neutered:document.getElementById('f-neutered').value,
+    dob:document.getElementById('f-dob')?.value||'',
+    health:document.getElementById('f-health-text')?.value||document.getElementById('f-health-ro')?.value||'',
+    diet:document.getElementById('f-diet').value,
+    meds:document.getElementById('f-meds').value,
+    notes:document.getElementById('f-notes').value,
+    remarks:document.getElementById('f-remarks')?.value||'',
+    checkIn:`${document.getElementById('f-ci-date').value} ${document.getElementById('f-ci-time').value}`,
+    checkOut:`${document.getElementById('f-co-date').value} ${document.getElementById('f-co-time').value}`,
+    grooming:(document.querySelector('input[name=f-gr]:checked')?.value==='yes')
+      ?(document.getElementById('f-gr-type').value==='basic'?'Basic':'Full Set'):'不需要',
+    academyCount:document.getElementById('f-ac').value,
+    transport:document.querySelector('input[name=f-tr]:checked')?.value||'none',
+    trDistrict:document.getElementById('f-tr-district')?.value||'',
+    trAddress:document.getElementById('f-tr-addr')?.value||'',
+    totalAmount: window._hotelTotal || 0, // 【問題1 & 2】傳送計算好的應付金額
+    status:'待審批',
   };
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method:'POST', body:JSON.stringify(payload) });
-    res.className  = 'submit-result success';
-    res.textContent = '預約申請已成功提交！請參閱下方提示，前台同事將於 24 小時內透過 WhatsApp 及電郵確認。';
-    btn.textContent = '已提交';
+    await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    res.className='submit-result success';
+    res.textContent='預約申請已成功提交！請參閱下方提示，前台同事將於 24 小時內透過 WhatsApp 及電郵確認。';
+    btn.textContent='已提交';
     showSuccessModal();
   } catch(e) {
-    res.className  = 'submit-result error';
-    res.textContent = '提交失敗，請稍後再試或 WhatsApp 聯絡我們。';
-    btn.disabled = false;
-    btn.innerHTML = '<svg class="ico ico-sm"><use href="#ico-paw"/></svg>提交預約申請';
+    res.className='submit-result error';
+    res.textContent='提交失敗，請稍後再試或 WhatsApp 聯絡我們。';
+    btn.disabled=false; btn.innerHTML='<svg class="ico ico-sm"><use href="#ico-paw"/></svg>提交預約申請';
   }
 }
 
-// ══ SUCCESS MODAL ══════════════════════════════════════════════════
-function showSuccessModal()  { document.getElementById('successModal').classList.add('show'); }
-function closeSuccessModal() { document.getElementById('successModal').classList.remove('show'); }
-document.getElementById('successModal').addEventListener('click', function(e) {
-  if (e.target === this) closeSuccessModal();
+// ══ SUCCESS MODAL ═══════════════════════════════════
+function showSuccessModal(){ document.getElementById('successModal').classList.add('show'); }
+function closeSuccessModal(){ document.getElementById('successModal').classList.remove('show'); }
+document.getElementById('successModal').addEventListener('click',function(e){
+  if(e.target===this) closeSuccessModal();
 });
 </script>
 </body>
