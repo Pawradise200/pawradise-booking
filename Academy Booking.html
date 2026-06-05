@@ -1028,8 +1028,14 @@ function renderGrade(d){
     if (tp) { used = Number(tp.used ?? tp.classesUsed ?? 0); total = Number(tp.total ?? tp.classesTotal ?? 0); }
   }
   const build = window.GRADE_VARIANT === 2 ? gradeVertical : gradeHorizontal;
-  wrap.innerHTML = build(cur, idx, dog, used, total);
+  const html = build(cur, idx, dog, used, total);
+  dbg('生成 HTML 長度: ' + html.length + ' 字');
+  dbg('wrap element: ' + (wrap ? '存在' : '❌ 找不到'));
+  wrap.innerHTML = html;
   wrap.classList.add('show');
+  // 強制可見，方便診斷
+  wrap.style.cssText = 'display:block !important; border:3px solid red; min-height:40px;';
+  dbg('已強制設 display:block + 紅色邊框');
 }
 
 function distText(idx){
