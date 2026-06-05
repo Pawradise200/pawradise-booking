@@ -848,7 +848,7 @@ function demoLoad(phone) {
     if (gw) window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
   });
 }
-async function doLookup() {
+function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
@@ -861,20 +861,48 @@ async function doLookup() {
     fillRecord({ ...demoRecordFor(phone), phone });
     return;
   }
-  try {
-    const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
-    const json = await res.json();
-    if (json.found && json.data) {
-      fillRecord(json.data);
-    } else {
-      document.getElementById('notfoundMsg').classList.add('show');
-      lookupActive = false;
-    }
-  } catch(e) {
-    document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
+  // JSONP 查詢：繞過 CORS（Apps Script GET 不支援 CORS header）
+  const cbName = '_pw_cb_' + Date.now();
+  const script = document.createElement('script');
+  const timer  = setTimeout(() => {
+    cleanup();
+    document.getElementById('notfoundMsg').textContent = '查詢逾時，請稍後重試或 WhatsApp 聯絡我們。';
     document.getElementById('notfoundMsg').classList.add('show');
     lookupActive = false;
+  }, 8000);
+
+  function cleanup() {
+    clearTimeout(timer);
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
   }
+
+  window[cbName] = function(json) {
+    cleanup();
+    if (!json || !json.found) {
+      document.getElementById('notfoundMsg').textContent = '找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。';
+      document.getElementById('notfoundMsg').classList.add('show');
+      lookupActive = false;
+      return;
+    }
+    // Apps Script 回傳格式：{ found, owner, dogs[], data }
+    // 取第一隻狗作為主記錄，同時合併 owner 資料
+    const dog    = (json.dogs && json.dogs.length) ? json.dogs[0] : (json.data || {});
+    const owner  = json.owner || {};
+    const record = Object.assign({}, owner, dog, {
+      grade: dog.grade || dog.behaviorLevel || owner.grade || '',
+    });
+    fillRecord(record);
+  };
+
+  script.src = `${APPS_SCRIPT_URL}?action=lookup&phone=${encodeURIComponent(phone)}&callback=${cbName}`;
+  script.onerror = function() {
+    cleanup();
+    document.getElementById('notfoundMsg').textContent = '查詢失敗，請稍後重試或 WhatsApp 聯絡我們。';
+    document.getElementById('notfoundMsg').classList.add('show');
+    lookupActive = false;
+  };
+  document.head.appendChild(script);
 }
 
 function fillRecord(d) {
