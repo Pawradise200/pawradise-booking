@@ -698,6 +698,7 @@ const CFG = {
 
 let lookupActive = false;
 let _allDogs = [];
+let _upcomingClasses = [];
 
 // ══ 示範模式 ══════════════════════════════════════════════════════
 // DEMO_MODE = true 時，搜尋任何 8 位電話即會載入示範舊客記錄，方便預覽。
@@ -874,11 +875,12 @@ async function doLookup() {
     if (json.found && (json.data || (Array.isArray(json.dogs) && json.dogs.length))) {
       const dogs = (Array.isArray(json.dogs) && json.dogs.length) ? json.dogs : [json.data];
       _allDogs = dogs;
+      _upcomingClasses = json.upcomingClasses || [];
       if (dogs.length > 1) {
         showDogSelector(dogs);
       } else {
         hideDogSelector();
-        fillRecord(dogs[0]);
+        fillRecord(dogs[0], _upcomingClasses);
       }
     } else {
       document.getElementById('notfoundMsg').classList.add('show');
@@ -901,12 +903,12 @@ function showDogSelector(dogs) {
       ${dogs.map((d, i) => `<option value="${i}">${d.dogName || '狗狗'}${d.breed ? `（${d.breed}）` : ''}</option>`).join('')}
     </select>`;
   wrap.classList.add('show');
-  fillRecord(dogs[0]);
+  fillRecord(dogs[0], _upcomingClasses);
 }
 function selectDog(i) {
   i = Number(i);
   if (!_allDogs[i]) return;
-  fillRecord(_allDogs[i]);
+  fillRecord(_allDogs[i], _upcomingClasses);
   const sel = document.getElementById('dogSelect');
   if (sel) sel.value = i;
 }
@@ -915,7 +917,7 @@ function hideDogSelector() {
   if (wrap) { wrap.classList.remove('show'); wrap.innerHTML = ''; }
 }
 
-function fillRecord(d) {
+function fillRecord(d, upcomingClasses) {
   // 預填資料但保持可編輯，客戶可手動更改
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
@@ -942,7 +944,7 @@ function fillRecord(d) {
   document.getElementById('foundMsg').classList.add('show');
   document.getElementById('returning-badge').style.display = 'block';
   renderGrade(d);
-  renderPackages(d);
+  renderPackages(d, upcomingClasses || []);
   lookupActive = true;
 }
 
@@ -953,6 +955,7 @@ function clearLookup() {
   document.getElementById('returning-badge').style.display = 'none';
   hideDogSelector();
   _allDogs = [];
+  _upcomingClasses = [];
   const pw = document.getElementById('pkgWrap');
   pw.classList.remove('show');
   document.getElementById('pkgList').innerHTML = '';
@@ -1102,7 +1105,7 @@ function gotoBooking(){
   if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 70, behavior:'smooth' });
 }
 
-function renderPackages(d) {
+function renderPackages(d, upcomingClasses) {
   const wrap = document.getElementById('pkgWrap');
   const list = document.getElementById('pkgList');
   // Normalise: accept an array `packages`, or single flat fields on the record.
@@ -1113,22 +1116,75 @@ function renderPackages(d) {
     pkgs = [{ name: d.package || d.packageName, total: d.classesTotal,
               used: d.classesUsed, expiry: d.packageExpiry || d.expiry }];
   }
-  if (!pkgs.length) { wrap.classList.remove('show'); list.innerHTML = ''; return; }
 
-  list.innerHTML = pkgs.map(p => p.kind === 'monthly' ? renderMonthly(p) : renderTerm(p)).join('');
-  // 學期套票：當已報讀堂數達到「提示起始堂數」即於框框外顯示續堂提示
-  // remindFrom = 由第幾堂開始提示（預設為最後一堂）
-  const termLow = pkgs.some(p => {
-    if (p.kind === 'monthly') return false;
-    const total = Number(p.total ?? p.classesTotal ?? 0);
-    const used  = Number(p.used ?? p.classesUsed ?? 0);
-    const from  = Number(p.remindFrom ?? total);
-    return (used + 1) >= from;   // 即將上「第 from 堂」或之後
-  });
-  if (termLow) {
-    list.innerHTML += `<div class="pkg-foot-note"><svg class="ico"><use href="#ico-alert"/></svg>學期課堂即將用完，請及早與導師聯絡安排下一學期續堂。</div>`;
+  // ── 將出席記錄轉為 renderBooked 格式，按當前狗狗篩選 ──
+  const dogKey = (d.dogName || '').trim().toLowerCase();
+  const attendanceBooked = Array.isArray(upcomingClasses)
+    ? upcomingClasses
+        .filter(c => !dogKey || (c.dogName || '').trim().toLowerCase() === dogKey)
+        .map(c => ({
+          date:  c.classDate || '',
+          title: [c.lessonNum, c.courseLevel, c.classLabel].filter(Boolean).join(' · '),
+          time:  c.arrivalTime || '',
+          ref:   c.bookingRef  || '',
+        }))
+    : [];
+
+  // 無套票且無出席記錄 → 隱藏整個區塊
+  if (!pkgs.length && !attendanceBooked.length) {
+    wrap.classList.remove('show'); list.innerHTML = ''; return;
+  }
+
+  // 有套票 → 正常渲染，再於末端附加出席追蹤（若套票本身無 p.booked）
+  if (pkgs.length) {
+    list.innerHTML = pkgs.map(p => p.kind === 'monthly' ? renderMonthly(p) : renderTerm(p)).join('');
+    // 學期套票：當已報讀堂數達到「提示起始堂數」即於框框外顯示續堂提示
+    // remindFrom = 由第幾堂開始提示（預設為最後一堂）
+    const termLow = pkgs.some(p => {
+      if (p.kind === 'monthly') return false;
+      const total = Number(p.total ?? p.classesTotal ?? 0);
+      const used  = Number(p.used ?? p.classesUsed ?? 0);
+      const from  = Number(p.remindFrom ?? total);
+      return (used + 1) >= from;   // 即將上「第 from 堂」或之後
+    });
+    if (termLow) {
+      list.innerHTML += `<div class="pkg-foot-note"><svg class="ico"><use href="#ico-alert"/></svg>學期課堂即將用完，請及早與導師聯絡安排下一學期續堂。</div>`;
+    }
+    // 若套票本身無 booked 資料，用出席記錄補充
+    const hasPkgBooked = pkgs.some(p => Array.isArray(p.booked) && p.booked.length);
+    if (!hasPkgBooked && attendanceBooked.length) {
+      list.innerHTML += renderAttendanceSection(attendanceBooked);
+    }
+  } else {
+    // 無套票但有出席記錄 → 只顯示出席追蹤
+    list.innerHTML = renderAttendanceSection(attendanceBooked);
   }
   wrap.classList.add('show');
+}
+
+// 出席記錄獨立顯示區塊（與套票 renderBooked 格式相同，加參考號碼）
+function renderAttendanceSection(booked) {
+  if (!Array.isArray(booked) || !booked.length) return '';
+  const MON = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
+    const dt   = new Date(b.date);
+    const past = dt < today;
+    const dateLabel = isNaN(dt) ? b.date : `${dt.getDate()}<span>${MON[dt.getMonth()]}</span>`;
+    return `<div class="booked-row">
+      <div class="booked-date"><b>${isNaN(dt) ? '—' : dt.getDate()}</b><span>${isNaN(dt) ? '' : MON[dt.getMonth()]}</span></div>
+      <div class="booked-info">
+        <div class="booked-title">${b.title || '課堂'}</div>
+        ${b.time  ? `<div class="booked-meta">🕐 ${b.time}</div>` : ''}
+        ${b.ref   ? `<div class="booked-meta" style="color:var(--pw-muted,#888);font-size:.75em;">${b.ref}</div>` : ''}
+      </div>
+      <div class="booked-pill${past ? ' past' : ''}">${past ? '已完成' : '已預約'}</div>
+    </div>`;
+  }).join('');
+  return `<div class="pkg-booked">
+    <div class="pkg-booked-lbl"><svg class="ico"><use href="#ico-calendar"/></svg>已預約課堂</div>
+    ${rows}
+  </div>`;
 }
 
 // 學期制：固定堂數，按已出席計進度
