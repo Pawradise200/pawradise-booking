@@ -25,6 +25,63 @@
 .notfound-msg{display:none;background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);
   padding:10px 13px;font-size:13px;font-weight:700;color:var(--pw-warn);margin-top:11px;}
 .notfound-msg.show{display:block;}
+
+/* ── 社交階梯 ────────────────────────────────────────────────── */
+.ladder-section{display:none;margin-top:13px;padding:13px 15px;
+  background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-cream-deep);
+  border-radius:var(--pw-r-md);}
+.ladder-section.show{display:block;}
+.ladder-head{font-size:13px;font-weight:800;color:var(--pw-navy);margin-bottom:12px;}
+.ladder-track{display:flex;align-items:flex-start;}
+.ladder-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;}
+.ladder-step:not(:last-child)::after{content:'';position:absolute;top:23px;left:50%;
+  width:100%;height:2px;background:var(--pw-cream-deep);z-index:0;}
+.ladder-step.done:not(:last-child)::after{background:var(--pw-navy);}
+.ladder-step.current:not(:last-child)::after{
+  background:linear-gradient(to right,var(--pw-navy),var(--pw-cream-deep));}
+.ladder-dot{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;border:2px solid var(--pw-cream-deep);
+  background:var(--pw-paper);position:relative;z-index:1;overflow:hidden;}
+.ladder-dot svg{width:30px;height:30px;transition:opacity .2s;}
+/* 各階段恐龍本色（未激活時） */
+.ladder-step:nth-child(1) .ladder-dot svg{color:#6abf73;opacity:.5;}  /* C 綠色霸王龍 */
+.ladder-step:nth-child(2) .ladder-dot svg{color:#9b72cf;opacity:.5;}  /* B 紫色棘龍   */
+.ladder-step:nth-child(3) .ladder-dot svg{color:#f5a623;opacity:.5;}  /* B+橙色圓仔   */
+.ladder-step:nth-child(4) .ladder-dot svg{color:#e8c83a;opacity:.5;}  /* A 黃色長頸龍 */
+.ladder-step:nth-child(5) .ladder-dot svg{color:#4ecdc4;opacity:.5;}  /* A+藍色腕龍   */
+/* done：白色圖案放在深藍底 */
+.ladder-step.done .ladder-dot{background:var(--pw-navy);border-color:var(--pw-navy);}
+.ladder-step.done .ladder-dot svg{color:#fff!important;opacity:1;}
+/* current：白色圖案放在金色底 */
+.ladder-step.current .ladder-dot{background:var(--pw-gold);border-color:var(--pw-gold-deep);
+  box-shadow:0 0 0 4px rgba(212,175,55,.25);}
+.ladder-step.current .ladder-dot svg{color:#fff!important;opacity:1;}
+.ladder-lbl{font-size:10.5px;font-weight:800;color:var(--pw-ink-mute);margin-top:6px;
+  text-align:center;line-height:1.25;padding:0 1px;}
+.ladder-lbl small{display:block;font-size:8.5px;font-weight:600;margin-top:1px;}
+.ladder-step.done .ladder-lbl{color:var(--pw-navy-light);}
+.ladder-step.current .ladder-lbl{color:var(--pw-gold-deep);font-weight:900;}
+.ladder-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;
+  padding-top:9px;border-top:1px solid var(--pw-cream-deep);font-size:12px;
+  font-weight:600;color:var(--pw-ink-mute);}
+.ladder-footer b{color:var(--pw-navy);}
+
+/* ── 已報名課堂 ───────────────────────────────────────────────── */
+.enrolled-section{display:none;margin-top:13px;padding:13px 15px;
+  background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-cream-deep);
+  border-radius:var(--pw-r-md);}
+.enrolled-section.show{display:block;}
+.enrolled-head{font-size:13px;font-weight:800;color:var(--pw-navy);margin-bottom:9px;}
+.enrolled-card{background:var(--pw-paper);border:var(--pw-stroke) solid var(--pw-cream-deep);
+  border-radius:var(--pw-r-sm);padding:10px 13px;margin-bottom:7px;font-size:12.5px;
+  font-weight:600;color:var(--pw-ink-soft);line-height:1.75;}
+.enrolled-card:last-child{margin-bottom:0;}
+.ec-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:1px;}
+.ec-dog{font-weight:800;color:var(--pw-ink);font-size:13px;}
+.ec-num{font-size:11px;font-weight:700;padding:2px 9px;background:var(--pw-navy);
+  color:#fff;border-radius:var(--pw-r-pill);}
+.ec-ref{font-size:11px;color:var(--pw-ink-mute);margin-top:3px;}
+
 /* Class list */
 .class-list{display:flex;flex-direction:column;gap:8px;}
 .cls-opt{position:relative;}
@@ -154,27 +211,54 @@
     <div class="notice-item"><span class="ndot">·</span><span><b>取消安排：</b>如需取消課堂，請至少 <b>1 天前</b>透過 WhatsApp 通知學校，每學期最多安排 <b>2 次</b>補課堂。</span></div>
     <div class="notice-item"><span class="ndot">·</span><span><b>疫苗要求：</b>所有狗狗須持有效疫苗記錄及<b>狗牌</b>方可參加課堂。</span></div>
   </div>
-  <!-- Lookup -->
+
+  <!-- ── Lookup ── -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-search"/></svg>舊生快速登入</div>
     <div class="lookup-row">
-      <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
-      <button type="button" class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
+      <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8"
+             onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
+      <button type="button" class="btn-search" onclick="doLookup()">
+        <svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋
+      </button>
     </div>
+
     <div class="found-msg" id="foundMsg">
       <svg class="ico"><use href="#ico-check-circle"/></svg>
       <span>找到記錄：<b id="foundName"></b> — <span id="foundDog"></span></span>
       <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
     </div>
-    <!-- 多狗選擇器（有多隻狗狗時顯示） -->
-    <div id="dogSelectorWrap" style="display:none;margin-top:11px;background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:13px 14px;border:var(--pw-stroke) solid var(--pw-cream-deep);"></div>
+
+    <!-- 多狗選擇器 -->
+    <div id="dogSelectorWrap" style="display:none;margin-top:11px;background:var(--pw-cream-soft);
+         border-radius:var(--pw-r-md);padding:13px 14px;border:var(--pw-stroke) solid var(--pw-cream-deep);"></div>
+
     <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
+
+    <!-- ★ 社交階梯 -->
+    <div class="ladder-section" id="ladderSection">
+      <div class="ladder-head">🪜 社交學習階梯</div>
+      <div class="ladder-track" id="ladderTrack"></div>
+      <div class="ladder-footer">
+        <span>累計 <b id="ladderClassCount">0</b> 堂</span>
+        <span id="ladderLevelText" style="color:var(--pw-gold-deep);font-weight:700;"></span>
+      </div>
+    </div>
+
+    <!-- ★ 已報名課堂 -->
+    <div class="enrolled-section" id="enrolledSection">
+      <div class="enrolled-head">📅 已報名課堂（未出席）</div>
+      <div id="enrolledList"></div>
+    </div>
   </div>
+
   <form id="mainForm" novalidate>
     <!-- 主人資料 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-user"/></svg>主人資料</div>
-      <div id="returning-badge" style="display:none;"><div class="badge-returning"><svg class="ico"><use href="#ico-check-circle"/></svg>舊生資料已載入</div></div>
+      <div id="returning-badge" style="display:none;">
+        <div class="badge-returning"><svg class="ico"><use href="#ico-check-circle"/></svg>舊生資料已載入</div>
+      </div>
       <div class="r2">
         <div class="field">
           <label>主人姓名 <span class="req">*</span></label>
@@ -194,6 +278,7 @@
         <div class="err-msg" id="e-email">請輸入有效電郵</div>
       </div>
     </div>
+
     <!-- 狗狗資料 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-paw"/></svg>狗狗資料</div>
@@ -223,6 +308,7 @@
         <div class="err-msg" id="e-level">請選擇課程級別</div>
       </div>
     </div>
+
     <!-- 選擇課堂日期 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>選擇課堂日期 <span class="req">*</span></div>
@@ -242,11 +328,13 @@
         <ul id="selList"></ul>
       </div>
     </div>
-    <!-- 到達時間 (S1) -->
+
+    <!-- 到達時間 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-clock"/></svg>到達學校時間 <span class="req-note">S1 課堂適用</span></div>
       <div class="time-grid" id="timeGrid"></div>
     </div>
+
     <!-- 接送 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-van"/></svg>接送服務 <span class="req">*</span></div>
@@ -312,11 +400,13 @@
         </div>
       </div>
     </div>
+
     <!-- 備註 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-edit"/></svg>備註（選填）</div>
       <textarea id="remarks" placeholder="例：狗狗特別行為、照顧需要或其他問題"></textarea>
     </div>
+
     <!-- 付款方式 -->
     <div class="sec" id="paymentSec" style="display:none;">
       <div class="sec-label"><svg class="ico"><use href="#ico-card"/></svg>付款方式</div>
@@ -328,6 +418,7 @@
       </div>
       <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明狗狗名字 + 報名課堂日期 + 接送地區。</span></div>
     </div>
+
     <div class="submit-area">
       <button type="submit" class="btn-submit" id="submitBtn">
         <span>提交報名</span>
@@ -335,6 +426,7 @@
       </button>
     </div>
   </form>
+
   <!-- 成功畫面 -->
   <div class="success-screen" id="successScreen">
     <img class="mascot" src="assets/daki-sprite.png" alt="DAKI">
@@ -350,11 +442,209 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z
 const CFG = {
   times: ['9:00–9:30am','9:30–10:00am','10:00–10:30am','10:30–11:00am','11:00–11:30am','11:30–12:00pm'],
 };
-let loadedClasses = [];
-let lookupActive  = false;
-let _allDogs      = [];   // 多狗支援
 
-// ══ 載入課堂名額 ══════════════════════════════════════════════
+// ── 社交階梯（C→B→B+→A→A+，依照品牌設計圖） ───────────────
+const DINO_SVGS = [
+
+  // C ── 綠色霸王龍（反應型 Reactive）嘴巴大開吼叫
+  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <!-- 身體 -->
+    <ellipse cx="12" cy="23" rx="7" ry="5"/>
+    <!-- 頸 -->
+    <path d="M16 20 Q19 17 21 13" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <!-- 頭 -->
+    <ellipse cx="22" cy="11" rx="5.5" ry="4.5" transform="rotate(-20 22 11)"/>
+    <!-- 上顎開口 -->
+    <path d="M19 8 Q23 5 26 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <!-- 牙齒 -->
+    <path d="M20 9 L21 11 M22 8 L23 10 M24 8.5 L25 10.5" stroke="white" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+    <!-- 眼睛 -->
+    <circle cx="21" cy="10" r="1.6" fill="white"/>
+    <circle cx="21.4" cy="10.3" r="0.8" fill="#1a1a1a"/>
+    <!-- 小手 -->
+    <path d="M15 20 Q12 18 11 19 M11 19 Q10 18 10.5 17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+    <!-- 尾巴 -->
+    <path d="M6 24 Q3 23 2 25" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- 腿 -->
+    <rect x="9" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
+    <rect x="14" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
+  </svg>`,
+
+  // B ── 紫色棘龍（細膽型 Shy）縮著身體，眼睛往下看
+  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <!-- 身體 -->
+    <ellipse cx="16" cy="22" rx="7.5" ry="5.5"/>
+    <!-- 頭 -->
+    <circle cx="16" cy="13.5" r="5.5"/>
+    <!-- 背棘 -->
+    <path d="M12 9 L13 5.5 L14 9" fill="currentColor"/>
+    <path d="M16 8 L17 4.5 L18 8" fill="currentColor"/>
+    <path d="M19.5 9.5 L21 6.5 L22 9.5" fill="currentColor"/>
+    <!-- 眼睛（往下瞟，害羞） -->
+    <ellipse cx="14" cy="14" rx="1.8" ry="1.4" fill="white"/>
+    <circle cx="14.2" cy="14.5" r="0.8" fill="#1a1a1a"/>
+    <!-- 臉紅 -->
+    <ellipse cx="13" cy="16" rx="1.5" ry="0.9" fill="white" opacity=".3"/>
+    <!-- 嘴（扁扁的） -->
+    <path d="M14.5 17 Q16 16.2 17.5 17" stroke="white" stroke-width="1" stroke-linecap="round" fill="none"/>
+    <!-- 尾巴 -->
+    <path d="M9 24 Q6 25 5 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- 腿 -->
+    <rect x="11" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
+    <rect x="16" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
+  </svg>`,
+
+  // B+ ── 橙色圓仔（適應期 Adjusting）大眼大笑臉
+  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <!-- 圓身體 -->
+    <circle cx="16" cy="22" r="8"/>
+    <!-- 圓頭 -->
+    <circle cx="16" cy="13" r="6.5"/>
+    <!-- 肚皮亮色 -->
+    <ellipse cx="16" cy="23" rx="5.5" ry="4" fill="white" opacity=".18"/>
+    <!-- 大眼睛 -->
+    <circle cx="13.5" cy="12" r="2.4" fill="white"/>
+    <circle cx="13.6" cy="12.3" r="1.2" fill="#1a1a1a"/>
+    <circle cx="14.2" cy="11.5" r="0.5" fill="white"/>
+    <circle cx="18.5" cy="12" r="2.4" fill="white"/>
+    <circle cx="18.6" cy="12.3" r="1.2" fill="#1a1a1a"/>
+    <circle cx="19.2" cy="11.5" r="0.5" fill="white"/>
+    <!-- 笑嘴 -->
+    <path d="M13 15.5 Q16 18 19 15.5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+    <!-- 頭頂小角 -->
+    <path d="M14 7 Q15 4.5 16 7" fill="currentColor"/>
+    <!-- 小腿 -->
+    <rect x="12" y="28.5" width="3.5" height="3" rx="1.5" fill="currentColor"/>
+    <rect x="16.5" y="28.5" width="3.5" height="3" rx="1.5" fill="currentColor"/>
+  </svg>`,
+
+  // A ── 黃色長頸龍+愛心（社交型 Social）
+  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <!-- 身體 -->
+    <ellipse cx="13" cy="23" rx="8" ry="5.5"/>
+    <!-- 長頸 -->
+    <path d="M16 19 Q20 15 22 10" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <!-- 頭 -->
+    <ellipse cx="23" cy="8" rx="4.5" ry="3.8"/>
+    <!-- 眼 -->
+    <circle cx="24.5" cy="7" r="1.6" fill="white"/>
+    <circle cx="24.7" cy="7.3" r="0.8" fill="#1a1a1a"/>
+    <circle cx="25.1" cy="6.8" r="0.4" fill="white"/>
+    <!-- 笑嘴 -->
+    <path d="M22 9.5 Q24 11.2 26 9.5" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <!-- 身上愛心 -->
+    <path d="M9 22 Q9 20 10.5 20 Q12 20 12 21.5 Q12 20 13.5 20 Q15 20 15 22 Q15 23.5 12 25.5 Q9 23.5 9 22Z" fill="white" opacity=".3"/>
+    <!-- 尾 -->
+    <path d="M6 24 Q3 23.5 3 25.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- 腿 -->
+    <rect x="9" y="27.5" width="3" height="4" rx="1.5" fill="currentColor"/>
+    <rect x="15" y="27.5" width="3" height="4" rx="1.5" fill="currentColor"/>
+  </svg>`,
+
+  // A+ ── 藍色腕龍（穩定犬 Stable）長頸高高伸，神態從容
+  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <!-- 身體 -->
+    <ellipse cx="13" cy="24" rx="8" ry="5.5"/>
+    <!-- 背部弧線點 -->
+    <circle cx="8"  cy="20" r="1.4" opacity=".55"/>
+    <circle cx="11" cy="18.5" r="1.4" opacity=".55"/>
+    <circle cx="14" cy="18" r="1.4" opacity=".55"/>
+    <!-- 超長頸 -->
+    <path d="M17 20 Q21 14 21 7" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <!-- 頭 -->
+    <ellipse cx="21" cy="5.5" rx="4" ry="3.5"/>
+    <!-- 眼（安然） -->
+    <ellipse cx="22.5" cy="4.8" rx="1.5" ry="1.3" fill="white"/>
+    <circle cx="22.6" cy="5" r="0.7" fill="#1a1a1a"/>
+    <circle cx="23" cy="4.6" r="0.35" fill="white"/>
+    <!-- 嘴（平靜微笑） -->
+    <path d="M19.5 7 Q21.5 8.5 23.5 7" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    <!-- 尾 -->
+    <path d="M5 25 Q3 24.5 2.5 26.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- 腿 -->
+    <rect x="9" y="28.5" width="3" height="3.5" rx="1.5" fill="currentColor"/>
+    <rect x="15" y="28.5" width="3" height="3.5" rx="1.5" fill="currentColor"/>
+  </svg>`,
+];
+
+const LADDER_STEPS = [
+  { key:'C',  lbl:'C',  sub:'反應型', test: l => /^C$/i.test(l.trim()) },
+  { key:'B',  lbl:'B',  sub:'細膽型', test: l => /^B$/i.test(l.trim()) },
+  { key:'B+', lbl:'B+', sub:'適應期', test: l => /^B\+$/.test(l.trim()) },
+  { key:'A',  lbl:'A',  sub:'社交型', test: l => /^A$/i.test(l.trim()) },
+  { key:'A+', lbl:'A+', sub:'穩定犬', test: l => /^A\+$/.test(l.trim()) },
+];
+
+const LEVEL_ORDER = ['C','B','B+','A','A+'];
+
+function getLadderIndex(level) {
+  if (!level) return -1;
+  const norm = String(level).trim();
+  return LEVEL_ORDER.findIndex(l => l.toLowerCase() === norm.toLowerCase() ||
+    (l === 'B+' && norm === 'B+') || (l === 'A+' && norm === 'A+'));
+}
+
+let loadedClasses   = [];
+let lookupActive    = false;
+let _allDogs        = [];
+let _upcomingClasses = []; // ★ 新增：電話號碼下所有未來未出席課堂
+
+// ── 社交階梯 render ──────────────────────────────────────────
+function renderLadder(d) {
+  const section = document.getElementById('ladderSection');
+  // 優先用 upcomingClasses 的 courseLevel，其次用 CRM 的
+  const dogClasses = _upcomingClasses.filter(c =>
+    c.dogName.trim().toLowerCase() === (d.dogName || '').trim().toLowerCase()
+  );
+  const activeLevel = dogClasses.length > 0
+    ? dogClasses[0].courseLevel
+    : (d.courseLevel || '');
+  const currentIdx  = getLadderIndex(activeLevel);
+  const total       = Number(d.classCount || 0);
+
+  if (currentIdx < 0 && total === 0) { section.classList.remove('show'); return; }
+
+  document.getElementById('ladderTrack').innerHTML = LADDER_STEPS.map((step, i) => {
+    const isDone    = currentIdx >= 0 && i < currentIdx;
+    const isCurrent = currentIdx >= 0 && i === currentIdx;
+    const cls = isDone ? 'done' : isCurrent ? 'current' : '';
+    return `<div class="ladder-step ${cls}">
+      <div class="ladder-dot">${DINO_SVGS[i]}</div>
+      <div class="ladder-lbl">${step.lbl}<small>${step.sub}</small></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('ladderClassCount').textContent = total;
+  document.getElementById('ladderLevelText').textContent  =
+    activeLevel ? '現時：' + activeLevel : '';
+  section.classList.add('show');
+}
+
+// ── 已報名課堂 render ────────────────────────────────────────
+function renderEnrolledClasses(dogName) {
+  const section = document.getElementById('enrolledSection');
+  const list    = document.getElementById('enrolledList');
+  const classes = dogName
+    ? _upcomingClasses.filter(c =>
+        c.dogName.trim().toLowerCase() === dogName.trim().toLowerCase())
+    : _upcomingClasses;
+
+  if (classes.length === 0) { section.classList.remove('show'); return; }
+
+  list.innerHTML = classes.map(c => `
+    <div class="enrolled-card">
+      <div class="ec-row1">
+        <span class="ec-dog">${c.dogName} · ${c.courseLevel}</span>
+        <span class="ec-num">${c.lessonNum}</span>
+      </div>
+      📅 ${c.classDate}　${c.classLabel}<br>
+      🕐 到達：${c.arrivalTime || '—'}
+      <div class="ec-ref">${c.bookingRef}</div>
+    </div>`).join('');
+  section.classList.add('show');
+}
+
+// ── 載入課堂名額 ──────────────────────────────────────────────
 async function loadClasses() {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
@@ -383,7 +673,7 @@ async function loadClasses() {
   buildClasses();
 }
 
-// ══ BUILD UI ══════════════════════════════════════════════════
+// ── BUILD UI ──────────────────────────────────────────────────
 function buildClasses() {
   document.getElementById('classList').innerHTML = loadedClasses.map(c => {
     const r = Math.max(0, c.max - c.enrolled);
@@ -425,13 +715,16 @@ function buildTimes() {
     </div>`).join('');
 }
 
-// ══ LOOKUP ════════════════════════════════════════════════════
+// ── LOOKUP ────────────────────────────────────────────────────
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
+  document.getElementById('ladderSection').classList.remove('show');   // ★
+  document.getElementById('enrolledSection').classList.remove('show'); // ★
   const selWrap = document.getElementById('dogSelectorWrap');
   if (selWrap) { selWrap.style.display = 'none'; selWrap.innerHTML = ''; }
+
   if (!/^\d{8}$/.test(phone)) {
     document.getElementById('notfoundMsg').classList.add('show');
     return;
@@ -440,9 +733,9 @@ async function doLookup() {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
     if (json.found && json.dogs && json.dogs.length > 0) {
-      _allDogs = json.dogs;
+      _allDogs         = json.dogs;
+      _upcomingClasses = json.upcomingClasses || []; // ★ 儲存未來課堂
       if (json.multiDog) {
-        // 多隻狗狗：顯示選擇器
         document.getElementById('foundName').textContent = json.data.ownerName;
         document.getElementById('foundDog').textContent  = `共 ${json.dogs.length} 隻毛孩`;
         document.getElementById('foundMsg').classList.add('show');
@@ -463,7 +756,7 @@ async function doLookup() {
   }
 }
 
-// 填入選定狗狗的資料（★ 移除 readOnly，讓家長可更改）
+// 填入選定狗狗資料，並更新階梯 + 已報名課堂
 function prefillDog(d) {
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || '']].forEach(([id, val]) => {
@@ -474,6 +767,10 @@ function prefillDog(d) {
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
+
+  // ★ 渲染社交階梯和已報名課堂
+  renderLadder(d);
+  renderEnrolledClasses(d.dogName);
 }
 
 // 多狗選擇器
@@ -487,10 +784,12 @@ function showDogSelector(dogs) {
     <div style="font-size:12.5px;font-weight:700;color:var(--pw-ink-soft);margin-bottom:6px;">
       同一電話下有多隻毛孩，請選擇要報名的狗狗：
     </div>
-    <select onchange="prefillDog(_allDogs[this.value])" style="width:100%;padding:10px 12px;border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);font-size:13px;font-weight:700;background:var(--pw-paper);color:var(--pw-ink);">
+    <select onchange="prefillDog(_allDogs[this.value])"
+      style="width:100%;padding:10px 12px;border:var(--pw-stroke) solid var(--pw-cream-deep);
+             border-radius:var(--pw-r-md);font-size:13px;font-weight:700;
+             background:var(--pw-paper);color:var(--pw-ink);">
       ${opts}
-    </select>
-  `;
+    </select>`;
   wrap.style.display = 'block';
   prefillDog(dogs[0]);
 }
@@ -500,9 +799,13 @@ function clearLookup() {
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
   document.getElementById('returning-badge').style.display = 'none';
+  // ★ 隱藏新區塊
+  document.getElementById('ladderSection').classList.remove('show');
+  document.getElementById('enrolledSection').classList.remove('show');
   const selWrap = document.getElementById('dogSelectorWrap');
   if (selWrap) { selWrap.style.display = 'none'; selWrap.innerHTML = ''; }
   _allDogs = [];
+  _upcomingClasses = []; // ★
   ['ownerName','whatsapp','email','dogName','dogBreed'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('prefilled'); el.readOnly = false; }
@@ -511,28 +814,31 @@ function clearLookup() {
   lookupActive = false;
 }
 
-// ══ TRANSPORT ════════════════════════════════════════════════
+// ── TRANSPORT ─────────────────────────────────────────────────
 function calcTransport() {
   const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
   const detail = document.getElementById('trDetail');
   const priceBox = document.getElementById('trPriceBox');
   const paySec = document.getElementById('paymentSec');
-  if (val === '不需要') { detail.classList.remove('show'); priceBox.style.display = 'none'; if(paySec) paySec.style.display='none'; return; }
+  if (val === '不需要') {
+    detail.classList.remove('show'); priceBox.style.display = 'none';
+    if (paySec) paySec.style.display = 'none'; return;
+  }
   detail.classList.add('show');
-  if(paySec) paySec.style.display='block';
+  if (paySec) paySec.style.display = 'block';
   const dp = parseInt(document.getElementById('trDistrict').value) || 0;
   if (!dp) { priceBox.style.display = 'none'; return; }
-  const isBoth = val === '接+送';
+  const isBoth   = val === '接+送';
   const origTotal = isBoth ? dp * 2 : dp;
   const discTotal = Math.round(origTotal * 0.8);
-  document.getElementById('trPriceType').textContent = val;
-  document.getElementById('trPriceOrig').textContent = '$' + origTotal;
+  document.getElementById('trPriceType').textContent  = val;
+  document.getElementById('trPriceOrig').textContent  = '$' + origTotal;
   document.getElementById('trPriceFinal').textContent = '$' + discTotal;
-  document.getElementById('trPriceAmt').textContent = '$' + discTotal;
+  document.getElementById('trPriceAmt').textContent   = '$' + discTotal;
   priceBox.style.display = 'block';
 }
 
-// ══ VALIDATION ═══════════════════════════════════════════════
+// ── VALIDATION ────────────────────────────────────────────────
 function vf(id, fail, eid) {
   document.getElementById(id)?.classList.toggle('error', fail);
   document.getElementById(eid)?.classList.toggle('show', fail);
@@ -558,7 +864,7 @@ function validate() {
   return ok;
 }
 
-// ══ SUBMIT ═══════════════════════════════════════════════════
+// ── SUBMIT ────────────────────────────────────────────────────
 document.getElementById('mainForm').addEventListener('submit', async e => {
   e.preventDefault();
   if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
@@ -607,7 +913,7 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
   }
 });
 
-// ══ INIT ═════════════════════════════════════════════════════
+// ── INIT ──────────────────────────────────────────────────────
 loadClasses();
 buildTimes();
 </script>
