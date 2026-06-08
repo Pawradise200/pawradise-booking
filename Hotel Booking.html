@@ -709,7 +709,11 @@ async function submitForm() {
   };
 
   try {
-    await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(payload),
+    });
 
     res.className='submit-result success';
     res.textContent='預約申請已成功提交！請參閱下方提示，前台同事將於 24 小時內透過 WhatsApp 及電郵確認。';
