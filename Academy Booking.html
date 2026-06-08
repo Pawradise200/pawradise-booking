@@ -25,7 +25,6 @@
 .notfound-msg{display:none;background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);
   padding:10px 13px;font-size:13px;font-weight:700;color:var(--pw-warn);margin-top:11px;}
 .notfound-msg.show{display:block;}
-
 /* ── 社交階梯 ────────────────────────────────────────────────── */
 .ladder-section{display:none;margin-top:13px;padding:13px 15px;
   background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-cream-deep);
@@ -42,8 +41,7 @@
 .ladder-dot{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;border:2px solid var(--pw-cream-deep);
   background:var(--pw-paper);position:relative;z-index:1;overflow:hidden;}
-/* ── PNG 恐龍圖示 ── */
-.ladder-dot img{width:36px;height:36px;object-fit:contain;opacity:.45;transition:opacity .2s;}
+.ladder-dot img{width:36px;height:36px;object-fit:contain;opacity:.35;transition:opacity .2s;}
 .ladder-step.done .ladder-dot{background:var(--pw-navy);border-color:var(--pw-navy);}
 .ladder-step.done .ladder-dot img{opacity:1;filter:brightness(0) invert(1);}
 .ladder-step.current .ladder-dot{background:var(--pw-gold);border-color:var(--pw-gold-deep);
@@ -58,7 +56,6 @@
   padding-top:9px;border-top:1px solid var(--pw-cream-deep);font-size:12px;
   font-weight:600;color:var(--pw-ink-mute);}
 .ladder-footer b{color:var(--pw-navy);}
-
 /* ── 已報名課堂 ───────────────────────────────────────────────── */
 .enrolled-section{display:none;margin-top:13px;padding:13px 15px;
   background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-cream-deep);
@@ -74,7 +71,17 @@
 .ec-num{font-size:11px;font-weight:700;padding:2px 9px;background:var(--pw-navy);
   color:#fff;border-radius:var(--pw-r-pill);}
 .ec-ref{font-size:11px;color:var(--pw-ink-mute);margin-top:3px;}
-
+/* ── 路線顏色 ── */
+.cls-route{font-size:10.5px;font-weight:700;margin-top:4px;padding:2px 8px;border-radius:4px;display:inline-block;}
+.cls-route.no-tr   {color:#c62828;background:#ffebee;}
+.cls-route.kowloon {color:#1565c0;background:#e3f2fd;}
+.cls-route.hki     {color:#2e7d32;background:#e8f5e9;}
+.cls-route.nt      {color:#6a1b9a;background:#f3e5f5;}
+.cls-route.other-r {color:var(--pw-gold-deep);background:#fffde7;}
+/* ── routeInfoBox 路線顏色 ── */
+.route-info-box.has-route.kowloon{background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;}
+.route-info-box.has-route.hki    {background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
+.route-info-box.has-route.nt     {background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8;}
 /* Class list */
 .class-list{display:flex;flex-direction:column;gap:8px;}
 .cls-opt{position:relative;}
@@ -93,9 +100,6 @@
 .cls-info{flex:1;min-width:0;}
 .cls-name{font-size:13.5px;font-weight:800;color:var(--pw-ink);}
 .cls-sub{font-size:11.5px;font-weight:600;color:var(--pw-ink-mute);margin-top:2px;}
-/* FIX: route tag on class card */
-.cls-route{font-size:10.5px;font-weight:700;color:var(--pw-gold-deep);margin-top:3px;}
-.cls-route.no-tr{color:var(--pw-danger);}
 .badge{font-size:11px;padding:3px 10px;border-radius:var(--pw-r-pill);font-weight:800;flex-shrink:0;}
 .b-open{background:var(--pw-success-bg);color:var(--pw-success);}
 .b-few{background:var(--pw-warn-bg);color:var(--pw-warn);}
@@ -110,7 +114,6 @@
   border-radius:var(--pw-r-md);padding:12px 15px;font-size:13px;font-weight:700;color:var(--pw-navy-deep);}
 .sel-summary.show{display:block;}
 .sel-summary ul{margin:6px 0 0 16px;line-height:1.9;font-weight:600;}
-/* FIX: route info box */
 .route-info-box{display:none;margin-top:10px;padding:10px 14px;border-radius:var(--pw-r-sm);
   font-size:12.5px;font-weight:700;line-height:1.6;}
 .route-info-box.show{display:block;}
@@ -174,11 +177,12 @@
 .ref-badge{display:inline-block;margin-top:20px;background:var(--pw-paper);box-shadow:var(--pw-shadow-card);
   border-radius:var(--pw-r-md);padding:12px 26px;font-size:13px;font-weight:700;color:var(--pw-ink-mute);}
 .ref-badge strong{font-size:17px;color:var(--pw-navy);font-weight:900;display:block;margin-top:3px;letter-spacing:.02em;}
-/* FIX: no classes placeholder */
 .no-classes-msg{padding:20px;text-align:center;font-size:13px;font-weight:600;color:var(--pw-ink-mute);
   background:var(--pw-cream-soft);border-radius:var(--pw-r-md);border:var(--pw-stroke) dashed var(--pw-cream-deep);}
+/* 載入中 spinner for bookings */
+.bookings-loading{font-size:12px;font-weight:600;color:var(--pw-ink-mute);padding:8px 0;text-align:center;display:none;}
+.bookings-loading.show{display:block;}
 @media(max-width:480px){.time-grid{grid-template-columns:1fr 1fr;}.transport-opts{grid-template-columns:1fr;}}
-@media(max-width:380px){.time-grid{grid-template-columns:repeat(2,1fr));}}
 </style>
 </head>
 <body>
@@ -217,7 +221,6 @@
     <div class="notice-item"><span class="ndot">·</span><span><b>取消安排：</b>如需取消課堂，請至少 <b>1 天前</b>透過 WhatsApp 通知學校，每學期最多安排 <b>2 次</b>補課堂。</span></div>
     <div class="notice-item"><span class="ndot">·</span><span><b>疫苗要求：</b>所有狗狗須持有效疫苗記錄及<b>狗牌</b>方可參加課堂。</span></div>
   </div>
-
   <!-- ── Lookup ── -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-search"/></svg>舊生快速登入</div>
@@ -228,20 +231,18 @@
         <svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋
       </button>
     </div>
-
     <div class="found-msg" id="foundMsg">
       <svg class="ico"><use href="#ico-check-circle"/></svg>
       <span>找到記錄：<b id="foundName"></b> — <span id="foundDog"></span></span>
       <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
     </div>
-
     <!-- 多狗選擇器 -->
     <div id="dogSelectorWrap" style="display:none;margin-top:11px;background:var(--pw-cream-soft);
          border-radius:var(--pw-r-md);padding:13px 14px;border:var(--pw-stroke) solid var(--pw-cream-deep);"></div>
-
     <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
-
-    <!-- ★ 社交階梯 — 使用原版恐龍圖案 -->
+    <!-- 課堂資料載入提示 -->
+    <div class="bookings-loading" id="bookingsLoading">⏳ 正在載入已預約課堂資料…</div>
+    <!-- 社交階梯 -->
     <div class="ladder-section" id="ladderSection">
       <div class="ladder-head">🪜 社交學習階梯</div>
       <div class="ladder-track" id="ladderTrack"></div>
@@ -250,14 +251,12 @@
         <span id="ladderLevelText" style="color:var(--pw-gold-deep);font-weight:700;"></span>
       </div>
     </div>
-
-    <!-- ★ 已報名課堂 -->
+    <!-- 已報名課堂 -->
     <div class="enrolled-section" id="enrolledSection">
       <div class="enrolled-head">📅 已報名課堂（待出席）</div>
       <div id="enrolledList"></div>
     </div>
   </div>
-
   <form id="mainForm" novalidate>
     <!-- 主人資料 -->
     <div class="sec">
@@ -284,7 +283,6 @@
         <div class="err-msg" id="e-email">請輸入有效電郵</div>
       </div>
     </div>
-
     <!-- 狗狗資料 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-paw"/></svg>狗狗資料</div>
@@ -300,7 +298,6 @@
           <div class="err-msg" id="e-breed">請輸入品種</div>
         </div>
       </div>
-      <!-- FIX 1: courseLevel change triggers class list filtering -->
       <div class="field">
         <label>課程級別 <span class="req">*</span></label>
         <select id="courseLevel" onchange="onCourseLevelChange()">
@@ -315,7 +312,6 @@
         <div class="err-msg" id="e-level">請選擇課程級別</div>
       </div>
     </div>
-
     <!-- 選擇課堂日期 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>選擇課堂日期 <span class="req">*</span></div>
@@ -333,20 +329,17 @@
         </div>
       </div>
       <div class="err-msg" id="e-classes">請最少選擇一堂</div>
-      <!-- FIX 2: route info box -->
       <div class="route-info-box" id="routeInfoBox"></div>
       <div class="sel-summary" id="selSummary">
         <b>已選課堂：</b>
         <ul id="selList"></ul>
       </div>
     </div>
-
     <!-- 到達時間 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-clock"/></svg>到達學校時間 <span class="req-note">S1 課堂適用</span></div>
       <div class="time-grid" id="timeGrid"></div>
     </div>
-
     <!-- 接送 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-van"/></svg>接送服務 <span class="req">*</span></div>
@@ -412,13 +405,11 @@
         </div>
       </div>
     </div>
-
     <!-- 備註 -->
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-edit"/></svg>備註（選填）</div>
       <textarea id="remarks" placeholder="例：狗狗特別行為、照顧需要或其他問題"></textarea>
     </div>
-
     <!-- 付款方式 -->
     <div class="sec" id="paymentSec" style="display:none;">
       <div class="sec-label"><svg class="ico"><use href="#ico-card"/></svg>付款方式</div>
@@ -430,7 +421,6 @@
       </div>
       <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明狗狗名字 + 接送日期 + 接送地區。</span></div>
     </div>
-
     <div class="submit-area">
       <button type="submit" class="btn-submit" id="submitBtn">
         <span>提交報名</span>
@@ -438,7 +428,6 @@
       </button>
     </div>
   </form>
-
   <!-- 成功畫面 -->
   <div class="success-screen" id="successScreen">
     <img class="mascot" src="assets/daki-sprite.png" alt="DAKI">
@@ -448,23 +437,23 @@
     <div class="ref-badge">參考號碼<strong id="sRef"></strong></div>
   </div>
 </div>
-
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
 const CFG = {
   times: ['9:00–9:30am','9:30–10:00am','10:00–10:30am','10:30–11:00am','11:00–11:30am','11:30–12:00pm'],
 };
 
-// ── FIX 3: 社交階梯使用原版恐龍 PNG 圖案 ──────────────────────
-// 使用 assets/ladder-*.png 原版圖案取代 SVG
+// ─────────────────────────────────────────────────────────────
+// 社交階梯設定（使用 assets/ 原版 PNG）
+// 圖片路徑需與 assets 資料夾內的檔案名稱完全一致（區分大小寫）
+// ─────────────────────────────────────────────────────────────
 const DINO_IMGS = [
-  'assets/ladder-c.png',    // C 反應型
-  'assets/ladder-b.png',    // B 細膽型
-  'assets/ladder-bplus.png',// B+ 適應期
-  'assets/ladder-a.png',    // A 社交型
-  'assets/ladder-aplus.png',// A+ 穩定犬
+  'assets/ladder-c.png',
+  'assets/ladder-b.png',
+  'assets/ladder-bplus.png',
+  'assets/ladder-a.png',
+  'assets/ladder-aplus.png',
 ];
-
 const LADDER_STEPS = [
   { key:'C',  lbl:'C',  sub:'反應型' },
   { key:'B',  lbl:'B',  sub:'細膽型' },
@@ -472,12 +461,12 @@ const LADDER_STEPS = [
   { key:'A',  lbl:'A',  sub:'社交型' },
   { key:'A+', lbl:'A+', sub:'穩定犬' },
 ];
-
 const LEVEL_ORDER = ['C','B','B+','A','A+'];
 
 function getLadderIndex(level) {
   if (!level) return -1;
-  const norm = String(level).trim().toUpperCase().replace('B+','B+').replace('A+','A+');
+  const norm = String(level).trim().toUpperCase()
+    .replace('B+','B+').replace('A+','A+');
   return LEVEL_ORDER.findIndex(l => l.toUpperCase() === norm);
 }
 
@@ -485,9 +474,13 @@ let loadedClasses    = [];
 let lookupActive     = false;
 let _allDogs         = [];
 let _upcomingClasses = [];
+let _currentPhone    = '';
 
-// ── FIX 3: 社交階梯 render（使用 PNG 圖案）─────────────────────
-function renderLadder(d) {
+// ─────────────────────────────────────────────────────────────
+// 社交階梯 render
+// forceShow=true：舊生搜尋成功後，即使暫無堂數資料也強制顯示
+// ─────────────────────────────────────────────────────────────
+function renderLadder(d, forceShow) {
   const section     = document.getElementById('ladderSection');
   const activeLevel = String(d.behavioralLevel || '').trim();
   const currentIdx  = getLadderIndex(activeLevel);
@@ -497,8 +490,8 @@ function renderLadder(d) {
     String(c.dogName || '').trim().toLowerCase() === dogKey
   );
 
-  // 只有在完全沒有任何記錄時才隱藏（新生且無任何課堂資料）
-  if (currentIdx < 0 && total === 0 && !hasUpcoming) {
+  // 非強制顯示時，才套用「完全無資料則隱藏」邏輯
+  if (!forceShow && currentIdx < 0 && total === 0 && !hasUpcoming) {
     section.classList.remove('show');
     return;
   }
@@ -509,7 +502,8 @@ function renderLadder(d) {
     const cls = isDone ? 'done' : isCurrent ? 'current' : '';
     return `<div class="ladder-step ${cls}">
       <div class="ladder-dot">
-        <img src="${DINO_IMGS[i]}" alt="${step.lbl}">
+        <img src="${DINO_IMGS[i]}" alt="${step.lbl}"
+             onerror="this.style.display='none'">
       </div>
       <div class="ladder-lbl">${step.lbl}<small>${step.sub}</small></div>
     </div>`;
@@ -517,11 +511,15 @@ function renderLadder(d) {
 
   document.getElementById('ladderClassCount').textContent = total;
   document.getElementById('ladderLevelText').textContent  =
-    activeLevel ? '現時：' + activeLevel : (total > 0 ? '累計 ' + total + ' 堂' : '');
+    activeLevel
+      ? '現時：' + activeLevel
+      : (total > 0 ? '累計 ' + total + ' 堂' : '尚待評估');
   section.classList.add('show');
 }
 
-// ── FIX 4: 已報名課堂 render（顯示待出席課堂）───────────────────
+// ─────────────────────────────────────────────────────────────
+// 已報名課堂 render
+// ─────────────────────────────────────────────────────────────
 function renderEnrolledClasses(dogName) {
   const section = document.getElementById('enrolledSection');
   const list    = document.getElementById('enrolledList');
@@ -535,11 +533,10 @@ function renderEnrolledClasses(dogName) {
     section.classList.remove('show');
     return;
   }
-
   list.innerHTML = classes.map(c => `
     <div class="enrolled-card">
       <div class="ec-row1">
-        <span class="ec-dog">${c.dogName} · ${c.courseLevel}</span>
+        <span class="ec-dog">${c.dogName} · ${c.courseLevel || ''}</span>
         <span class="ec-num">${c.lessonNum || ''}</span>
       </div>
       📅 ${c.classDate || ''}　${c.classLabel || ''}<br>
@@ -549,7 +546,38 @@ function renderEnrolledClasses(dogName) {
   section.classList.add('show');
 }
 
-// ── 載入課堂名額 ──────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// 【修復重點】loadBookings：搜尋舊生後，另行取得已預約課堂資料
+// 原 lookup 回傳不一定包含 upcomingClasses，需單獨請求
+// ─────────────────────────────────────────────────────────────
+async function loadBookings(phone) {
+  const loader = document.getElementById('bookingsLoading');
+  if (loader) loader.classList.add('show');
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getBookings&phone=${phone}`);
+    const json = await res.json();
+    if (Array.isArray(json.bookings) && json.bookings.length > 0) {
+      _upcomingClasses = json.bookings;
+      // 重新 render（此時 dogName 欄位已填入）
+      const dogName = document.getElementById('dogName').value.trim();
+      renderEnrolledClasses(dogName);
+      // 用更新的課堂資料重新 render 階梯（已預約的也算 hasUpcoming）
+      const currentDogIdx = _allDogs.findIndex(d =>
+        String(d.dogName || '').trim().toLowerCase() === dogName.toLowerCase());
+      if (currentDogIdx >= 0) {
+        renderLadder(_allDogs[currentDogIdx], true);
+      }
+    }
+  } catch(e) {
+    // 靜默失敗：lookup 已成功，booking 取得失敗不影響整體流程
+  } finally {
+    if (loader) loader.classList.remove('show');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// 載入課堂名額
+// ─────────────────────────────────────────────────────────────
 async function loadClasses() {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
@@ -560,7 +588,6 @@ async function loadClasses() {
       throw new Error('no classes from server');
     }
   } catch(e) {
-    // FIX 2: 加入 route 接送路線資訊
     loadedClasses = [
       { id:'S1-0602', label:'S1 · 2 Jun 2026 (Tue)',            time:'週二',             enrolled:15, max:20, type:'S1', route:'' },
       { id:'S1-0604', label:'S1 · 4 Jun 2026 (Thu)',            time:'週四',             enrolled:20, max:20, type:'S1', route:'' },
@@ -604,12 +631,25 @@ async function loadClasses() {
   buildClasses();
 }
 
-// ── FIX 1: buildClasses 按課程級別篩選 ──────────────────────────
+// ─────────────────────────────────────────────────────────────
+// 路線 CSS class helper
+// ─────────────────────────────────────────────────────────────
+function routeClass(r) {
+  if (!r || r === '') return '';
+  if (r === '不設接送')     return 'no-tr';
+  if (r.includes('九龍'))   return 'kowloon';
+  if (r.includes('港島'))   return 'hki';
+  if (r.includes('新界'))   return 'nt';
+  return 'other-r';
+}
+
+// ─────────────────────────────────────────────────────────────
+// buildClasses：按課程級別篩選，並標色路線標籤
+// ─────────────────────────────────────────────────────────────
 function getTypeFilter(level) {
-  if (!level) return null; // null = show all
+  if (!level) return null;
   if (level === 'S2') return ['S2'];
   if (level === 'S1+S2') return ['S1','S2'];
-  // S1 / Light Explorer / Active Explorer / Ultimate Explorer → S1 only
   return ['S1'];
 }
 
@@ -630,20 +670,24 @@ function buildClasses() {
   }
 
   document.getElementById('classList').innerHTML = filtered.map(c => {
-    const r = Math.max(0, c.max - c.enrolled);
-    const st = r <= 0 ? 'full' : r <= 3 ? 'few' : 'open';
+    const r    = Math.max(0, c.max - c.enrolled);
+    const st   = r <= 0 ? 'full' : r <= 3 ? 'few' : 'open';
     const full = st === 'full';
     const badgeTxt = full ? '已滿額' : `剩 ${r} 位`;
     const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
-    // FIX 2: show route tag
+
+    // 路線標籤（顏色依地區）
     let routeHtml = '';
     if (c.route === '不設接送') {
       routeHtml = `<div class="cls-route no-tr">⚠️ 此日不設接送</div>`;
     } else if (c.route) {
-      routeHtml = `<div class="cls-route">🚐 ${c.route}</div>`;
+      const rc = routeClass(c.route);
+      routeHtml = `<div class="cls-route ${rc}">🚐 ${c.route}</div>`;
     }
+
     return `<div class="cls-opt${full ? ' full' : ''}">
-      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-id="${c.id}" data-type="${c.type}" data-route="${c.route || ''}"${full ? ' disabled' : ''}>
+      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}"
+             data-id="${c.id}" data-type="${c.type}" data-route="${c.route || ''}"${full ? ' disabled' : ''}>
       <label class="cls-card" for="${c.id}">
         <div class="chkbox"><svg width="11" height="9" viewBox="0 0 10 8" fill="none">
           <path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -657,31 +701,32 @@ function buildClasses() {
       </label>
     </div>`;
   }).join('');
-  document.querySelectorAll('input[name=cls]').forEach(cb => cb.addEventListener('change', onClassChange));
+
+  document.querySelectorAll('input[name=cls]').forEach(cb =>
+    cb.addEventListener('change', onClassChange));
 }
 
-// ── FIX 1: courseLevel change handler ───────────────────────────
+// ─────────────────────────────────────────────────────────────
+// courseLevel change
+// ─────────────────────────────────────────────────────────────
 function onCourseLevelChange() {
   const level = document.getElementById('courseLevel').value;
-  // Uncheck any previously selected classes
   document.querySelectorAll('input[name=cls]:checked').forEach(cb => { cb.checked = false; });
-  // Rebuild filtered class list
   buildClasses();
-  // Sync S2 info block
   const showS2 = level === 'S2' || level === 'S1+S2';
   document.getElementById('s2Info').classList.toggle('show', showS2);
-  // Clear route info and summary
   updateRouteInfo([]);
   document.getElementById('selSummary').classList.remove('show');
   document.getElementById('e-classes').classList.remove('show');
 }
 
-// ── FIX 2: Route info update ────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// routeInfoBox：多路線標色
+// ─────────────────────────────────────────────────────────────
 function updateRouteInfo(checked) {
   const box = document.getElementById('routeInfoBox');
   if (!box) return;
-
-  const routes = checked.map(c => c.dataset.route || '').filter(Boolean);
+  const routes       = checked.map(c => c.dataset.route || '').filter(Boolean);
   const uniqueRoutes = [...new Set(routes)];
 
   if (uniqueRoutes.length === 0) {
@@ -689,26 +734,43 @@ function updateRouteInfo(checked) {
     return;
   }
 
-  const noTr    = uniqueRoutes.some(r => r === '不設接送');
-  const hasTr   = uniqueRoutes.filter(r => r && r !== '不設接送');
+  const noTrDays  = uniqueRoutes.filter(r => r === '不設接送');
+  const hasTrDays = uniqueRoutes.filter(r => r && r !== '不設接送');
 
-  if (noTr && hasTr.length === 0) {
+  if (noTrDays.length > 0 && hasTrDays.length === 0) {
     box.className = 'route-info-box no-route show';
     box.innerHTML = '⚠️ 所選課堂日期均<b>不設接送服務</b>，請自行到校。';
-  } else if (noTr && hasTr.length > 0) {
-    box.className = 'route-info-box mixed-route show';
-    box.innerHTML = '⚠️ 部分日期不設接送；有提供接送的日期路線：<b>' + hasTr.join('、') + '</b>。';
-  } else {
-    box.className = 'route-info-box has-route show';
-    box.innerHTML = '🚐 所選課堂接送路線：<b>' + hasTr.join('、') + '</b>。';
+    return;
   }
+
+  if (noTrDays.length > 0 && hasTrDays.length > 0) {
+    box.className = 'route-info-box mixed-route show';
+    const pills = hasTrDays.map(r =>
+      `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;
+        font-weight:800;margin:0 2px;${routePillStyle(r)}">${r}</span>`).join('');
+    box.innerHTML = `⚠️ 部分日期不設接送；有提供接送的日期路線：${pills}`;
+    return;
+  }
+
+  // 全部有接送
+  const pills = hasTrDays.map(r =>
+    `<span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;
+      font-weight:800;margin:0 2px;${routePillStyle(r)}">${r}</span>`).join('');
+  box.className = 'route-info-box has-route show';
+  box.innerHTML = `🚐 所選課堂接送路線：${pills}`;
+}
+
+function routePillStyle(r) {
+  if (r.includes('九龍')) return 'background:#e3f2fd;color:#1565c0;';
+  if (r.includes('港島')) return 'background:#e8f5e9;color:#2e7d32;';
+  if (r.includes('新界')) return 'background:#f3e5f5;color:#6a1b9a;';
+  return 'background:#fffde7;color:#f57f17;';
 }
 
 function onClassChange() {
   const checked = [...document.querySelectorAll('input[name=cls]:checked')];
-  const hasS2 = checked.some(c => c.dataset.type === 'S2');
-  const level  = document.getElementById('courseLevel').value;
-  // Only show S2 info if level includes S2 AND an S2 class is selected
+  const hasS2   = checked.some(c => c.dataset.type === 'S2');
+  const level   = document.getElementById('courseLevel').value;
   document.getElementById('s2Info').classList.toggle('show',
     hasS2 || level === 'S2' || level === 'S1+S2');
   const s = document.getElementById('selSummary');
@@ -717,9 +779,9 @@ function onClassChange() {
     updateRouteInfo([]);
     return;
   }
-  document.getElementById('selList').innerHTML = checked.map(c => `<li>${c.value}</li>`).join('');
+  document.getElementById('selList').innerHTML =
+    checked.map(c => `<li>${c.value}</li>`).join('');
   s.classList.add('show');
-  // FIX 2: Update route info
   updateRouteInfo(checked);
 }
 
@@ -731,7 +793,9 @@ function buildTimes() {
     </div>`).join('');
 }
 
-// ── LOOKUP ────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// LOOKUP
+// ─────────────────────────────────────────────────────────────
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
@@ -745,13 +809,17 @@ async function doLookup() {
     document.getElementById('notfoundMsg').classList.add('show');
     return;
   }
+
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
+
     if (json.found && json.dogs && json.dogs.length > 0) {
       _allDogs         = json.dogs;
-      // FIX 4: Store upcoming classes from server
+      _currentPhone    = phone;
+      // lookup 可能附帶 upcomingClasses，先用（若無則 loadBookings 補回）
       _upcomingClasses = Array.isArray(json.upcomingClasses) ? json.upcomingClasses : [];
+
       if (json.multiDog) {
         document.getElementById('foundName').textContent = json.data.ownerName;
         document.getElementById('foundDog').textContent  = `共 ${json.dogs.length} 隻毛孩`;
@@ -762,18 +830,26 @@ async function doLookup() {
       }
       document.getElementById('returning-badge').style.display = 'block';
       lookupActive = true;
+
+      // 【修復】若 lookup 未帶 upcomingClasses，另行請求
+      if (_upcomingClasses.length === 0) {
+        loadBookings(phone);
+      }
     } else {
       document.getElementById('notfoundMsg').classList.add('show');
       lookupActive = false;
     }
   } catch(e) {
-    document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
+    document.getElementById('notfoundMsg').textContent =
+      '查詢失敗，請繼續手動填寫資料。';
     document.getElementById('notfoundMsg').classList.add('show');
     lookupActive = false;
   }
 }
 
-// ── FIX 4: prefillDog — 填資料並重新建課堂列表 ───────────────────
+// ─────────────────────────────────────────────────────────────
+// prefillDog：填入資料 + 強制顯示階梯（forceShow=true）
+// ─────────────────────────────────────────────────────────────
 function prefillDog(d) {
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || '']].forEach(([id, val]) => {
@@ -784,13 +860,11 @@ function prefillDog(d) {
   document.getElementById('foundDog').textContent  = d.dogName   || '';
   document.getElementById('foundMsg').classList.add('show');
 
-  // FIX 4: Render social ladder
-  renderLadder(d);
-  // FIX 4: Render enrolled upcoming classes
+  // forceShow=true：舊生一定顯示階梯，即使暫無堂數
+  renderLadder(d, true);
   renderEnrolledClasses(d.dogName);
 }
 
-// 多狗選擇器
 function showDogSelector(dogs) {
   const wrap = document.getElementById('dogSelectorWrap');
   if (!wrap) return;
@@ -822,24 +896,29 @@ function clearLookup() {
   if (selWrap) { selWrap.style.display = 'none'; selWrap.innerHTML = ''; }
   _allDogs = [];
   _upcomingClasses = [];
+  _currentPhone    = '';
   ['ownerName','whatsapp','email','dogName','dogBreed'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('prefilled'); el.readOnly = false; }
   });
   document.getElementById('courseLevel').value = '';
-  buildClasses(); // reset to "please select level" prompt
+  buildClasses();
   lookupActive = false;
 }
 
-// ── TRANSPORT ─────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// TRANSPORT
+// ─────────────────────────────────────────────────────────────
 function calcTransport() {
-  const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
+  const val      = document.querySelector('input[name=transport]:checked')?.value || '不需要';
   const detail   = document.getElementById('trDetail');
   const priceBox = document.getElementById('trPriceBox');
   const paySec   = document.getElementById('paymentSec');
   if (val === '不需要') {
-    detail.classList.remove('show'); priceBox.style.display = 'none';
-    if (paySec) paySec.style.display = 'none'; return;
+    detail.classList.remove('show');
+    priceBox.style.display = 'none';
+    if (paySec) paySec.style.display = 'none';
+    return;
   }
   detail.classList.add('show');
   if (paySec) paySec.style.display = 'block';
@@ -855,7 +934,9 @@ function calcTransport() {
   priceBox.style.display = 'block';
 }
 
-// ── VALIDATION ────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// VALIDATION
+// ─────────────────────────────────────────────────────────────
 function vf(id, fail, eid) {
   document.getElementById(id)?.classList.toggle('error', fail);
   document.getElementById(eid)?.classList.toggle('show', fail);
@@ -881,7 +962,9 @@ function validate() {
   return ok;
 }
 
-// ── SUBMIT ────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// SUBMIT
+// ─────────────────────────────────────────────────────────────
 document.getElementById('mainForm').addEventListener('submit', async e => {
   e.preventDefault();
   if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
@@ -930,7 +1013,9 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
   }
 });
 
-// ── INIT ──────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
 loadClasses();
 buildTimes();
 </script>
