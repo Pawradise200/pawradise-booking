@@ -34,7 +34,7 @@
 .ladder-head{font-size:13px;font-weight:800;color:var(--pw-navy);margin-bottom:12px;}
 .ladder-track{display:flex;align-items:flex-start;}
 .ladder-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;}
-.ladder-step:not(:last-child)::after{content:'';position:absolute;top:23px;left:50%;
+.ladder-step:not(:last-child)::after{content:'';position:absolute;top:24px;left:50%;
   width:100%;height:2px;background:var(--pw-cream-deep);z-index:0;}
 .ladder-step.done:not(:last-child)::after{background:var(--pw-navy);}
 .ladder-step.current:not(:last-child)::after{
@@ -42,20 +42,13 @@
 .ladder-dot{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;border:2px solid var(--pw-cream-deep);
   background:var(--pw-paper);position:relative;z-index:1;overflow:hidden;}
-.ladder-dot svg{width:30px;height:30px;transition:opacity .2s;}
-/* 各階段恐龍本色（未激活時） */
-.ladder-step:nth-child(1) .ladder-dot svg{color:#6abf73;opacity:.5;}  /* C 綠色霸王龍 */
-.ladder-step:nth-child(2) .ladder-dot svg{color:#9b72cf;opacity:.5;}  /* B 紫色棘龍   */
-.ladder-step:nth-child(3) .ladder-dot svg{color:#f5a623;opacity:.5;}  /* B+橙色圓仔   */
-.ladder-step:nth-child(4) .ladder-dot svg{color:#e8c83a;opacity:.5;}  /* A 黃色長頸龍 */
-.ladder-step:nth-child(5) .ladder-dot svg{color:#4ecdc4;opacity:.5;}  /* A+藍色腕龍   */
-/* done：白色圖案放在深藍底 */
+/* ── PNG 恐龍圖示 ── */
+.ladder-dot img{width:36px;height:36px;object-fit:contain;opacity:.45;transition:opacity .2s;}
 .ladder-step.done .ladder-dot{background:var(--pw-navy);border-color:var(--pw-navy);}
-.ladder-step.done .ladder-dot svg{color:#fff!important;opacity:1;}
-/* current：白色圖案放在金色底 */
+.ladder-step.done .ladder-dot img{opacity:1;filter:brightness(0) invert(1);}
 .ladder-step.current .ladder-dot{background:var(--pw-gold);border-color:var(--pw-gold-deep);
   box-shadow:0 0 0 4px rgba(212,175,55,.25);}
-.ladder-step.current .ladder-dot svg{color:#fff!important;opacity:1;}
+.ladder-step.current .ladder-dot img{opacity:1;filter:brightness(0) invert(1);}
 .ladder-lbl{font-size:10.5px;font-weight:800;color:var(--pw-ink-mute);margin-top:6px;
   text-align:center;line-height:1.25;padding:0 1px;}
 .ladder-lbl small{display:block;font-size:8.5px;font-weight:600;margin-top:1px;}
@@ -100,6 +93,9 @@
 .cls-info{flex:1;min-width:0;}
 .cls-name{font-size:13.5px;font-weight:800;color:var(--pw-ink);}
 .cls-sub{font-size:11.5px;font-weight:600;color:var(--pw-ink-mute);margin-top:2px;}
+/* FIX: route tag on class card */
+.cls-route{font-size:10.5px;font-weight:700;color:var(--pw-gold-deep);margin-top:3px;}
+.cls-route.no-tr{color:var(--pw-danger);}
 .badge{font-size:11px;padding:3px 10px;border-radius:var(--pw-r-pill);font-weight:800;flex-shrink:0;}
 .b-open{background:var(--pw-success-bg);color:var(--pw-success);}
 .b-few{background:var(--pw-warn-bg);color:var(--pw-warn);}
@@ -114,6 +110,13 @@
   border-radius:var(--pw-r-md);padding:12px 15px;font-size:13px;font-weight:700;color:var(--pw-navy-deep);}
 .sel-summary.show{display:block;}
 .sel-summary ul{margin:6px 0 0 16px;line-height:1.9;font-weight:600;}
+/* FIX: route info box */
+.route-info-box{display:none;margin-top:10px;padding:10px 14px;border-radius:var(--pw-r-sm);
+  font-size:12.5px;font-weight:700;line-height:1.6;}
+.route-info-box.show{display:block;}
+.route-info-box.has-route{background:#e8f4fd;color:#1565c0;border:1px solid #90caf9;}
+.route-info-box.no-route{background:var(--pw-danger-bg);color:var(--pw-danger);border:1px solid #ffcdd2;}
+.route-info-box.mixed-route{background:#fff8e1;color:#e65100;border:1px solid #ffcc02;}
 /* Time chips */
 .time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
 .t-opt{position:relative;}
@@ -171,8 +174,11 @@
 .ref-badge{display:inline-block;margin-top:20px;background:var(--pw-paper);box-shadow:var(--pw-shadow-card);
   border-radius:var(--pw-r-md);padding:12px 26px;font-size:13px;font-weight:700;color:var(--pw-ink-mute);}
 .ref-badge strong{font-size:17px;color:var(--pw-navy);font-weight:900;display:block;margin-top:3px;letter-spacing:.02em;}
+/* FIX: no classes placeholder */
+.no-classes-msg{padding:20px;text-align:center;font-size:13px;font-weight:600;color:var(--pw-ink-mute);
+  background:var(--pw-cream-soft);border-radius:var(--pw-r-md);border:var(--pw-stroke) dashed var(--pw-cream-deep);}
 @media(max-width:480px){.time-grid{grid-template-columns:1fr 1fr;}.transport-opts{grid-template-columns:1fr;}}
-@media(max-width:380px){.time-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:380px){.time-grid{grid-template-columns:repeat(2,1fr));}}
 </style>
 </head>
 <body>
@@ -235,7 +241,7 @@
 
     <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
 
-    <!-- ★ 社交階梯 -->
+    <!-- ★ 社交階梯 — 使用原版恐龍圖案 -->
     <div class="ladder-section" id="ladderSection">
       <div class="ladder-head">🪜 社交學習階梯</div>
       <div class="ladder-track" id="ladderTrack"></div>
@@ -247,7 +253,7 @@
 
     <!-- ★ 已報名課堂 -->
     <div class="enrolled-section" id="enrolledSection">
-      <div class="enrolled-head">📅 已報名課堂（未出席）</div>
+      <div class="enrolled-head">📅 已報名課堂（待出席）</div>
       <div id="enrolledList"></div>
     </div>
   </div>
@@ -294,9 +300,10 @@
           <div class="err-msg" id="e-breed">請輸入品種</div>
         </div>
       </div>
+      <!-- FIX 1: courseLevel change triggers class list filtering -->
       <div class="field">
         <label>課程級別 <span class="req">*</span></label>
-        <select id="courseLevel">
+        <select id="courseLevel" onchange="onCourseLevelChange()">
           <option value="">請選擇</option>
           <option value="S1">S1 狗狗學期班</option>
           <option value="S2">S2 情緒重建系統小組班</option>
@@ -321,8 +328,13 @@
           <li>第三堂 · 街上見真章</li>
           <li>第四堂 · 練習融入日常</li>
         </ol>
+        <div style="margin-top:8px;font-size:12px;color:var(--pw-warn);font-weight:700;">
+          S2 課堂必須順序上：請由第一堂開始，順序報讀第二、三、四堂。
+        </div>
       </div>
       <div class="err-msg" id="e-classes">請最少選擇一堂</div>
+      <!-- FIX 2: route info box -->
+      <div class="route-info-box" id="routeInfoBox"></div>
       <div class="sel-summary" id="selSummary">
         <b>已選課堂：</b>
         <ul id="selList"></ul>
@@ -416,7 +428,7 @@
         <div class="payment-method"><span class="payment-label">PayMe</span><span>9023 5303</span></div>
         <div class="payment-method"><span class="payment-label">ATM</span><span>HSBC 741 364962 838</span></div>
       </div>
-      <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明狗狗名字 + 報名課堂日期 + 接送地區。</span></div>
+      <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明狗狗名字 + 接送日期 + 接送地區。</span></div>
     </div>
 
     <div class="submit-area">
@@ -443,167 +455,52 @@ const CFG = {
   times: ['9:00–9:30am','9:30–10:00am','10:00–10:30am','10:30–11:00am','11:00–11:30am','11:30–12:00pm'],
 };
 
-// ── 社交階梯（C→B→B+→A→A+，依照品牌設計圖） ───────────────
-const DINO_SVGS = [
-
-  // C ── 綠色霸王龍（反應型 Reactive）嘴巴大開吼叫
-  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <!-- 身體 -->
-    <ellipse cx="12" cy="23" rx="7" ry="5"/>
-    <!-- 頸 -->
-    <path d="M16 20 Q19 17 21 13" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" fill="none"/>
-    <!-- 頭 -->
-    <ellipse cx="22" cy="11" rx="5.5" ry="4.5" transform="rotate(-20 22 11)"/>
-    <!-- 上顎開口 -->
-    <path d="M19 8 Q23 5 26 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
-    <!-- 牙齒 -->
-    <path d="M20 9 L21 11 M22 8 L23 10 M24 8.5 L25 10.5" stroke="white" stroke-width="0.8" stroke-linecap="round" fill="none"/>
-    <!-- 眼睛 -->
-    <circle cx="21" cy="10" r="1.6" fill="white"/>
-    <circle cx="21.4" cy="10.3" r="0.8" fill="#1a1a1a"/>
-    <!-- 小手 -->
-    <path d="M15 20 Q12 18 11 19 M11 19 Q10 18 10.5 17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-    <!-- 尾巴 -->
-    <path d="M6 24 Q3 23 2 25" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-    <!-- 腿 -->
-    <rect x="9" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
-    <rect x="14" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
-  </svg>`,
-
-  // B ── 紫色棘龍（細膽型 Shy）縮著身體，眼睛往下看
-  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <!-- 身體 -->
-    <ellipse cx="16" cy="22" rx="7.5" ry="5.5"/>
-    <!-- 頭 -->
-    <circle cx="16" cy="13.5" r="5.5"/>
-    <!-- 背棘 -->
-    <path d="M12 9 L13 5.5 L14 9" fill="currentColor"/>
-    <path d="M16 8 L17 4.5 L18 8" fill="currentColor"/>
-    <path d="M19.5 9.5 L21 6.5 L22 9.5" fill="currentColor"/>
-    <!-- 眼睛（往下瞟，害羞） -->
-    <ellipse cx="14" cy="14" rx="1.8" ry="1.4" fill="white"/>
-    <circle cx="14.2" cy="14.5" r="0.8" fill="#1a1a1a"/>
-    <!-- 臉紅 -->
-    <ellipse cx="13" cy="16" rx="1.5" ry="0.9" fill="white" opacity=".3"/>
-    <!-- 嘴（扁扁的） -->
-    <path d="M14.5 17 Q16 16.2 17.5 17" stroke="white" stroke-width="1" stroke-linecap="round" fill="none"/>
-    <!-- 尾巴 -->
-    <path d="M9 24 Q6 25 5 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-    <!-- 腿 -->
-    <rect x="11" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
-    <rect x="16" y="27" width="3" height="4" rx="1.5" fill="currentColor"/>
-  </svg>`,
-
-  // B+ ── 橙色圓仔（適應期 Adjusting）大眼大笑臉
-  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <!-- 圓身體 -->
-    <circle cx="16" cy="22" r="8"/>
-    <!-- 圓頭 -->
-    <circle cx="16" cy="13" r="6.5"/>
-    <!-- 肚皮亮色 -->
-    <ellipse cx="16" cy="23" rx="5.5" ry="4" fill="white" opacity=".18"/>
-    <!-- 大眼睛 -->
-    <circle cx="13.5" cy="12" r="2.4" fill="white"/>
-    <circle cx="13.6" cy="12.3" r="1.2" fill="#1a1a1a"/>
-    <circle cx="14.2" cy="11.5" r="0.5" fill="white"/>
-    <circle cx="18.5" cy="12" r="2.4" fill="white"/>
-    <circle cx="18.6" cy="12.3" r="1.2" fill="#1a1a1a"/>
-    <circle cx="19.2" cy="11.5" r="0.5" fill="white"/>
-    <!-- 笑嘴 -->
-    <path d="M13 15.5 Q16 18 19 15.5" stroke="white" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-    <!-- 頭頂小角 -->
-    <path d="M14 7 Q15 4.5 16 7" fill="currentColor"/>
-    <!-- 小腿 -->
-    <rect x="12" y="28.5" width="3.5" height="3" rx="1.5" fill="currentColor"/>
-    <rect x="16.5" y="28.5" width="3.5" height="3" rx="1.5" fill="currentColor"/>
-  </svg>`,
-
-  // A ── 黃色長頸龍+愛心（社交型 Social）
-  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <!-- 身體 -->
-    <ellipse cx="13" cy="23" rx="8" ry="5.5"/>
-    <!-- 長頸 -->
-    <path d="M16 19 Q20 15 22 10" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
-    <!-- 頭 -->
-    <ellipse cx="23" cy="8" rx="4.5" ry="3.8"/>
-    <!-- 眼 -->
-    <circle cx="24.5" cy="7" r="1.6" fill="white"/>
-    <circle cx="24.7" cy="7.3" r="0.8" fill="#1a1a1a"/>
-    <circle cx="25.1" cy="6.8" r="0.4" fill="white"/>
-    <!-- 笑嘴 -->
-    <path d="M22 9.5 Q24 11.2 26 9.5" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-    <!-- 身上愛心 -->
-    <path d="M9 22 Q9 20 10.5 20 Q12 20 12 21.5 Q12 20 13.5 20 Q15 20 15 22 Q15 23.5 12 25.5 Q9 23.5 9 22Z" fill="white" opacity=".3"/>
-    <!-- 尾 -->
-    <path d="M6 24 Q3 23.5 3 25.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-    <!-- 腿 -->
-    <rect x="9" y="27.5" width="3" height="4" rx="1.5" fill="currentColor"/>
-    <rect x="15" y="27.5" width="3" height="4" rx="1.5" fill="currentColor"/>
-  </svg>`,
-
-  // A+ ── 藍色腕龍（穩定犬 Stable）長頸高高伸，神態從容
-  `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <!-- 身體 -->
-    <ellipse cx="13" cy="24" rx="8" ry="5.5"/>
-    <!-- 背部弧線點 -->
-    <circle cx="8"  cy="20" r="1.4" opacity=".55"/>
-    <circle cx="11" cy="18.5" r="1.4" opacity=".55"/>
-    <circle cx="14" cy="18" r="1.4" opacity=".55"/>
-    <!-- 超長頸 -->
-    <path d="M17 20 Q21 14 21 7" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
-    <!-- 頭 -->
-    <ellipse cx="21" cy="5.5" rx="4" ry="3.5"/>
-    <!-- 眼（安然） -->
-    <ellipse cx="22.5" cy="4.8" rx="1.5" ry="1.3" fill="white"/>
-    <circle cx="22.6" cy="5" r="0.7" fill="#1a1a1a"/>
-    <circle cx="23" cy="4.6" r="0.35" fill="white"/>
-    <!-- 嘴（平靜微笑） -->
-    <path d="M19.5 7 Q21.5 8.5 23.5 7" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-    <!-- 尾 -->
-    <path d="M5 25 Q3 24.5 2.5 26.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-    <!-- 腿 -->
-    <rect x="9" y="28.5" width="3" height="3.5" rx="1.5" fill="currentColor"/>
-    <rect x="15" y="28.5" width="3" height="3.5" rx="1.5" fill="currentColor"/>
-  </svg>`,
+// ── FIX 3: 社交階梯使用原版恐龍 PNG 圖案 ──────────────────────
+// 使用 assets/ladder-*.png 原版圖案取代 SVG
+const DINO_IMGS = [
+  'assets/ladder-c.png',    // C 反應型
+  'assets/ladder-b.png',    // B 細膽型
+  'assets/ladder-bplus.png',// B+ 適應期
+  'assets/ladder-a.png',    // A 社交型
+  'assets/ladder-aplus.png',// A+ 穩定犬
 ];
 
 const LADDER_STEPS = [
-  { key:'C',  lbl:'C',  sub:'反應型', test: l => /^C$/i.test(l.trim()) },
-  { key:'B',  lbl:'B',  sub:'細膽型', test: l => /^B$/i.test(l.trim()) },
-  { key:'B+', lbl:'B+', sub:'適應期', test: l => /^B\+$/.test(l.trim()) },
-  { key:'A',  lbl:'A',  sub:'社交型', test: l => /^A$/i.test(l.trim()) },
-  { key:'A+', lbl:'A+', sub:'穩定犬', test: l => /^A\+$/.test(l.trim()) },
+  { key:'C',  lbl:'C',  sub:'反應型' },
+  { key:'B',  lbl:'B',  sub:'細膽型' },
+  { key:'B+', lbl:'B+', sub:'適應期' },
+  { key:'A',  lbl:'A',  sub:'社交型' },
+  { key:'A+', lbl:'A+', sub:'穩定犬' },
 ];
 
 const LEVEL_ORDER = ['C','B','B+','A','A+'];
 
 function getLadderIndex(level) {
   if (!level) return -1;
-  const norm = String(level).trim();
-  return LEVEL_ORDER.findIndex(l => l.toLowerCase() === norm.toLowerCase() ||
-    (l === 'B+' && norm === 'B+') || (l === 'A+' && norm === 'A+'));
+  const norm = String(level).trim().toUpperCase().replace('B+','B+').replace('A+','A+');
+  return LEVEL_ORDER.findIndex(l => l.toUpperCase() === norm);
 }
 
-let loadedClasses   = [];
-let lookupActive    = false;
-let _allDogs        = [];
-let _upcomingClasses = []; // ★ 新增：電話號碼下所有未來未出席課堂
+let loadedClasses    = [];
+let lookupActive     = false;
+let _allDogs         = [];
+let _upcomingClasses = [];
 
-// ── 社交階梯 render ──────────────────────────────────────────
+// ── FIX 3: 社交階梯 render（使用 PNG 圖案）─────────────────────
 function renderLadder(d) {
-  const section = document.getElementById('ladderSection');
-  // 行為評級來自 CRM 的「行為評級」欄（C/B/B+/A/A+）
-  // 注意：出席記錄的 courseLevel 是課程類型（S1/S2…），不是評級，不能用在這裡
-  const activeLevel = d.behavioralLevel || '';
+  const section     = document.getElementById('ladderSection');
+  const activeLevel = String(d.behavioralLevel || '').trim();
   const currentIdx  = getLadderIndex(activeLevel);
   const total       = Number(d.classCount || 0);
+  const dogKey      = String(d.dogName || '').trim().toLowerCase();
   const hasUpcoming = _upcomingClasses.some(c =>
-    c.dogName.trim().toLowerCase() === (d.dogName || '').trim().toLowerCase()
+    String(c.dogName || '').trim().toLowerCase() === dogKey
   );
 
-  // 只要有任何課堂記錄就顯示階梯；若完全是新生（0堂、無評級、無預約）則隱藏
+  // 只有在完全沒有任何記錄時才隱藏（新生且無任何課堂資料）
   if (currentIdx < 0 && total === 0 && !hasUpcoming) {
-    section.classList.remove('show'); return;
+    section.classList.remove('show');
+    return;
   }
 
   document.getElementById('ladderTrack').innerHTML = LADDER_STEPS.map((step, i) => {
@@ -611,37 +508,43 @@ function renderLadder(d) {
     const isCurrent = currentIdx >= 0 && i === currentIdx;
     const cls = isDone ? 'done' : isCurrent ? 'current' : '';
     return `<div class="ladder-step ${cls}">
-      <div class="ladder-dot">${DINO_SVGS[i]}</div>
+      <div class="ladder-dot">
+        <img src="${DINO_IMGS[i]}" alt="${step.lbl}">
+      </div>
       <div class="ladder-lbl">${step.lbl}<small>${step.sub}</small></div>
     </div>`;
   }).join('');
 
   document.getElementById('ladderClassCount').textContent = total;
   document.getElementById('ladderLevelText').textContent  =
-    activeLevel ? '現時：' + activeLevel : '';
+    activeLevel ? '現時：' + activeLevel : (total > 0 ? '累計 ' + total + ' 堂' : '');
   section.classList.add('show');
 }
 
-// ── 已報名課堂 render ────────────────────────────────────────
+// ── FIX 4: 已報名課堂 render（顯示待出席課堂）───────────────────
 function renderEnrolledClasses(dogName) {
   const section = document.getElementById('enrolledSection');
   const list    = document.getElementById('enrolledList');
-  const classes = dogName
+  const dogKey  = dogName ? String(dogName).trim().toLowerCase() : '';
+  const classes = dogKey
     ? _upcomingClasses.filter(c =>
-        c.dogName.trim().toLowerCase() === dogName.trim().toLowerCase())
+        String(c.dogName || '').trim().toLowerCase() === dogKey)
     : _upcomingClasses;
 
-  if (classes.length === 0) { section.classList.remove('show'); return; }
+  if (!classes || classes.length === 0) {
+    section.classList.remove('show');
+    return;
+  }
 
   list.innerHTML = classes.map(c => `
     <div class="enrolled-card">
       <div class="ec-row1">
         <span class="ec-dog">${c.dogName} · ${c.courseLevel}</span>
-        <span class="ec-num">${c.lessonNum}</span>
+        <span class="ec-num">${c.lessonNum || ''}</span>
       </div>
-      📅 ${c.classDate}　${c.classLabel}<br>
+      📅 ${c.classDate || ''}　${c.classLabel || ''}<br>
       🕐 到達：${c.arrivalTime || '—'}
-      <div class="ec-ref">${c.bookingRef}</div>
+      <div class="ec-ref">${c.bookingRef || ''}</div>
     </div>`).join('');
   section.classList.add('show');
 }
@@ -651,46 +554,96 @@ async function loadClasses() {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
     const json = await res.json();
-    // 只有真正有資料才用 server 回傳，否則用本地 fallback
-    // （Apps Script 若無 getClasses action 會回 { error:... }，classes 為 undefined）
     if (Array.isArray(json.classes) && json.classes.length > 0) {
       loadedClasses = json.classes;
     } else {
       throw new Error('no classes from server');
     }
   } catch(e) {
+    // FIX 2: 加入 route 接送路線資訊
     loadedClasses = [
-      { id:'S1-0602', label:'S1 · 2 Jun 2026 (Tue)',            time:'週二',             enrolled:15, max:20, type:'S1' },
-      { id:'S1-0604', label:'S1 · 4 Jun 2026 (Thu)',            time:'週四',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0607', label:'S1 · 7 Jun 2026 (Sun)',            time:'週日',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0610', label:'S1 · 10 Jun 2026 (Wed)',           time:'週三',             enrolled:12, max:20, type:'S1' },
-      { id:'S1-0612', label:'S1 · 12 Jun 2026 (Fri)',           time:'週五',             enrolled:13, max:20, type:'S1' },
-      { id:'S1-0613', label:'S1 · 13 Jun 2026 (Sat)',           time:'週六',             enrolled:19, max:20, type:'S1' },
-      { id:'S1-0616', label:'S1 · 16 Jun 2026 (Tue)',           time:'週二',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0618', label:'S1 · 18 Jun 2026 (Thu)',           time:'週四',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0621', label:'S1 · 21 Jun 2026 (Sun)',           time:'週日',             enrolled:20, max:20, type:'S1' },
-      { id:'S1-0624', label:'S1 · 24 Jun 2026 (Wed)',           time:'週三',             enrolled:17, max:20, type:'S1' },
-      { id:'S1-0626', label:'S1 · 26 Jun 2026 (Fri)',           time:'週五',             enrolled:12, max:20, type:'S1' },
-      { id:'S1-0627', label:'S1 · 27 Jun 2026 (Sat)',           time:'週六',             enrolled:17, max:20, type:'S1' },
-      { id:'S1-0630', label:'S1 · 30 Jun 2026 (Tue)',           time:'週二',             enrolled:10, max:20, type:'S1' },
-      { id:'S2-0611', label:'S2 · 11 Jun 2026 (Thu) · 第一堂', time:'週四 19:00–20:30', enrolled:2,  max:6,  type:'S2' },
-      { id:'S2-0614', label:'S2 · 14 Jun 2026 (Sun) · 第一堂', time:'週日 12:00–13:30', enrolled:4,  max:6,  type:'S2' },
-      { id:'S2-0621', label:'S2 · 21 Jun 2026 (Sun) · 第二堂', time:'週日 19:00–20:30', enrolled:2,  max:6,  type:'S2' },
+      { id:'S1-0602', label:'S1 · 2 Jun 2026 (Tue)',            time:'週二',             enrolled:15, max:20, type:'S1', route:'' },
+      { id:'S1-0604', label:'S1 · 4 Jun 2026 (Thu)',            time:'週四',             enrolled:20, max:20, type:'S1', route:'' },
+      { id:'S1-0607', label:'S1 · 7 Jun 2026 (Sun)',            time:'週日',             enrolled:20, max:20, type:'S1', route:'' },
+      { id:'S1-0610', label:'S1 · 10 Jun 2026 (Wed)',           time:'週三',             enrolled:12, max:20, type:'S1', route:'九龍區接送' },
+      { id:'S1-0612', label:'S1 · 12 Jun 2026 (Fri)',           time:'週五',             enrolled:13, max:20, type:'S1', route:'不設接送' },
+      { id:'S1-0613', label:'S1 · 13 Jun 2026 (Sat)',           time:'週六',             enrolled:19, max:20, type:'S1', route:'' },
+      { id:'S1-0616', label:'S1 · 16 Jun 2026 (Tue)',           time:'週二',             enrolled:20, max:20, type:'S1', route:'' },
+      { id:'S1-0618', label:'S1 · 18 Jun 2026 (Thu)',           time:'週四',             enrolled:20, max:20, type:'S1', route:'' },
+      { id:'S1-0621', label:'S1 · 21 Jun 2026 (Sun)',           time:'週日',             enrolled:20, max:20, type:'S1', route:'' },
+      { id:'S1-0624', label:'S1 · 24 Jun 2026 (Wed)',           time:'週三',             enrolled:17, max:20, type:'S1', route:'九龍區接送' },
+      { id:'S1-0626', label:'S1 · 26 Jun 2026 (Fri)',           time:'週五',             enrolled:12, max:20, type:'S1', route:'新界區接送' },
+      { id:'S1-0627', label:'S1 · 27 Jun 2026 (Sat)',           time:'週六',             enrolled:17, max:20, type:'S1', route:'港島區接送' },
+      { id:'S1-0630', label:'S1 · 30 Jun 2026 (Tue)',           time:'週二',             enrolled:10, max:20, type:'S1', route:'不設接送' },
+      { id:'S1-0702', label:'S1 · 2 Jul 2026 (Thu)',            time:'週四',             enrolled:6,  max:20, type:'S1', route:'九龍區接送' },
+      { id:'S1-0705', label:'S1 · 5 Jul 2026 (Sun)',            time:'週日',             enrolled:4,  max:20, type:'S1', route:'不設接送' },
+      { id:'S1-0708', label:'S1 · 8 Jul 2026 (Wed)',            time:'週三',             enrolled:8,  max:20, type:'S1', route:'九龍區接送' },
+      { id:'S1-0710', label:'S1 · 10 Jul 2026 (Fri)',           time:'週五',             enrolled:2,  max:20, type:'S1', route:'新界區接送' },
+      { id:'S1-0711', label:'S1 · 11 Jul 2026 (Sat)',           time:'週六',             enrolled:4,  max:20, type:'S1', route:'不設接送' },
+      { id:'S1-0714', label:'S1 · 14 Jul 2026 (Tue)',           time:'週二',             enrolled:4,  max:20, type:'S1', route:'港島區接送' },
+      { id:'S1-0716', label:'S1 · 16 Jul 2026 (Thu)',           time:'週四',             enrolled:2,  max:20, type:'S1', route:'九龍區接送' },
+      { id:'S1-0719', label:'S1 · 19 Jul 2026 (Sun)',           time:'週日',             enrolled:4,  max:20, type:'S1', route:'不設接送' },
+      { id:'S1-0722', label:'S1 · 22 Jul 2026 (Wed)',           time:'週三',             enrolled:4,  max:20, type:'S1', route:'港島區接送' },
+      { id:'S1-0724', label:'S1 · 24 Jul 2026 (Fri)',           time:'週五',             enrolled:1,  max:20, type:'S1', route:'九龍區接送' },
+      { id:'S1-0726', label:'S1 · 26 Jul 2026 (Sun)',           time:'週日',             enrolled:3,  max:20, type:'S1', route:'不設接送' },
+      { id:'S1-0728', label:'S1 · 28 Jul 2026 (Tue)',           time:'週二',             enrolled:1,  max:20, type:'S1', route:'港島區接送' },
+      { id:'S1-0730', label:'S1 · 30 Jul 2026 (Thu)',           time:'週四',             enrolled:2,  max:20, type:'S1', route:'新界區接送' },
+      { id:'S2-0611', label:'S2 · 11 Jun 2026 (Thu) · 第一堂', time:'週四 19:00–20:30', enrolled:2,  max:6,  type:'S2', route:'' },
+      { id:'S2-0614', label:'S2 · 14 Jun 2026 (Sun) · 第一堂', time:'週日 12:00–13:30', enrolled:4,  max:6,  type:'S2', route:'' },
+      { id:'S2-0621', label:'S2 · 21 Jun 2026 (Sun) · 第二堂', time:'週日 19:00–20:30', enrolled:2,  max:6,  type:'S2', route:'' },
+      { id:'S2-0705', label:'S2 · 5 Jul 2026 (Sat) · 第一堂',  time:'週六 18:00–19:30', enrolled:0,  max:6,  type:'S2', route:'' },
+      { id:'S2-0709', label:'S2 · 9 Jul 2026 (Thu) · 第二堂',  time:'週四 20:00–21:30', enrolled:0,  max:6,  type:'S2', route:'' },
+      { id:'S2-0711', label:'S2 · 11 Jul 2026 (Sat) · 第一堂', time:'週六 18:00–19:30', enrolled:1,  max:6,  type:'S2', route:'' },
+      { id:'S2-0712', label:'S2 · 12 Jul 2026 (Sun) · 第二堂', time:'週日 11:00–12:30', enrolled:0,  max:4,  type:'S2', route:'' },
+      { id:'S2-0715', label:'S2 · 15 Jul 2026 (Wed) · 第二堂', time:'週三 20:00–21:30', enrolled:0,  max:4,  type:'S2', route:'' },
+      { id:'S2-0725', label:'S2 · 25 Jul 2026 (Sat) · 第三堂', time:'週六 16:00–17:30', enrolled:0,  max:4,  type:'S2', route:'' },
+      { id:'S2-0726', label:'S2 · 26 Jul 2026 (Sun) · 第三堂', time:'週日 11:00–12:30', enrolled:0,  max:4,  type:'S2', route:'' },
+      { id:'S2-0729', label:'S2 · 29 Jul 2026 (Wed) · 第四堂', time:'週三 18:00–19:30', enrolled:0,  max:6,  type:'S2', route:'' },
     ];
   }
   buildClasses();
 }
 
-// ── BUILD UI ──────────────────────────────────────────────────
+// ── FIX 1: buildClasses 按課程級別篩選 ──────────────────────────
+function getTypeFilter(level) {
+  if (!level) return null; // null = show all
+  if (level === 'S2') return ['S2'];
+  if (level === 'S1+S2') return ['S1','S2'];
+  // S1 / Light Explorer / Active Explorer / Ultimate Explorer → S1 only
+  return ['S1'];
+}
+
 function buildClasses() {
-  document.getElementById('classList').innerHTML = loadedClasses.map(c => {
+  const level    = document.getElementById('courseLevel').value;
+  const allowed  = getTypeFilter(level);
+  const filtered = allowed ? loadedClasses.filter(c => allowed.includes(c.type)) : loadedClasses;
+
+  if (level && filtered.length === 0) {
+    document.getElementById('classList').innerHTML =
+      '<div class="no-classes-msg">目前未有此課程的可選課堂，請 WhatsApp 查詢。</div>';
+    return;
+  }
+  if (!level) {
+    document.getElementById('classList').innerHTML =
+      '<div class="no-classes-msg">請先選擇課程級別以顯示可報名課堂。</div>';
+    return;
+  }
+
+  document.getElementById('classList').innerHTML = filtered.map(c => {
     const r = Math.max(0, c.max - c.enrolled);
     const st = r <= 0 ? 'full' : r <= 3 ? 'few' : 'open';
     const full = st === 'full';
     const badgeTxt = full ? '已滿額' : `剩 ${r} 位`;
     const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
+    // FIX 2: show route tag
+    let routeHtml = '';
+    if (c.route === '不設接送') {
+      routeHtml = `<div class="cls-route no-tr">⚠️ 此日不設接送</div>`;
+    } else if (c.route) {
+      routeHtml = `<div class="cls-route">🚐 ${c.route}</div>`;
+    }
     return `<div class="cls-opt${full ? ' full' : ''}">
-      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-id="${c.id}" data-type="${c.type}"${full ? ' disabled' : ''}>
+      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-id="${c.id}" data-type="${c.type}" data-route="${c.route || ''}"${full ? ' disabled' : ''}>
       <label class="cls-card" for="${c.id}">
         <div class="chkbox"><svg width="11" height="9" viewBox="0 0 10 8" fill="none">
           <path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -698,6 +651,7 @@ function buildClasses() {
         <div class="cls-info">
           <div class="cls-name">${c.label}</div>
           <div class="cls-sub">${c.time}</div>
+          ${routeHtml}
         </div>
         <span class="badge ${badgeCls}">${badgeTxt}</span>
       </label>
@@ -706,13 +660,67 @@ function buildClasses() {
   document.querySelectorAll('input[name=cls]').forEach(cb => cb.addEventListener('change', onClassChange));
 }
 
+// ── FIX 1: courseLevel change handler ───────────────────────────
+function onCourseLevelChange() {
+  const level = document.getElementById('courseLevel').value;
+  // Uncheck any previously selected classes
+  document.querySelectorAll('input[name=cls]:checked').forEach(cb => { cb.checked = false; });
+  // Rebuild filtered class list
+  buildClasses();
+  // Sync S2 info block
+  const showS2 = level === 'S2' || level === 'S1+S2';
+  document.getElementById('s2Info').classList.toggle('show', showS2);
+  // Clear route info and summary
+  updateRouteInfo([]);
+  document.getElementById('selSummary').classList.remove('show');
+  document.getElementById('e-classes').classList.remove('show');
+}
+
+// ── FIX 2: Route info update ────────────────────────────────────
+function updateRouteInfo(checked) {
+  const box = document.getElementById('routeInfoBox');
+  if (!box) return;
+
+  const routes = checked.map(c => c.dataset.route || '').filter(Boolean);
+  const uniqueRoutes = [...new Set(routes)];
+
+  if (uniqueRoutes.length === 0) {
+    box.className = 'route-info-box';
+    return;
+  }
+
+  const noTr    = uniqueRoutes.some(r => r === '不設接送');
+  const hasTr   = uniqueRoutes.filter(r => r && r !== '不設接送');
+
+  if (noTr && hasTr.length === 0) {
+    box.className = 'route-info-box no-route show';
+    box.innerHTML = '⚠️ 所選課堂日期均<b>不設接送服務</b>，請自行到校。';
+  } else if (noTr && hasTr.length > 0) {
+    box.className = 'route-info-box mixed-route show';
+    box.innerHTML = '⚠️ 部分日期不設接送；有提供接送的日期路線：<b>' + hasTr.join('、') + '</b>。';
+  } else {
+    box.className = 'route-info-box has-route show';
+    box.innerHTML = '🚐 所選課堂接送路線：<b>' + hasTr.join('、') + '</b>。';
+  }
+}
+
 function onClassChange() {
   const checked = [...document.querySelectorAll('input[name=cls]:checked')];
-  document.getElementById('s2Info').classList.toggle('show', checked.some(c => c.dataset.type === 'S2'));
+  const hasS2 = checked.some(c => c.dataset.type === 'S2');
+  const level  = document.getElementById('courseLevel').value;
+  // Only show S2 info if level includes S2 AND an S2 class is selected
+  document.getElementById('s2Info').classList.toggle('show',
+    hasS2 || level === 'S2' || level === 'S1+S2');
   const s = document.getElementById('selSummary');
-  if (!checked.length) { s.classList.remove('show'); return; }
+  if (!checked.length) {
+    s.classList.remove('show');
+    updateRouteInfo([]);
+    return;
+  }
   document.getElementById('selList').innerHTML = checked.map(c => `<li>${c.value}</li>`).join('');
   s.classList.add('show');
+  // FIX 2: Update route info
+  updateRouteInfo(checked);
 }
 
 function buildTimes() {
@@ -728,8 +736,8 @@ async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
-  document.getElementById('ladderSection').classList.remove('show');   // ★
-  document.getElementById('enrolledSection').classList.remove('show'); // ★
+  document.getElementById('ladderSection').classList.remove('show');
+  document.getElementById('enrolledSection').classList.remove('show');
   const selWrap = document.getElementById('dogSelectorWrap');
   if (selWrap) { selWrap.style.display = 'none'; selWrap.innerHTML = ''; }
 
@@ -742,7 +750,8 @@ async function doLookup() {
     const json = await res.json();
     if (json.found && json.dogs && json.dogs.length > 0) {
       _allDogs         = json.dogs;
-      _upcomingClasses = json.upcomingClasses || []; // ★ 儲存未來課堂
+      // FIX 4: Store upcoming classes from server
+      _upcomingClasses = Array.isArray(json.upcomingClasses) ? json.upcomingClasses : [];
       if (json.multiDog) {
         document.getElementById('foundName').textContent = json.data.ownerName;
         document.getElementById('foundDog').textContent  = `共 ${json.dogs.length} 隻毛孩`;
@@ -764,20 +773,20 @@ async function doLookup() {
   }
 }
 
-// 填入選定狗狗資料，並更新階梯 + 已報名課堂
+// ── FIX 4: prefillDog — 填資料並重新建課堂列表 ───────────────────
 function prefillDog(d) {
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || '']].forEach(([id, val]) => {
     const el = document.getElementById(id);
     if (el && val) { el.value = val; el.classList.add('prefilled'); el.readOnly = false; }
   });
-  if (d.courseLevel) document.getElementById('courseLevel').value = d.courseLevel;
-  document.getElementById('foundName').textContent = d.ownerName;
-  document.getElementById('foundDog').textContent  = d.dogName;
+  document.getElementById('foundName').textContent = d.ownerName || '';
+  document.getElementById('foundDog').textContent  = d.dogName   || '';
   document.getElementById('foundMsg').classList.add('show');
 
-  // ★ 渲染社交階梯和已報名課堂
+  // FIX 4: Render social ladder
   renderLadder(d);
+  // FIX 4: Render enrolled upcoming classes
   renderEnrolledClasses(d.dogName);
 }
 
@@ -807,27 +816,27 @@ function clearLookup() {
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
   document.getElementById('returning-badge').style.display = 'none';
-  // ★ 隱藏新區塊
   document.getElementById('ladderSection').classList.remove('show');
   document.getElementById('enrolledSection').classList.remove('show');
   const selWrap = document.getElementById('dogSelectorWrap');
   if (selWrap) { selWrap.style.display = 'none'; selWrap.innerHTML = ''; }
   _allDogs = [];
-  _upcomingClasses = []; // ★
+  _upcomingClasses = [];
   ['ownerName','whatsapp','email','dogName','dogBreed'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('prefilled'); el.readOnly = false; }
   });
   document.getElementById('courseLevel').value = '';
+  buildClasses(); // reset to "please select level" prompt
   lookupActive = false;
 }
 
 // ── TRANSPORT ─────────────────────────────────────────────────
 function calcTransport() {
   const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
-  const detail = document.getElementById('trDetail');
+  const detail   = document.getElementById('trDetail');
   const priceBox = document.getElementById('trPriceBox');
-  const paySec = document.getElementById('paymentSec');
+  const paySec   = document.getElementById('paymentSec');
   if (val === '不需要') {
     detail.classList.remove('show'); priceBox.style.display = 'none';
     if (paySec) paySec.style.display = 'none'; return;
@@ -836,7 +845,7 @@ function calcTransport() {
   if (paySec) paySec.style.display = 'block';
   const dp = parseInt(document.getElementById('trDistrict').value) || 0;
   if (!dp) { priceBox.style.display = 'none'; return; }
-  const isBoth   = val === '接+送';
+  const isBoth    = val === '接+送';
   const origTotal = isBoth ? dp * 2 : dp;
   const discTotal = Math.round(origTotal * 0.8);
   document.getElementById('trPriceType').textContent  = val;
