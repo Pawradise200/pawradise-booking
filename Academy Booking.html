@@ -79,6 +79,1421 @@
 .pkg-booked-lbl{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:900;
   letter-spacing:.05em;text-transform:uppercase;color:var(--pw-ink-ghost);margin-bottom:9px;}
 .pkg-booked-lbl .ico{width:13px;height:13px;color:var(--pw-ink-ghost);stroke-width:2.2;}
+/* 列表下方通用提示（框框外） */
+.pkg-foot-note{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:11px 13px;
+  background:var(--pw-warn-bg);border-radius:var(--pw-r-md);font-size:12px;font-weight:700;
+  line-height:1.5;color:var(--pw-warn);}
+.pkg-foot-note .ico{width:15px;height:15px;flex-shrink:0;margin-top:1px;}
+.booked-row{display:flex;align-items:center;gap:11px;padding:7px 0;}
+.booked-row + .booked-row{border-top:1px solid var(--pw-cream-soft);}
+.booked-date{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:42px;flex-shrink:0;background:var(--pw-navy);border-radius:var(--pw-r-sm);padding:5px 0;line-height:1;}
+.booked-date b{font-size:16px;font-weight:900;color:#fff;}
+.booked-date span{font-size:9px;font-weight:800;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.03em;}
+.booked-info{flex:1;min-width:0;}
+.booked-title{font-size:12.5px;font-weight:800;color:var(--pw-ink);}
+.booked-meta{font-size:11px;font-weight:600;color:var(--pw-ink-mute);margin-top:1px;}
+.booked-pill{flex-shrink:0;font-size:10px;font-weight:900;padding:3px 9px;border-radius:var(--pw-r-pill);
+  background:var(--pw-success-bg);color:var(--pw-success);}
+.booked-pill.past{background:var(--pw-cream-deep);color:var(--pw-ink-mute);}
+/* Class list */
+.class-list{display:flex;flex-direction:column;gap:8px;}
+.cls-empty{display:flex;align-items:center;gap:9px;padding:15px 16px;border:var(--pw-stroke) dashed var(--pw-cream-deep);
+  border-radius:var(--pw-r-md);background:var(--pw-cream-soft);font-size:12.5px;font-weight:700;
+  color:var(--pw-ink-mute);line-height:1.5;}
+.cls-empty .ico{width:16px;height:16px;color:var(--pw-ink-ghost);flex-shrink:0;stroke-width:2.1;}
+.cls-scope{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:9px 13px;border-radius:var(--pw-r-sm);
+  background:var(--pw-info-bg);color:var(--pw-info);font-size:12px;font-weight:800;line-height:1.45;}
+.cls-scope .ico{width:15px;height:15px;flex-shrink:0;stroke-width:2.1;}
+.cls-opt{position:relative;}
+.cls-opt input[type=checkbox]{position:absolute;opacity:0;pointer-events:none;}
+.cls-card{display:flex;align-items:center;gap:12px;padding:12px 14px;
+  border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);
+  background:var(--pw-paper);cursor:pointer;user-select:none;transition:border-color .15s,background .15s;}
+.cls-card:hover{border-color:var(--pw-navy-light);}
+.cls-opt input:checked+.cls-card{border-color:var(--pw-navy);background:
+#F4F1E9;}
+.cls-opt.full .cls-card{opacity:.5;cursor:not-allowed;}
+.chkbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--pw-cream-deep);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s;}
+.cls-opt input:checked+.cls-card .chkbox{background:var(--pw-navy);border-color:var(--pw-navy);}
+.chkbox svg{display:none;}
+.cls-opt input:checked+.cls-card .chkbox svg{display:block;}
+.cls-info{flex:1;min-width:0;}
+.cls-name{font-size:13.5px;font-weight:800;color:var(--pw-ink);}
+.cls-sub{font-size:11.5px;font-weight:600;color:var(--pw-ink-mute);margin-top:2px;}
+.cls-tag{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10.5px;
+  font-weight:800;color:var(--pw-info);background:var(--pw-info-bg);padding:3px 8px;border-radius:var(--pw-r-pill);}
+.cls-tag .ico{width:12px;height:12px;stroke-width:2.1;}
+.cls-tag.muted{color:var(--pw-ink-mute);background:var(--pw-cream-soft);}
+.cls-tag.r-hk{color:var(--pw-info);background:var(--pw-info-bg);}
+.cls-tag.r-kln{color:var(--pw-success);background:var(--pw-success-bg);}
+.cls-tag.r-nt{color:var(--pw-gold-deep);background:var(--pw-warn-bg);}
+.cls-tag.seq{color:var(--pw-cat-lick);background:var(--pw-warn-bg);}
+.badge{font-size:11px;padding:3px 10px;border-radius:var(--pw-r-pill);font-weight:800;flex-shrink:0;}
+.b-open{background:var(--pw-success-bg);color:var(--pw-success);}
+.b-few{background:var(--pw-warn-bg);color:var(--pw-warn);}
+.b-full{background:var(--pw-danger-bg);color:var(--pw-danger);}
+.s2-courses{margin-top:11px;padding:13px 16px;background:var(--pw-cream-soft);
+  border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);
+  font-size:12.5px;font-weight:600;color:var(--pw-ink-soft);display:none;}
+.s2-courses.show{display:block;}
+.s2-courses .s2-title{font-weight:800;margin-bottom:7px;font-size:13px;color:var(--pw-navy);}
+.s2-courses ol{margin-left:18px;line-height:2;}
+.s2-courses .s2-note{display:flex;align-items:flex-start;gap:7px;margin-top:10px;padding:9px 12px;
+  background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);font-size:12px;font-weight:800;
+  line-height:1.5;color:var(--pw-warn);}
+.s2-courses .s2-note .ico{width:14px;height:14px;flex-shrink:0;margin-top:1px;stroke-width:2.2;}
+.sel-summary{display:none;margin-top:11px;background:
+#F4F1E9;border:var(--pw-stroke) solid var(--pw-gold);
+  border-radius:var(--pw-r-md);padding:12px 15px;font-size:13px;font-weight:700;color:var(--pw-navy-deep);}
+.sel-summary.show{display:block;}
+.sel-summary ul{margin:6px 0 0 16px;line-height:1.9;font-weight:600;}
+/* Time chips */
+.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.t-opt{position:relative;}
+.t-opt input[type=radio]{position:absolute;opacity:0;pointer-events:none;}
+.t-chip{display:block;padding:11px 4px;border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);
+  background:var(--pw-paper);font-size:12.5px;font-weight:700;color:var(--pw-ink-soft);text-align:center;
+  cursor:pointer;user-select:none;transition:all .15s;line-height:1.3;}
+.t-chip:hover{border-color:var(--pw-navy-light);}
+.t-opt input:checked+.t-chip{border-color:var(--pw-navy);background:var(--pw-navy);color:#fff;}
+/* Transport */
+.tr-promo{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;
+  background:
+#F4F1E9;color:var(--pw-gold-deep);border-radius:var(--pw-r-sm);padding:9px 13px;margin-bottom:11px;}
+.tr-promo .ico{width:16px;height:16px;color:var(--pw-gold-deep);}
+.transport-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.tr-opt{position:relative;}
+.tr-opt input[type=radio]{position:absolute;opacity:0;pointer-events:none;}
+.tr-card{display:flex;align-items:center;gap:9px;padding:12px 14px;
+  border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);
+  background:var(--pw-paper);font-size:13.5px;font-weight:700;color:var(--pw-ink-soft);
+  cursor:pointer;user-select:none;transition:all .15s;}
+.tr-card:hover{border-color:var(--pw-navy-light);}
+.tr-opt input:checked+.tr-card{border-color:var(--pw-navy);background:
+#F4F1E9;}
+.tr-card .ico{width:19px;height:19px;color:var(--pw-navy);}
+.tr-detail{display:none;margin-top:11px;background:var(--pw-cream-soft);
+  border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:14px;}
+.tr-detail.show{display:block;}
+.tr-price-box{display:none;background:var(--pw-success-bg);border-radius:var(--pw-r-sm);padding:11px 14px;
+  margin-top:10px;font-size:13px;font-weight:700;color:var(--pw-success);}
+.tr-price-box .tr-price-top{display:flex;justify-content:space-between;align-items:center;}
+.tr-price-box .tr-price-orig{font-size:11px;font-weight:600;color:var(--pw-success);opacity:.85;margin-top:4px;}
+.payment-box{background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-gold);border-radius:var(--pw-r-md);padding:14px 17px;}
+.payment-intro{display:flex;gap:8px;font-size:13px;font-weight:700;color:var(--pw-gold-deep);margin-bottom:11px;align-items:center;line-height:1.5;}
+.payment-method{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;font-weight:700;color:var(--pw-ink-soft);border-bottom:1px solid var(--pw-cream-deep);}
+.payment-method:last-child{border-bottom:none;}
+.payment-label{font-weight:900;min-width:62px;color:var(--pw-navy);}
+/* Submit */
+.submit-area{text-align:center;margin-top:8px;}
+.btn-submit{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--pw-navy);color:#fff;border:none;border-radius:var(--pw-r-md);
+  padding:15px 52px;font-family:var(--pw-font-sans);font-size:15px;font-weight:800;cursor:pointer;
+  transition:background .15s,transform .1s;box-shadow:0 4px 16px rgba(44,74,110,.28);}
+.btn-submit:hover{background:var(--pw-navy-deep);}
+.btn-submit:active{transform:scale(.99);}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.btn-submit.loading .spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.success-screen{display:none;text-align:center;padding:48px 16px;}
+.success-screen.show{display:block;}
+.success-screen .mascot{width:130px;height:auto;margin:0 auto 6px;display:block;}
+.success-screen h2{font-size:24px;font-weight:900;color:var(--pw-ink);margin-bottom:10px;}
+.success-screen p{font-size:14px;font-weight:600;color:var(--pw-ink-mute);line-height:1.75;}
+.success-screen p b{color:var(--pw-ink-soft);}
+.ref-badge{display:inline-block;margin-top:20px;background:var(--pw-paper);box-shadow:var(--pw-shadow-card);
+  border-radius:var(--pw-r-md);padding:12px 26px;font-size:13px;font-weight:700;color:var(--pw-ink-mute);}
+.ref-badge strong{font-size:17px;color:var(--pw-navy);font-weight:900;display:block;margin-top:3px;letter-spacing:.02em;}
+@media(max-width:480px){.time-grid{grid-template-columns:1fr 1fr;}.transport-opts{grid-template-columns:1fr;}}
+@media(max-width:380px){
+  .time-grid{grid-template-columns:repeat(2,1fr);}
+  .gr-rail{padding-left:0;padding-right:0;}
+  .gr-thumb{width:38px;height:38px;}
+  .gr-node.current .gr-thumb{width:48px;height:48px;}
+  .gr-glyph{font-size:11px;}
+  .gr-node.current .gr-glyph{font-size:12px;}
+  .gr-lbl{font-size:9px;}
+  .gr-pin{font-size:8.5px;padding:2px 6px;}
+}
+/* ═════ 社交成長階梯 · 分級 ═════ */
+.grade-wrap{display:none;margin-top:12px;}
+.grade-wrap.show{display:block;}
+.gr-card{--gsoft:color-mix(in srgb,var(--g) 11%,#fff);--gline:color-mix(in srgb,var(--g) 26%,#fff);
+  border:var(--pw-stroke) solid var(--gline);border-radius:var(--pw-r-lg);background:var(--gsoft);overflow:hidden;}
+.gr-head{padding:15px 16px 0;}
+.gr-eyebrow{display:flex;align-items:center;gap:7px;font-size:10.5px;font-weight:900;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--g);}
+.gr-eyebrow .ico{width:14px;height:14px;color:var(--g);stroke-width:2.2;}
+.gr-title{font-size:16px;font-weight:900;color:var(--pw-ink);line-height:1.35;margin-top:6px;}
+.gr-title b{color:var(--g);}
+.gr-body{padding:4px 16px 16px;}
+.gr-desc{font-size:12.5px;font-weight:600;color:var(--pw-ink-soft);line-height:1.65;}
+.gr-desc.pad{padding:0 16px;margin-top:10px;}
+/* horizontal rail */
+.gr-rail{position:relative;display:grid;grid-template-columns:repeat(5,1fr);padding:32px 6px 12px;}
+.gr-track{position:absolute;left:10%;right:10%;top:60px;height:3px;background:var(--pw-cream-deep);border-radius:3px;}
+.gr-track-fill{height:100%;background:var(--g);border-radius:3px;transition:width .5s ease;}
+.gr-node{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.gr-thumb-box{height:60px;display:flex;align-items:center;justify-content:center;}
+.gr-thumb{width:42px;height:42px;border-radius:50%;background:#fff;border:2px solid var(--pw-cream-deep);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;transition:.2s;}
+.gr-thumb img{width:88%;height:88%;object-fit:contain;}
+.gr-node.future .gr-thumb img,.gr-node.goal .gr-thumb img{filter:grayscale(.55);opacity:.5;}
+.gr-node.done .gr-thumb{border-color:var(--gline);}
+.gr-node.done .gr-thumb img{opacity:.92;}
+.gr-node.goal .gr-thumb{border-color:var(--pw-gold);border-style:dashed;}
+.gr-node.current .gr-thumb{width:54px;height:54px;border-color:var(--g);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff),0 6px 16px color-mix(in srgb,var(--g) 32%,transparent);}
+.gr-glyph{font-size:11.5px;font-weight:900;color:var(--pw-ink-faint);}
+.gr-lbl{font-size:9.5px;font-weight:700;color:var(--pw-ink-faint);line-height:1.15;text-align:center;}
+.gr-node.done .gr-glyph{color:var(--pw-ink-mute);}
+.gr-node.current .gr-glyph{color:var(--g);font-size:13px;}
+.gr-node.current .gr-lbl{color:var(--g);font-weight:800;}
+.gr-node.goal .gr-glyph{color:var(--pw-gold-deep);}
+.gr-pin{position:absolute;top:-24px;left:50%;transform:translateX(-50%);white-space:nowrap;z-index:3;
+  background:var(--g);color:#fff;font-size:9px;font-weight:900;padding:3px 8px;border-radius:var(--pw-r-pill);
+  box-shadow:0 3px 9px color-mix(in srgb,var(--g) 45%,transparent);}
+.gr-pin::after{content:'';position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:var(--g);border-bottom:0;}
+/* status row */
+.gr-status{display:flex;gap:12px;align-items:center;background:#fff;border-radius:var(--pw-r-md);
+  border:var(--pw-stroke) solid var(--gline);padding:12px 13px;margin-top:4px;}
+.gr-status-dino{width:64px;height:64px;flex-shrink:0;border-radius:var(--pw-r-md);background:var(--gsoft);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.gr-status-dino img{width:118%;height:118%;object-fit:contain;}
+.gr-badge{display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.03em;background:var(--g);color:#fff;
+  padding:3px 9px;border-radius:var(--pw-r-pill);margin-bottom:6px;}
+.gr-status-txt .gr-desc{margin:0;}
+/* goal line */
+.gr-goal{display:flex;align-items:center;gap:8px;margin-top:11px;padding:10px 13px;border-radius:var(--pw-r-sm);
+  background:#fff;border:var(--pw-stroke) dashed var(--pw-gold);font-size:12.5px;font-weight:800;
+  color:var(--pw-gold-deep);line-height:1.4;}
+.gr-goal b{color:var(--pw-ink);}
+.gr-goal .gr-star{color:var(--pw-gold);flex-shrink:0;}
+.gr-goal.top{border-style:solid;color:var(--pw-success);border-color:var(--pw-success);}
+.gr-goal.top .gr-star{color:var(--pw-success);}
+/* attendance */
+.gr-attend{margin-top:11px;}
+.gr-attend-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;font-weight:700;
+  color:var(--pw-ink-mute);margin-bottom:6px;}
+.gr-attend-top b{font-size:13px;font-weight:900;color:var(--pw-ink);}
+.gr-attend-bar{height:7px;border-radius:999px;background:var(--pw-cream-deep);overflow:hidden;}
+.gr-attend-bar div{height:100%;border-radius:999px;background:var(--g);transition:width .5s ease;}
+/* next step */
+.gr-next{margin-top:12px;background:#fff;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--gline);padding:13px 14px;}
+.gr-next-t{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900;color:var(--pw-ink);line-height:1.4;}
+.gr-next-t b{color:var(--g);}
+.gr-next-t .ico{width:16px;height:16px;color:var(--g);}
+.gr-next-list{list-style:none;margin:9px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.gr-next-list li{display:flex;align-items:flex-start;gap:8px;font-size:12px;font-weight:700;color:var(--pw-ink-soft);line-height:1.45;}
+.gr-next-list li::before{content:'';flex-shrink:0;margin-top:5px;width:6px;height:6px;border-radius:50%;background:var(--g);}
+.gr-cta-row{display:flex;gap:8px;margin-top:12px;}
+.gr-cta{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+  padding:10px 10px;border-radius:var(--pw-r-md);font-family:var(--pw-font-sans);font-size:12.5px;font-weight:800;
+  cursor:pointer;border:none;transition:.15s;text-align:center;line-height:1.2;}
+.gr-cta.primary{background:var(--g);color:#fff;box-shadow:0 3px 12px color-mix(in srgb,var(--g) 32%,transparent);}
+.gr-cta.primary:hover{filter:brightness(.94);}
+.gr-cta.ghost{background:#fff;color:var(--g);border:var(--pw-stroke) solid var(--gline);}
+.gr-cta.ghost:hover{background:var(--gsoft);}
+.gr-next.role{border-color:var(--pw-gold);background:color-mix(in srgb,var(--pw-gold) 10%,#fff);}
+.gr-next.role .gr-next-t{color:var(--pw-gold-deep);}
+.gr-next.role .gr-star{color:var(--pw-gold-deep);}
+/* vertical variant */
+.gr-hero{display:flex;align-items:center;gap:14px;padding:15px 16px 4px;}
+.gr-hero-badge{width:78px;height:78px;flex-shrink:0;border-radius:50%;background:#fff;border:3px solid var(--g);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 18px color-mix(in srgb,var(--g) 28%,transparent);}
+.gr-hero-badge img{width:120%;height:120%;object-fit:contain;}
+.gr-hero-grade{font-family:var(--pw-font-display);font-weight:700;font-size:40px;color:var(--g);line-height:1;}
+.gr-hero-grade small{font-family:var(--pw-font-sans);font-size:15px;font-weight:900;color:var(--pw-ink);}
+.gr-hero-en{font-size:11px;font-weight:800;letter-spacing:.03em;color:var(--pw-ink-faint);margin-top:5px;}
+.gr-goal-ribbon{display:flex;align-items:center;justify-content:center;gap:7px;margin:12px 16px 0;padding:9px 13px;
+  border-radius:var(--pw-r-pill);background:#fff;border:var(--pw-stroke) dashed var(--pw-gold);font-size:12px;font-weight:800;
+  color:var(--pw-gold-deep);text-align:center;}
+.gr-goal-ribbon b{color:var(--pw-ink);}
+.gr-goal-ribbon .gr-star{color:var(--pw-gold);flex-shrink:0;}
+.gr-goal-ribbon.top{border-style:solid;border-color:var(--pw-success);color:var(--pw-success);}
+.gr-goal-ribbon.top .gr-star{color:var(--pw-success);}
+.gr-climb{display:flex;flex-direction:column;padding:14px 16px 4px;}
+.gr-rung{display:flex;align-items:center;gap:12px;padding:8px 8px;position:relative;border-radius:var(--pw-r-md);}
+.gr-rung::before{content:'';position:absolute;left:31px;top:-4px;height:calc(100% + 8px);width:3px;background:var(--pw-cream-deep);z-index:0;}
+.gr-rung:first-child::before{top:50%;height:50%;}
+.gr-rung:last-child::before{height:calc(50% + 4px);}
+.gr-rung.done::before,.gr-rung.current::before{background:var(--g);}
+.gr-rung.goal::before{background:repeating-linear-gradient(var(--pw-gold) 0 5px,transparent 5px 11px);}
+.rung-mark{position:relative;z-index:1;width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#fff;
+  border:2px solid var(--pw-cream-deep);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.rung-mark img{width:120%;height:120%;object-fit:contain;}
+.gr-rung.goal .rung-mark img{filter:grayscale(.5);opacity:.55;}
+.gr-rung.goal .rung-mark{border-color:var(--pw-gold);border-style:dashed;}
+.gr-rung.done .rung-mark{border-color:var(--gline);}
+.gr-rung.current{background:var(--gsoft);}
+.gr-rung.current .rung-mark{width:54px;height:54px;border-color:var(--g);box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 20%,#fff);}
+.rung-txt{flex:1;min-width:0;}
+.rung-glyph{font-size:13.5px;font-weight:900;color:var(--pw-ink);}
+.rung-en{font-size:10.5px;font-weight:700;color:var(--pw-ink-faint);text-transform:uppercase;letter-spacing:.03em;}
+.gr-rung.goal .rung-glyph{color:var(--pw-ink-mute);}
+.gr-rung.current .rung-glyph{color:var(--g);}
+.rung-here{flex-shrink:0;background:var(--g);color:#fff;font-size:9.5px;font-weight:900;padding:4px 9px;
+  border-radius:var(--pw-r-pill);box-shadow:0 3px 9px color-mix(in srgb,var(--g) 40%,transparent);}
+.rung-goal{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;background:color-mix(in srgb,var(--pw-gold) 18%,#fff);
+  color:var(--pw-gold-deep);font-size:9.5px;font-weight:900;padding:4px 9px;border-radius:var(--pw-r-pill);}
+.rung-goal .gr-star{color:var(--pw-gold);}
+</style>
+</head>
+<body>
+<!-- ═══ ICON SPRITE ═══ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ico-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="ico-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="ico-paw" viewBox="0 0 24 24" fill="currentColor" stroke="none"><ellipse cx="6" cy="11" rx="2" ry="2.4"/><ellipse cx="10" cy="7.4" rx="2" ry="2.5"/><ellipse cx="14.5" cy="7.4" rx="2" ry="2.5"/><ellipse cx="18" cy="11" rx="2" ry="2.4"/><path d="M12 12.2c-2.6 0-4.7 2-4.7 4 0 1.7 1.5 2.3 2.6 2.3.9 0 1.4-.4 2.1-.4s1.2.4 2.1.4c1.1 0 2.6-.6 2.6-2.3 0-2-2.1-4-4.7-4z"/></symbol>
+<symbol id="ico-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/></symbol>
+<symbol id="ico-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+<symbol id="ico-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></symbol>
+<symbol id="ico-van" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1z"/><path d="M15 8h4l3 3.5V16h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></symbol>
+<symbol id="ico-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l1.6-4.2A2 2 0 0 1 6.5 6.5h11a2 2 0 0 1 1.9 1.3L21 12"/><path d="M2 12h20v4.5a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1V16H5.5v.5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/><circle cx="6.5" cy="13.5" r=".6" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13.5" r=".6" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ico-walk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M11 7l-2 4 3 2 1 7"/><path d="M9 11l-3 1-2 4"/><path d="M14 13l4 1 2 3"/></symbol>
+<symbol id="ico-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+<symbol id="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="ico-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+<symbol id="ico-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+<symbol id="ico-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+<symbol id="ico-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+<symbol id="ico-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
+<symbol id="ico-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
+<symbol id="ico-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></symbol>
+<symbol id="ico-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+</defs></svg>
+<header class="pw-header">
+  <a class="back" href="Pawradise.html"><svg class="ico ico-sm"><use href="#ico-arrow-left"/></svg>返回</a>
+  <div class="crest"><img src="assets/pawradise-crest.png" alt="Pawradise"></div>
+  <div class="htitle"><b>社交學院報名</b><span>S1狗狗學期 | S2情緒重建小組 | Calm Explorer Club</span></div>
+  <div class="spacer"></div>
+</header>
+<div class="container">
+  <p class="lead">填寫資料並選擇課堂日期即可報名，成功報名後將會收到確認電郵，如有問題歡迎 WhatsApp 查詢聯絡。</p>
+  <div class="notice">
+    <div class="notice-title"><svg class="ico"><use href="#ico-clipboard"/></svg>報名前請細閱以下注意事項</div>
+    <div class="notice-item"><span class="ndot">·</span><span><b>課堂名額：</b>S1 課堂每堂上限 <b>20 位</b>毛孩；S2 課堂每堂上限 <b>6 組</b>。名額以確認先後為準，額滿即止。</span></div>
+    <div class="notice-item"><span class="ndot">·</span><span><b>取消安排：</b>如需取消課堂，請至少 <b>1 天前</b>透過 WhatsApp 通知學校，每學期最多安排 <b>2 次</b>補課堂。</span></div>
+    <div class="notice-item"><span class="ndot">·</span><span><b>疫苗要求：</b>所有狗狗須持有效疫苗記錄及<b>狗牌</b>方可參加課堂。</span></div>
+  </div>
+  <!-- Lookup -->
+  <div class="sec">
+    <div class="sec-label"><svg class="ico"><use href="#ico-search"/></svg>舊生快速登入</div>
+    <div class="lookup-row">
+      <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
+      <button type="button" class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
+    </div>
+    <div class="demo-hint" id="demoHint">
+      <span class="demo-hint-lbl"><svg class="ico ico-sm" style="width:14px;height:14px;"><use href="#ico-search"/></svg>示範號碼 · 撳一下試各級</span>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345670')"><b>C</b>反應型</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345672')"><b>B</b>膽小型</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345674')"><b>B+</b>適應期</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345676')"><b>A</b>社交型</button>
+      <button type="button" class="demo-chip" onclick="demoLoad('92345678')"><b>A+</b>穩定犬</button>
+    </div>
+    <div class="found-msg" id="foundMsg">
+      <svg class="ico"><use href="#ico-check-circle"/></svg>
+      <span>找到記錄：<b id="foundName"></b> — <span id="foundDog"></span></span>
+      <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
+    </div>
+    <div class="dog-selector" id="dogSelectorWrap"></div>
+    <div class="notfound-msg" id="notfoundMsg">找不到記錄，請繼續填寫新學員資料，系統將為您建立檔案。</div>
+    <div class="pkg-wrap" id="pkgWrap">
+      <div class="pkg-wrap-title"><svg class="ico"><use href="#ico-cap"/></svg>課堂額度 · 出席追蹤</div>
+      <div id="pkgList"></div>
+    </div>
+    <div class="grade-wrap" id="gradeWrap"></div>
+  </div>
+  <form id="mainForm" novalidate>
+    <!-- 主人資料 -->
+    <div class="sec">
+      <div class="sec-label"><svg class="ico"><use href="#ico-user"/></svg>主人資料</div>
+      <div id="returning-badge" style="display:none;"><div class="badge-returning"><svg class="ico"><use href="#ico-check-circle"/></svg>舊生資料已載入</div></div>
+      <div class="r2">
+        <div class="field">
+          <label>主人姓名 <span class="req">*</span></label>
+          <input type="text" id="ownerName" placeholder="例：陳大文">
+          <div class="err-msg" id="e-name">請輸入姓名</div>
+        </div>
+        <div class="field">
+          <label>WhatsApp 號碼 <span class="req">*</span></label>
+          <input type="tel" id="whatsapp" placeholder="例：91234567" maxlength="8">
+          <div class="err-msg" id="e-wa">請輸入 8 位電話號碼</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>電郵地址 <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="例：wangwang@email.com">
+        <div class="hint">確認電郵及課堂資料將發送至此地址。</div>
+        <div class="err-msg" id="e-email">請輸入有效電郵</div>
+      </div>
+    </div>
+    <!-- 狗狗資料 -->
+    <div class="sec">
+      <div class="sec-label"><svg class="ico"><use href="#ico-paw"/></svg>狗狗資料</div>
+      <div class="r2">
+        <div class="field">
+          <label>狗狗名字 <span class="req">*</span></label>
+          <input type="text" id="dogName" placeholder="例：旺旺">
+          <div class="err-msg" id="e-dog">請輸入狗狗名字</div>
+        </div>
+        <div class="field">
+          <label>品種 <span class="req">*</span></label>
+          <input type="text" id="dogBreed" placeholder="例：柴犬">
+          <div class="err-msg" id="e-breed">請輸入品種</div>
+        </div>
+      </div>
+      <div class="r3">
+        <div class="field">
+          <label>體重 (kg) <span class="req">*</span></label>
+          <input type="number" id="dogWeight" placeholder="例：8.5" step="0.1" min="0">
+          <div class="err-msg" id="e-weight">請輸入體重</div>
+        </div>
+        <div class="field">
+          <label>性別 <span class="req">*</span></label>
+          <select id="dogGender"><option value="">選擇</option><option>男（M）</option><option>女（F）</option></select>
+          <div class="err-msg" id="e-gender">請選擇性別</div>
+        </div>
+        <div class="field">
+          <label>已絕育 <span class="req">*</span></label>
+          <select id="dogNeutered"><option value="">選擇</option><option>是</option><option>否</option></select>
+          <div class="err-msg" id="e-neutered">請選擇</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>出生日期 <span class="req">*</span></label>
+        <input type="date" id="dogDob">
+        <div class="hint">用作分組及課堂安排參考。</div>
+        <div class="err-msg" id="e-dob">請選擇出生日期</div>
+      </div>
+      <div class="field">
+        <label>健康狀況 <span class="req">*</span></label>
+        <select id="dogHealthSel" onchange="document.getElementById('healthDetailField').style.display=this.value==='yes'?'block':'none'">
+          <option value="">請選擇</option><option value="no">沒有</option><option value="yes">有</option>
+        </select>
+        <div class="err-msg" id="e-health">請選擇健康狀況</div>
+      </div>
+      <div class="field" id="healthDetailField" style="display:none;">
+        <label>請說明健康狀況 <span class="req">*</span></label>
+        <textarea id="dogHealthText" placeholder="例：對雞肉敏感、每天需服心臟藥一粒"></textarea>
+        <div class="err-msg" id="e-health-text">請說明健康狀況</div>
+      </div>
+      <div class="field">
+        <label>課程級別 <span class="req">*</span></label>
+        <select id="courseLevel" onchange="applyCourseFilter()">
+          <option value="">請選擇</option>
+          <option value="S1">S1 狗狗學期班</option>
+          <option value="S2">S2 情緒重建系統小組班</option>
+          <option value="S1+S2">S1 + S2 組合</option>
+          <option value="Light Explorer">月費 · Light Explorer</option>
+          <option value="Active Explorer">月費 · Active Explorer</option>
+          <option value="Ultimate Explorer">月費 · Ultimate Explorer</option>
+        </select>
+        <div class="err-msg" id="e-level">請選擇課程級別</div>
+      </div>
+    </div>
+    <!-- 選擇課堂日期 -->
+    <div class="sec">
+      <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>選擇課堂日期 <span class="req">*</span></div>
+      <div class="class-list" id="classList"></div>
+      <div class="s2-courses" id="s2Info">
+        <div class="s2-title">S2 情緒重建系統小組班 — 課堂內容</div>
+        <ol>
+          <li>第一堂 · 讀懂你的狗狗</li>
+          <li>第二堂 · 距離就是答案</li>
+          <li>第三堂 · 街上見真章</li>
+          <li>第四堂 · 練習融入日常</li>
+        </ol>
+        <div class="s2-note"><svg class="ico"><use href="#ico-info"/></svg>S2 課堂必須順序上：請由第一堂開始，順序報讀第二、三、四堂。</div>
+      </div>
+      <div class="err-msg" id="e-classes">請最少選擇一堂</div>
+      <div class="sel-summary" id="selSummary">
+        <b>已選課堂：</b>
+        <ul id="selList"></ul>
+      </div>
+    </div>
+    <!-- 到達時間 (S1) -->
+    <div class="sec">
+      <div class="sec-label"><svg class="ico"><use href="#ico-clock"/></svg>到達學校時間 <span class="req-note">S1 課堂適用</span></div>
+      <div class="time-grid" id="timeGrid"></div>
+    </div>
+    <!-- 接送 -->
+    <div class="sec">
+      <div class="sec-label"><svg class="ico"><use href="#ico-van"/></svg>接送服務 <span class="req">*</span></div>
+      <div class="tr-promo"><svg class="ico"><use href="#ico-info"/></svg>社交學院接送服務享有八折優惠</div>
+      <div class="transport-opts">
+        <div class="tr-opt">
+          <input type="radio" name="transport" id="tr-no" value="不需要" checked onchange="calcTransport()">
+          <label class="tr-card" for="tr-no">自行到校</label>
+        </div>
+        <div class="tr-opt">
+          <input type="radio" name="transport" id="tr-pickup" value="接" onchange="calcTransport()">
+          <label class="tr-card" for="tr-pickup">接（樓下交收）</label>
+        </div>
+        <div class="tr-opt">
+          <input type="radio" name="transport" id="tr-dropoff" value="送" onchange="calcTransport()">
+          <label class="tr-card" for="tr-dropoff">送（樓下交收）</label>
+        </div>
+        <div class="tr-opt">
+          <input type="radio" name="transport" id="tr-both" value="接+送" onchange="calcTransport()">
+          <label class="tr-card" for="tr-both">接 + 送</label>
+        </div>
+      </div>
+      <div class="tr-detail" id="trDetail">
+        <div class="field">
+          <label>地區 <span class="req">*</span></label>
+          <select id="trDistrict" onchange="calcTransport()">
+            <option value="">選擇地區</option>
+            <optgroup label="香港島">
+              <option value="200">堅尼地城 / 西營盤 / 中上環</option><option value="190">灣仔 / 銅鑼灣 / 大坑 / 天后</option>
+              <option value="250">山頂</option><option value="230">渣甸山</option>
+              <option value="200">炮台山 / 北角 / 鰂魚涌 / 太古城</option><option value="210">西灣河 / 筲箕灣 / 柴灣 / 小西灣</option>
+              <option value="240">黃竹坑 / 壽臣山</option><option value="220">薄扶林 / 數碼港 / 香港仔</option>
+              <option value="260">淺水灣 / 春坎角 / 鴨脷洲</option><option value="290">赤柱 / 大潭 / 石澳</option>
+            </optgroup>
+            <optgroup label="九龍">
+              <option value="120">油尖旺 / 西九龍 / 柯士甸</option><option value="140">大角咀 / 長沙灣 / 深水埗</option>
+              <option value="150">石硤尾 / 美孚 / 荔枝角</option><option value="160">何文田 / 新蒲崗 / 黃埔 / 紅磡 / 土瓜灣 / 九龍城 / 啟德</option>
+              <option value="170">九龍塘 / 畢架山</option><option value="190">牛頭角 / 秀茂坪 / 黃大仙 / 樂富 / 鑽石山</option>
+              <option value="200">藍田 / 油塘 / 九龍灣 / 觀塘</option>
+            </optgroup>
+            <optgroup label="新界">
+              <option value="190">葵涌 / 青衣 / 荃灣 / 荃灣西</option><option value="210">深井</option>
+              <option value="310">欣澳 / 東涌</option><option value="290">屯門</option><option value="330">洪水橋</option>
+              <option value="390">流浮山</option><option value="350">元朗 / 錦田 / 大棠</option><option value="390">天水圍</option>
+              <option value="210">大圍 / 沙田 / 火炭</option><option value="270">大埔墟 / 大埔</option>
+              <option value="220">將軍澳 / 坑口 / 調景嶺 / 寶琳</option><option value="230">日出康城</option>
+              <option value="260">清水灣</option><option value="270">馬鞍山 / 西貢 / 大網仔</option>
+              <option value="340">粉嶺 / 上水</option><option value="260">馬料水 / 烏溪沙 / 西沙</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="field">
+          <label>地址 <span class="req">*</span></label>
+          <input type="text" id="trAddress" placeholder="大廈名稱及街道，例：將軍澳帝景灣7座">
+          <div class="hint">請確保大廈樓下可供私家車停泊交收，接送只限地面。</div>
+        </div>
+        <div class="tr-price-box" id="trPriceBox">
+          <div class="tr-price-top">
+            <span>接送費用（<span id="trPriceType"></span> · 八折優惠）</span>
+            <strong id="trPriceAmt"></strong>
+          </div>
+          <div class="tr-price-orig">原價 <span id="trPriceOrig"></span>，學院優惠後 <span id="trPriceFinal"></span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 備註 -->
+    <div class="sec">
+      <div class="sec-label"><svg class="ico"><use href="#ico-edit"/></svg>備註（選填）</div>
+      <textarea id="remarks" placeholder="例：狗狗特別行為、照顧需要或其他問題"></textarea>
+    </div>
+    <!-- 付款方式 -->
+    <div class="sec" id="paymentSec" style="display:none;">
+      <div class="sec-label"><svg class="ico"><use href="#ico-card"/></svg>付款方式</div>
+      <div class="payment-box">
+        <div class="payment-intro"><svg class="ico ico-sm"><use href="#ico-info"/></svg>接送費用確認後，可以以下任何一個方式安排轉賬付款：</div>
+        <div class="payment-method"><span class="payment-label">FPS</span><span>9459 6420（Pawradise Limited）</span></div>
+        <div class="payment-method"><span class="payment-label">PayMe</span><span>9023 5303</span></div>
+        <div class="payment-method"><span class="payment-label">ATM</span><span>HSBC 741 364962 838</span></div>
+      </div>
+      <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明狗狗名字 + 接送日期 + 接送地區。</span></div>
+    </div>
+    <div class="submit-area">
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span>提交報名</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </form>
+  <!-- 成功畫面 -->
+  <div class="success-screen" id="successScreen">
+    <img class="mascot" src="assets/daki-sprite-trans.png" alt="DAKI">
+    <h2>報名成功！</h2>
+    <p>感謝您為 <b id="sDog"></b> 報名，稍後將會透過 WhatsApp 再次確認。<br>
+    如已預約接送服務，前台同事會於預約前一天聯絡配合接送時間。<br>期待在學校見面！</p>
+    <div class="ref-badge">參考號碼<strong id="sRef"></strong></div>
+  </div>
+</div>
+<script>
+// ══ CONFIG ═══════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
+const CFG = {
+  classes: [
+    // ── S1 狗狗學期班（每堂上限 20 位，附接送區）──────────────────
+    { id:'S1-0607', label:'S1 · 7 Jun 2026 (Sun)',  time:'週日', area:'新界區接送', enrolled:20, max:20, type:'S1' },
+    { id:'S1-0610', label:'S1 · 10 Jun 2026 (Wed)', time:'週三', area:'九龍區接送', enrolled:16, max:20, type:'S1' },
+    { id:'S1-0612', label:'S1 · 12 Jun 2026 (Fri)', time:'週五', area:'不設接送',   enrolled:13, max:20, type:'S1' },
+    { id:'S1-0613', label:'S1 · 13 Jun 2026 (Sat)', time:'週六', area:'港島區接送', enrolled:20, max:20, type:'S1' },
+    { id:'S1-0616', label:'S1 · 16 Jun 2026 (Tue)', time:'週二', area:'新界區接送', enrolled:20, max:20, type:'S1' },
+    { id:'S1-0618', label:'S1 · 18 Jun 2026 (Thu)', time:'週四', area:'九龍區接送', enrolled:20, max:20, type:'S1' },
+    { id:'S1-0621', label:'S1 · 21 Jun 2026 (Sun)', time:'週日', area:'不設接送',   enrolled:20, max:20, type:'S1' },
+    { id:'S1-0624', label:'S1 · 24 Jun 2026 (Wed)', time:'週三', area:'新界區接送', enrolled:20, max:20, type:'S1' },
+    { id:'S1-0626', label:'S1 · 26 Jun 2026 (Fri)', time:'週五', area:'新界區接送', enrolled:13, max:20, type:'S1' },
+    { id:'S1-0627', label:'S1 · 27 Jun 2026 (Sat)', time:'週六', area:'港島區接送', enrolled:20, max:20, type:'S1' },
+    { id:'S1-0630', label:'S1 · 30 Jun 2026 (Tue)', time:'週二', area:'港島區接送', enrolled:11, max:20, type:'S1' },
+    { id:'S1-0702', label:'S1 · 2 Jul 2026 (Thu)',  time:'週四', area:'新界區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0705', label:'S1 · 5 Jul 2026 (Sun)',  time:'週日', area:'不設接送',   enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0708', label:'S1 · 8 Jul 2026 (Wed)',  time:'週三', area:'九龍區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0710', label:'S1 · 10 Jul 2026 (Fri)', time:'週五', area:'新界區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0711', label:'S1 · 11 Jul 2026 (Sat)', time:'週六', area:'不設接送',   enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0714', label:'S1 · 14 Jul 2026 (Tue)', time:'週二', area:'港島區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0716', label:'S1 · 16 Jul 2026 (Thu)', time:'週四', area:'九龍區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0719', label:'S1 · 19 Jul 2026 (Sun)', time:'週日', area:'不設接送',   enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0722', label:'S1 · 22 Jul 2026 (Wed)', time:'週三', area:'港島區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0724', label:'S1 · 24 Jul 2026 (Fri)', time:'週五', area:'九龍區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0726', label:'S1 · 26 Jul 2026 (Sun)', time:'週日', area:'不設接送',   enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0728', label:'S1 · 28 Jul 2026 (Tue)', time:'週二', area:'港島區接送', enrolled:0,  max:20, type:'S1' },
+    { id:'S1-0730', label:'S1 · 30 Jul 2026 (Thu)', time:'週四', area:'新界區接送', enrolled:0,  max:20, type:'S1' },
+    // ── S2 情緒重建系統小組班（必須順序上；第二、三堂上限 4 位）──
+    { id:'S2-0611', label:'S2 · 11 Jun 2026 (Thu) · 第一堂', time:'週四 19:00–20:30', seq:true, enrolled:0, max:6, type:'S2' },
+    { id:'S2-0614', label:'S2 · 14 Jun 2026 (Sun) · 第一堂', time:'週日 12:00–13:30', seq:true, enrolled:2, max:6, type:'S2' },
+    { id:'S2-0621', label:'S2 · 21 Jun 2026 (Sun) · 第二堂', time:'週日 19:00–20:30', seq:true, enrolled:0, max:4, type:'S2' },
+    { id:'S2-0628', label:'S2 · 28 Jun 2026 (Sun) · 第三堂', time:'週日 16:00–17:00', seq:true, enrolled:0, max:4, type:'S2' },
+    { id:'S2-0705', label:'S2 · 5 Jul 2026 (Sun) · 第四堂',  time:'週日 18:00–19:30', seq:true, enrolled:0, max:6, type:'S2' },
+    { id:'S2-0709', label:'S2 · 9 Jul 2026 (Thu) · 第一堂',  time:'週四 19:00–20:30', seq:true, enrolled:0, max:6, type:'S2' },
+    { id:'S2-0711', label:'S2 · 11 Jul 2026 (Sat) · 第一堂', time:'週六 18:00–19:30', seq:true, enrolled:0, max:6, type:'S2' },
+    { id:'S2-0712', label:'S2 · 12 Jul 2026 (Sun) · 第二堂', time:'週日 11:00–12:30', seq:true, enrolled:0, max:4, type:'S2' },
+    { id:'S2-0715', label:'S2 · 15 Jul 2026 (Wed) · 第二堂', time:'週三 19:00–20:30', seq:true, enrolled:0, max:4, type:'S2' },
+    { id:'S2-0725', label:'S2 · 25 Jul 2026 (Sat) · 第三堂', time:'週六 16:00–17:00', seq:true, enrolled:0, max:4, type:'S2' },
+    { id:'S2-0726', label:'S2 · 26 Jul 2026 (Sun) · 第三堂', time:'週日 18:00–19:00', seq:true, enrolled:0, max:4, type:'S2' },
+    { id:'S2-0729', label:'S2 · 29 Jul 2026 (Wed) · 第四堂', time:'週三 18:00–19:30', seq:true, enrolled:0, max:6, type:'S2' },
+  ],
+  times: ['9:00–9:30am','9:30–10:00am','10:00–10:30am','10:30–11:00am','11:00–11:30am','11:30–12:00pm'],
+};
+let lookupActive = false;
+let _allDogs = [];
+let _upcomingClasses = [];
+// ══ 示範模式 ══════════════════════════════════════════════════════
+// DEMO_MODE = true 時，搜尋任何 8 位電話即會載入示範舊客記錄，方便預覽。
+// 學期制與月費計劃為互斥（同一舊客只會屬其中一種），故分兩個情境：
+//   · 電話尾數「雙數」→ 學期制舊客（S1 + S2）
+//   · 電話尾數「單數」→ 月費計劃舊客（Ultimate Explorer）
+// 正式上線請改為 false，改用後台 lookup 回傳的真實資料。
+const DEMO_MODE = false;
+const DEMO_BASE = {
+  ownerName: '陳大文', email: 'wangwang@email.com', dogName: '旺旺', breed: '柴犬',
+  weight: '8.5', gender: '男（M）', neutered: '是', dob: '2024-03-12', health: '沒有',
+};
+const DEMO_TERM = {
+  ...DEMO_BASE, courseLevel: 'S1',
+  packages: [
+    { name: 'S1 狗狗學期班 · 單學期共 9 堂', total: 9, used: 7, firstClass: '2026-06-02', validMonths: 3, remindFrom: 8,
+      booked: [
+        { date: '2026-06-09', title: '第八堂', time: '下午 3:00' },
+        { date: '2026-06-16', title: '第九堂', time: '下午 3:00' },
+      ] },
+    { name: 'S2 情緒重建小組班 · 一共 4 堂', total: 4, used: 3, firstClass: '2026-06-11', validMonths: 2, remindFrom: 3,
+      booked: [
+        { date: '2026-06-25', title: '第四堂', time: '上午 11:00' },
+      ] },
+  ],
+};
+const DEMO_MONTHLY = {
+  ...DEMO_BASE, courseLevel: 'Ultimate Explorer',
+  packages: [
+    { kind: 'monthly', name: 'Ultimate Explorer', monthlyQuota: 'unlimited', usedThisMonth: 5,
+      booked: [
+        { date: '2026-06-03', title: '嗅聞遊戲班', time: '下午 2:00' },
+        { date: '2026-06-07', title: '班體嘴动力班', time: '上午 11:00' },
+        { date: '2026-06-12', title: '探索遊戲班', time: '下午 3:30' },
+      ] },
+  ],
+};
+// 示範：以電話尾數對應五個分級（C / B / B+ / A / A+），方便逐一預覽。
+// （正式上線改為 DEMO_MODE=false，由後台 lookup 回傳 grade / semesterUsed / semesterTotal）
+const DEMO_PERSONA = {
+  'C':  { dogName:'大力',  breed:'邊境牧羊犬', used:3 },
+  'B':  { dogName:'妹豬',  breed:'貴婦犬',     used:5 },
+  'B+': { dogName:'旺旺',  breed:'柴犬',       used:7 },
+  'A':  { dogName:'Lucky', breed:'威爾斯哥基', used:8 },
+  'A+': { dogName:'公主',  breed:'貴婦犬',     used:9 },
+};
+function demoRecordFor(phone) {
+  const order = ['C','B','B+','A','A+'];
+  const g = order[Math.min(4, Math.floor(Number(phone.slice(-1)) / 2))];
+  const p = DEMO_PERSONA[g];
+  return {
+    ...DEMO_BASE, dogName:p.dogName, breed:p.breed, courseLevel:'S1', grade:g,
+    semesterUsed:p.used, semesterTotal:9,
+    packages:[{ name:'S1 狗狗學期班 · 本學期共 9 堂', total:9, used:p.used, firstClass:'2026-05-05', validMonths:3, remindFrom:8,
+      booked:[
+        { date:'2026-06-14', title:第 ${p.used + 1} 堂 },
+        { date:'2026-06-21', title:第 ${p.used + 2} 堂 },
+      ].slice(0, Math.max(0, 9 - p.used)) }],
+  };
+}
+// ══ BUILD UI ═════════════════════════════════════════════════════
+// 每個課程級別對應可報讀的課堂類型
+const LEVEL_TYPES = {
+  'S1': ['S1'], 'S2': ['S2'], 'S1+S2': ['S1','S2'],
+  'Light Explorer': ['S1'], 'Active Explorer': ['S1'], 'Ultimate Explorer': ['S1'],
+};
+const LEVEL_SCOPE = {
+  'S1':'此級別只可報讀 S1 狗狗學期班課堂', 'S2':'此級別只可報讀 S2 情緒重建小組班課堂',
+  'S1+S2':'此組合可報讀 S1 及 S2 課堂',
+  'Light Explorer':'月費計劃可報讀 S1 課堂', 'Active Explorer':'月費計劃可報讀 S1 課堂',
+  'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
+};
+// 依所選課程級別重建可選課堂列表
+function applyCourseFilter() {
+  const lvl = document.getElementById('courseLevel').value;
+  buildClasses(LEVEL_TYPES[lvl] || null, lvl);
+  onClassChange();
+}
+function buildClasses(allowedTypes, level) {
+  const listEl = document.getElementById('classList');
+  if (!allowedTypes) {
+    listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>請先於上方選擇「課程級別」，系統會顯示對應的課堂日期。</div>';
+    return;
+  }
+  const classes = CFG.classes.filter(c => allowedTypes.includes(c.type));
+  if (!classes.length) {
+    listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>暫時未有對應此級別的課堂，請 WhatsApp 9459 6420 查詢。</div>';
+    return;
+  }
+  const scope = LEVEL_SCOPE[level] ? <div class="cls-scope"><svg class="ico"><use href="#ico-info"/></svg>${LEVEL_SCOPE[level]}</div> : '';
+  listEl.innerHTML = scope + classes.map(c => {
+    const r = Math.max(0, c.max - c.enrolled);
+    const st = r <= 0 ? 'full' : r <= 3 ? 'few' : 'open';
+    const full = st === 'full';
+    const badgeTxt = full ? '已滿額' : 尚餘 ${r} 位;
+    const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
+    // 副標題：日期已含星期，S1 不再重複；S2 只保留時間（去掉重複星期）
+    const sub = c.type === 'S1' ? '' : (c.time || '').replace(/^週.\s*/, '');
+    // 第三行：S1 顯示接送區（S2「必須順序上」已移至課堂內容框）
+    let tag = '';
+    if (c.area) {
+      const none = c.area.includes('不設');
+      const rcls = c.area.includes('港島') ? 'r-hk'
+                 : c.area.includes('九龍') ? 'r-kln'
+                 : c.area.includes('新界') ? 'r-nt'
+                 : 'muted';
+      tag = <div class="cls-tag ${none ? 'muted' : rcls}"><svg class="ico"><use href="#ico-car"/></svg>${c.area}</div>;
+    }
+    return <div class="cls-opt${full ? ' full' : ''}">
+      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-type="${c.type}"${full ? ' disabled' : ''}>
+      <label class="cls-card" for="${c.id}">
+        <div class="chkbox"><svg width="11" height="9" viewBox="0 0 10 8" fill="none">
+          <path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg></div>
+        <div class="cls-info">
+          <div class="cls-name">${c.label}</div>
+          ${sub ? <div class="cls-sub">${sub}</div> : ''}
+          ${tag}
+        </div>
+        <span class="badge ${badgeCls}">${badgeTxt}</span>
+      </label>
+    </div>;
+  }).join('');
+  document.querySelectorAll('input[name=cls]').forEach(cb => cb.addEventListener('change', onClassChange));
+}
+function onClassChange() {
+  const checked = [...document.querySelectorAll('input[name=cls]:checked')];
+  document.getElementById('s2Info').classList.toggle('show', checked.some(c => c.dataset.type === 'S2'));
+  const s = document.getElementById('selSummary');
+  if (!checked.length) { s.classList.remove('show'); return; }
+  document.getElementById('selList').innerHTML = checked.map(c => <li>${c.value}</li>).join('');
+  s.classList.add('show');
+}
+function buildTimes() {
+  document.getElementById('timeGrid').innerHTML = CFG.times.map((t, i) => 
+    <div class="t-opt">
+      <input type="radio" name="arr" id="ar${i}" value="${t}"${i === 0 ? ' checked' : ''}>
+      <label class="t-chip" for="ar${i}">${t}</label>
+    </div>).join('');
+}
+// ══ LOOKUP ════════════════════════════════════════════════════════
+// 示範：點選示範號碼 chip，自動填入並查詢，方便預覽各社交等級
+function demoLoad(phone) {
+  const inp = document.getElementById('lookupPhone');
+  if (inp) { inp.value = phone; }
+  doLookup();
+  requestAnimationFrame(() => {
+    const gw = document.getElementById('gradeWrap');
+    if (gw) window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
+  });
+}
+async function doLookup() {
+  const phone = document.getElementById('lookupPhone').value.trim();
+  document.getElementById('foundMsg').classList.remove('show');
+  document.getElementById('notfoundMsg').classList.remove('show');
+  if (!/^\d{8}$/.test(phone)) {
+    document.getElementById('notfoundMsg').classList.add('show');
+    return;
+  }
+  // 示範模式：直接載入示範記錄，不查詢後台
+  if (DEMO_MODE) {
+    fillRecord({ ...demoRecordFor(phone), phone });
+    return;
+  }
+  try {
+    const res  = await fetch(${APPS_SCRIPT_URL}?action=lookup&phone=${phone});
+    const json = await res.json();
+    if (json.found && (json.data || (Array.isArray(json.dogs) && json.dogs.length))) {
+      const dogs = (Array.isArray(json.dogs) && json.dogs.length) ? json.dogs : [json.data];
+      _allDogs = dogs;
+      _upcomingClasses = json.upcomingClasses || [];
+      if (dogs.length > 1) {
+        showDogSelector(dogs);
+      } else {
+        hideDogSelector();
+        fillRecord(dogs[0], _upcomingClasses);
+      }
+    } else {
+      document.getElementById('notfoundMsg').classList.add('show');
+      lookupActive = false;
+    }
+  } catch(e) {
+    document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
+    document.getElementById('notfoundMsg').classList.add('show');
+    lookupActive = false;
+  }
+}
+// 多狗選擇器：同一電話下有多於一隻狗時，以下拉選單讓家長選擇
+function showDogSelector(dogs) {
+  const wrap = document.getElementById('dogSelectorWrap');
+  if (!wrap) return;
+  wrap.innerHTML = 
+    <label class="dog-selector-lbl" for="dogSelect">此電話下有 <b>${dogs.length}</b> 隻毛孩，請選擇要查看的狗狗：</label>
+    <select id="dogSelect" class="dog-select" onchange="selectDog(this.value)">
+      ${dogs.map((d, i) => <option value="${i}">${d.dogName || '狗狗'}${d.breed ? （${d.breed}） : ''}</option>).join('')}
+    </select>;
+  wrap.classList.add('show');
+  fillRecord(dogs[0], _upcomingClasses);
+}
+function selectDog(i) {
+  i = Number(i);
+  if (!_allDogs[i]) return;
+  fillRecord(_allDogs[i], _upcomingClasses);
+  const sel = document.getElementById('dogSelect');
+  if (sel) sel.value = i;
+}
+function hideDogSelector() {
+  const wrap = document.getElementById('dogSelectorWrap');
+  if (wrap) { wrap.classList.remove('show'); wrap.innerHTML = ''; }
+}
+function fillRecord(d, upcomingClasses) {
+  // 預填資料但保持可編輯，客戶可手動更改
+  [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
+   ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
+   ['dogDob', d.dob || '']].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) { el.value = val; el.classList.add('prefilled'); }
+  });
+  [['dogGender', d.gender], ['dogNeutered', d.neutered]].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) { el.value = val; el.classList.add('prefilled'); }
+  });
+  // 健康狀況
+  if (d.health != null) {
+    const hasHealth = d.health && d.health !== '沒有' && d.health !== 'no';
+    const sel = document.getElementById('dogHealthSel');
+    sel.value = hasHealth ? 'yes' : 'no'; sel.classList.add('prefilled');
+    const det = document.getElementById('healthDetailField');
+    det.style.display = hasHealth ? 'block' : 'none';
+    if (hasHealth) { const t = document.getElementById('dogHealthText'); t.value = d.health; t.classList.add('prefilled'); }
+  }
+  if (d.courseLevel) { document.getElementById('courseLevel').value = d.courseLevel; applyCourseFilter(); }
+  document.getElementById('foundName').textContent = d.ownerName;
+  document.getElementById('foundDog').textContent  = d.dogName;
+  document.getElementById('foundMsg').classList.add('show');
+  document.getElementById('returning-badge').style.display = 'block';
+  renderGrade(d);
+  renderPackages(d, upcomingClasses || []);
+  lookupActive = true;
+}
+function clearLookup() {
+  document.getElementById('lookupPhone').value = '';
+  document.getElementById('foundMsg').classList.remove('show');
+  document.getElementById('notfoundMsg').classList.remove('show');
+  document.getElementById('returning-badge').style.display = 'none';
+  hideDogSelector();
+  _allDogs = [];
+  _upcomingClasses = [];
+  const pw = document.getElementById('pkgWrap');
+  pw.classList.remove('show');
+  document.getElementById('pkgList').innerHTML = '';
+  const gw = document.getElementById('gradeWrap');
+  gw.classList.remove('show'); gw.innerHTML = '';
+  ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('prefilled'); el.readOnly = false; }
+  });
+  ['dogGender','dogNeutered','dogHealthSel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('prefilled'); }
+  });
+  document.getElementById('healthDetailField').style.display = 'none';
+  document.getElementById('courseLevel').value = '';
+  applyCourseFilter();
+  lookupActive = false;
+}
+// ══ 套票 / 堂數追蹤 ════════════════════════════════════════════════
+// ══ 社交成長階梯 · 分級 ══
+// 五級階梯：C → B → B+ → A → A+（參考「狗狗社交成長階梯」）
+const LEVELS = { 1:'建立安全感', 2:'建立社交信心', 3:'穩定社交能力' };
+const LADDER = [
+  { k:'C',  zh:'反應型', en:'Reactive',  img:'assets/dino-c.png',     level:1, g:'
+#4A7BAF',
+    desc:'%DOG% 見到其他狗狗時反應比較大。我哋會由「安全感」同「冷靜距離」開始，一步一步嚟，唔急。',
+    next:['學會喺狗群中保持冷靜觀察','建立安全距離','慢慢減少過度反應'] },
+  { k:'B',  zh:'膽小型', en:'Shy',       img:'assets/dino-b.png',     level:1, g:'
+#3B82F6',
+    desc:'%DOG% 比較慎重、容易退縮。畀少少時間同空間，佢會慢慢習慣其他狗狗嘅存在。',
+    next:['習慣其他狗狗嘅存在','建立安全感','準備慢慢接近其他狗'] },
+  { k:'B+', zh:'適應期', en:'Adjusting', img:'assets/dino-bplus.png', level:2, g:'
+#0E7490',
+    desc:'%DOG% 已經肯接近其他狗狗，社交信心正在建立緊！偶爾仲會緊張，多啲自然互動就會更穩定。',
+    next:['練習自然互動','接觸唔同性格嘅狗','學習基本社交禮貌'] },
+  { k:'A',  zh:'社交型', en:'Social',    img:'assets/dino-a.png',     level:3, g:'
+#15803D',
+    desc:'%DOG% 已經係社交型狗狗，可以友善咩同其他狗狗互動，情緒大致穩定。再鸞固一下就升上 A+！',
+    next:['穩定咩同唔同狗狗互動','喺唔同環境都保持冷靜','成為成熟社交犬'] },
+  { k:'A+', zh:'穩定犬', en:'Stable',    img:'assets/dino-aplus.png', level:3, g:'
+#E08850', role:true,
+    desc:'太叻喇！%DOG% 已經係 A+ 穩定犬，情緒非常穩定，可以同唔同狗狗和平相處，仲可以做其他同學嘅社交榜樣。',
+    next:['歡迎成為「社交榜樣」','陪伴新同學一齊學習社交','保持穩定，繼續享受玩樂'] },
+];
+const GR_STAR = '<svg class="gr-star" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 18.6 5.9 21.4l1.4-6.8L2.2 9.9l6.9-.8z"/></svg>';
+function gradeIndex(k){ return LADDER.findIndex(x => x.k === k); }
+function renderGrade(d){
+  const wrap = document.getElementById('gradeWrap');
+  const idx = gradeIndex(d.grade);
+  if (idx < 0) { wrap.classList.remove('show'); wrap.innerHTML = ''; return; }
+  const cur = LADDER[idx];
+  const dog = d.dogName || '狗狗';
+  let used = d.semesterUsed, total = d.semesterTotal;
+  if (used == null || total == null) {
+    const tp = (d.packages || []).find(p => p.kind !== 'monthly');
+    if (tp) { used = Number(tp.used ?? tp.classesUsed ?? 0); total = Number(tp.total ?? tp.classesTotal ?? 0); }
+  }
+  const build = window.GRADE_VARIANT === 2 ? gradeVertical : gradeHorizontal;
+  wrap.innerHTML = build(cur, idx, dog, used, total);
+  wrap.classList.add('show');
+}
+function distText(idx){
+  if (idx >= 4) return null;
+  const toAp = 4 - idx, toA = 3 - idx;
+  if (idx >= 3) return 仲差 <b>${toAp}</b> 級就登上 <b>A+ 穩定犬</b>;
+  return 距離 <b>A 社交型</b> 仲差 <b>${toA}</b> 級，<b>A+ 穩定犬</b> 仲差 <b>${toAp}</b> 級;
+}
+function attendBlock(used, total){
+  if (!total) return '';
+  const pct = Math.max(4, Math.round(used / total * 100));
+  return <div class="gr-attend">
+    <div class="gr-attend-top"><span>本學期出席進度</span><b>${used} / ${total} 堂</b></div>
+    <div class="gr-attend-bar"><div style="width:${pct}%"></div></div>
+  </div>;
+}
+function nextBlock(cur, idx, dog){
+  if (cur.role) {
+    return <div class="gr-next role">
+      <div class="gr-next-t">${GR_STAR}<span>${dog} 已經登上最高一級！</span></div>
+      <ul class="gr-next-list">${cur.next.map(n => <li>${n}</li>).join('')}</ul>
+      <div class="gr-cta-row"><a class="gr-cta primary" href="https://wa.me/85294596420" target="_blank" rel="noopener">同導師傾傾</a></div>
+    </div>;
+  }
+  const target = LADDER[Math.min(idx + 1, 4)];
+  return <div class="gr-next">
+    <div class="gr-next-t"><svg class="ico"><use href="#ico-paw"/></svg><span>想升上 <b>${target.k}｜${target.zh}</b>？下一步可以…</span></div>
+    <ul class="gr-next-list">${cur.next.map(n => <li>${n}</li>).join('')}</ul>
+    <div class="gr-cta-row">
+      <button type="button" class="gr-cta primary" onclick="gotoBooking()">報名下一階段課堂</button>
+      <a class="gr-cta ghost" href="https://wa.me/85294596420" target="_blank" rel="noopener">同導師傾進度</a>
+    </div>
+  </div>;
+}
+function gradeHorizontal(cur, idx, dog, used, total){
+  const nodes = LADDER.map((gx, i) => {
+    const cls = i < idx ? 'done' : i === idx ? 'current' : (gx.k === 'A' || gx.k === 'A+') ? 'goal' : 'future';
+    const pin = i === idx ? <div class="gr-pin">你而家喺呢度</div> : '';
+    return <div class="gr-node ${cls}">${pin}
+      <div class="gr-thumb-box"><div class="gr-thumb"><img src="${gx.img}" alt="${gx.k}"></div></div>
+      <div class="gr-glyph">${gx.k}</div><div class="gr-lbl">${gx.zh}</div></div>;
+  }).join('');
+  return <div class="gr-card v-horiz" style="--g:${cur.g}">
+    <div class="gr-head">
+      <div class="gr-eyebrow"><svg class="ico"><use href="#ico-cap"/></svg>社交成長階梯 · 本學期</div>
+      <div class="gr-title">${dog} 現在是 <b>${cur.k}｜${cur.zh}</b> 狗狗</div>
+    </div>
+    <div class="gr-rail" style="padding-bottom:18px"><div class="gr-track"><div class="gr-track-fill" style="width:${idx / 4 * 100}%"></div></div>${nodes}</div>
+  </div>;
+}
+function gradeVertical(cur, idx, dog, used, total){
+  const rungs = LADDER.slice().reverse().map(gx => {
+    const i = gradeIndex(gx.k);
+    const cls = i < idx ? 'done' : i === idx ? 'current' : 'goal';
+    const here = i === idx ? <span class="rung-here">你而家喺呢度</span> : '';
+    const gt = gx.k === 'A+' && i !== idx ? <span class="rung-goal">${GR_STAR}目標</span> : '';
+    return <div class="gr-rung ${cls}">
+      <div class="rung-mark"><img src="${gx.img}" alt="${gx.k}"></div>
+      <div class="rung-txt"><div class="rung-glyph">${gx.k}｜${gx.zh}</div><div class="rung-en">${gx.en}</div></div>
+      ${here || gt}
+    </div>;
+  }).join('');
+  const dist = distText(idx);
+  const ribbon = dist
+    ? <div class="gr-goal-ribbon">${GR_STAR}<span>${dist}</span></div>
+    : <div class="gr-goal-ribbon top">${GR_STAR}<span>${dog} 已登上最高一級 A+</span></div>;
+  return <div class="gr-card v-vert" style="--g:${cur.g}">
+    <div class="gr-hero">
+      <div class="gr-hero-badge"><img src="${cur.img}" alt=""></div>
+      <div class="gr-hero-txt">
+        <div class="gr-eyebrow">${dog} · 本學期社交分級</div>
+        <div class="gr-hero-grade">${cur.k}<small>｜${cur.zh}</small></div>
+        <div class="gr-hero-en">${cur.en} · LEVEL ${cur.level} ${LEVELS[cur.level]}</div>
+      </div>
+    </div>
+    <p class="gr-desc pad">${cur.desc.replace('%DOG%', dog)}</p>
+    ${ribbon}
+    <div class="gr-climb">${rungs}</div>
+    <div class="gr-body" style="padding-top:0">
+      ${attendBlock(used, total)}
+      ${nextBlock(cur, idx, dog)}
+    </div>
+  </div>;
+}
+function gotoBooking(){
+  const el = document.getElementById('courseLevel') || document.getElementById('classList');
+  if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 70, behavior:'smooth' });
+}
+function renderPackages(d, upcomingClasses) {
+  const wrap = document.getElementById('pkgWrap');
+  const list = document.getElementById('pkgList');
+  // Normalise: accept an array packages, or single flat fields on the record.
+  let pkgs = [];
+  if (Array.isArray(d.packages)) {
+    pkgs = d.packages;
+  } else if (d.package || d.packageName || d.classesTotal != null) {
+    pkgs = [{ name: d.package || d.packageName, total: d.classesTotal,
+              used: d.classesUsed, expiry: d.packageExpiry || d.expiry }];
+  }
+  // ── 將出席記錄轉為 renderBooked 格式，按當前狗狗篩選 ──
+  const dogKey = (d.dogName || '').trim().toLowerCase();
+  const attendanceBooked = Array.isArray(upcomingClasses)
+    ? upcomingClasses
+        .filter(c => !dogKey || (c.dogName || '').trim().toLowerCase() === dogKey)
+        .map(c => ({
+          date:  c.classDate || '',
+          title: [c.lessonNum, c.courseLevel, c.classLabel].filter(Boolean).join(' · '),
+          time:  c.arrivalTime || '',
+          ref:   c.bookingRef  || '',
+        }))
+    : [];
+  // 無套票且無出席記錄 → 隱藏整個區塊
+  if (!pkgs.length && !attendanceBooked.length) {
+    wrap.classList.remove('show'); list.innerHTML = ''; return;
+  }
+  // 有套票 → 正常渲染，再於末端附加出席追蹤（若套票本身無 p.booked）
+  if (pkgs.length) {
+    list.innerHTML = pkgs.map(p => p.kind === 'monthly' ? renderMonthly(p) : renderTerm(p)).join('');
+    // 學期套票：當已報讀堂數達到「提示起始堂數」即於框框外顯示續堂提示
+    // remindFrom = 由第幾堂開始提示（預設為最後一堂）
+    const termLow = pkgs.some(p => {
+      if (p.kind === 'monthly') return false;
+      const total = Number(p.total ?? p.classesTotal ?? 0);
+      const used  = Number(p.used ?? p.classesUsed ?? 0);
+      const from  = Number(p.remindFrom ?? total);
+      return (used + 1) >= from;   // 即將上「第 from 堂」或之後
+    });
+    if (termLow) {
+      list.innerHTML += <div class="pkg-foot-note"><svg class="ico"><use href="#ico-alert"/></svg>學期課堂即將用完，請及早與導師聯絡安排下一學期續堂。</div>;
+    }
+    // 若套票本身無 booked 資料，用出席記錄補充
+    const hasPkgBooked = pkgs.some(p => Array.isArray(p.booked) && p.booked.length);
+    if (!hasPkgBooked && attendanceBooked.length) {
+      list.innerHTML += renderAttendanceSection(attendanceBooked);
+    }
+  } else {
+    // 無套票但有出席記錄 → 只顯示出席追蹤
+    list.innerHTML = renderAttendanceSection(attendanceBooked);
+  }
+  wrap.classList.add('show');
+}
+// 出席記錄獨立顯示區塊（與套票 renderBooked 格式相同，加參考號碼）
+function renderAttendanceSection(booked) {
+  if (!Array.isArray(booked) || !booked.length) return '';
+  const MON = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
+    const dt   = new Date(b.date);
+    const past = dt < today;
+    const dateLabel = isNaN(dt) ? b.date : ${dt.getDate()}<span>${MON[dt.getMonth()]}</span>;
+    return <div class="booked-row">
+      <div class="booked-date"><b>${isNaN(dt) ? '—' : dt.getDate()}</b><span>${isNaN(dt) ? '' : MON[dt.getMonth()]}</span></div>
+      <div class="booked-info">
+        <div class="booked-title">${b.title || '課堂'}</div>
+        ${b.time  ? <div class="booked-meta">🕐 ${b.time}</div> : ''}
+        ${b.ref   ? <div class="booked-meta" style="color:var(--pw-muted,#888);font-size:.75em;">${b.ref}</div> : ''}
+      </div>
+      <div class="booked-pill${past ? ' past' : ''}">${past ? '已完成' : '已預約'}</div>
+    </div>;
+  }).join('');
+  return <div class="pkg-booked">
+    <div class="pkg-booked-lbl"><svg class="ico"><use href="#ico-calendar"/></svg>已預約課堂</div>
+    ${rows}
+  </div>;
+}
+// 學期制：固定堂數，按已出席計進度
+function renderTerm(p) {
+  const total  = Number(p.total ?? p.classesTotal ?? 0);
+  const used   = Number(p.used  ?? p.classesUsed  ?? 0);
+  const remain = Math.max(0, total - used);
+  const pct    = total ? Math.round((used / total) * 100) : 0;
+  const low    = total > 0 && remain <= 1;
+  // 有效期：如有 firstClass，按 validMonths（預設 3）由首堂起計
+  let expiry = p.expiry || '';
+  if (p.firstClass) {
+    const m  = Number(p.validMonths ?? 3);
+    const fc = new Date(p.firstClass);
+    const ex = new Date(fc); ex.setMonth(ex.getMonth() + m);
+    const fmt = dt => ${dt.getFullYear()}年${dt.getMonth() + 1}月${dt.getDate()}日;
+    expiry = 有效期至 ${fmt(ex)}（首堂起計 ${m} 個月）;
+  } else if (expiry) {
+    expiry = 有效期至 ${expiry};
+  }
+  return <div class="pkg-tracker${low ? ' low' : ''}" style="margin-bottom:10px;">
+    <div class="pkg-head">
+      <svg class="ico"><use href="#ico-cap"/></svg>
+      <div class="pkg-head-txt">
+        <div class="pkg-name">${p.name || '課程'}</div>
+        ${expiry ? <div class="pkg-sub">${expiry}</div> : ''}
+      </div>
+      <div class="pkg-remain"><strong>${remain}</strong><span>堂尚餘</span></div>
+    </div>
+    <div class="pkg-bar"><div class="pkg-bar-fill" style="width:${pct}%"></div></div>
+    <div class="pkg-stats">
+      <div class="pkg-stat"><span class="pkg-stat-num">${total}</span><span class="pkg-stat-lbl">總堂數</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">已出席</span></div>
+    </div>
+    ${renderBooked(p.booked)}
+  </div>;
+}
+// 月費計劃：每月配額，每月 1 日重置（Light 1 堂 / Active 3 堂 / Ultimate 無限）
+function renderMonthly(p) {
+  const unlimited = p.monthlyQuota == null || p.monthlyQuota === 'unlimited' || p.monthlyQuota === Infinity;
+  const quota  = unlimited ? Infinity : Number(p.monthlyQuota);
+  const used   = Number(p.usedThisMonth ?? 0);
+  const remain = unlimited ? Infinity : Math.max(0, quota - used);
+  const pct    = unlimited ? 100 : (quota ? Math.min(100, Math.round(used / quota * 100)) : 0);
+  const low    = !unlimited && remain <= 0;
+  const fmt = dt => ${dt.getMonth() + 1}月${dt.getDate()}日;
+  let cycle;
+  if (p.cycleStart && p.cycleEnd) {
+    cycle = 本月週期 ${fmt(new Date(p.cycleStart))} – ${fmt(new Date(p.cycleEnd))};
+  } else {
+    const n = new Date();
+    cycle = 本月週期 ${fmt(new Date(n.getFullYear(), n.getMonth(), 1))} – ${fmt(new Date(n.getFullYear(), n.getMonth() + 1, 0))};
+  }
+  const barStyle = unlimited ? 'width:100%;background:var(--pw-gold);' : width:${pct}%;
+  return <div class="pkg-tracker monthly${low ? ' low' : ''}" style="margin-bottom:10px;">
+    <div class="pkg-head">
+      <svg class="ico"><use href="#ico-cap"/></svg>
+      <div class="pkg-head-txt">
+        <div class="pkg-name">${p.name || '月費計劃'}<span class="pkg-tag">月費</span></div>
+        <div class="pkg-sub">${cycle} · 每月 1 日重置</div>
+      </div>
+      <div class="pkg-remain"><strong>${unlimited ? '∞' : remain}</strong><span>本月尚餘</span></div>
+    </div>
+    <div class="pkg-bar"><div class="pkg-bar-fill" style="${barStyle}"></div></div>
+    <div class="pkg-stats">
+      <div class="pkg-stat"><span class="pkg-stat-num">${unlimited ? '無限' : quota}</span><span class="pkg-stat-lbl">每月堂額</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">本月已報</span></div>
+    </div>
+    ${low ? <div class="pkg-renew"><svg class="ico"><use href="#ico-alert"/></svg>本月堂額已用完，下月 1 日自動重置。</div> : ''}
+    ${renderBooked(p.booked)}
+  </div>;
+}
+// 已預約課堂日子（共用）
+function renderBooked(booked) {
+  if (!Array.isArray(booked) || !booked.length) return '';
+  const MON = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rows = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
+    const dt = new Date(b.date);
+    const past = dt < today;
+    return <div class="booked-row">
+      <div class="booked-date"><b>${dt.getDate()}</b><span>${MON[dt.getMonth()]}</span></div>
+      <div class="booked-info">
+        <div class="booked-title">${b.title || '課堂'}</div>
+        ${b.time ? <div class="booked-meta">${b.time}</div> : ''}
+      </div>
+      <div class="booked-pill${past ? ' past' : ''}">${past ? '已完成' : '已預約'}</div>
+    </div>;
+  }).join('');
+  return <div class="pkg-booked">
+    <div class="pkg-booked-lbl"><svg class="ico"><use href="#ico-calendar"/></svg>已預約課堂</div>
+    ${rows}
+  </div>;
+}
+// ══ TRANSPORT WITH 八折 PRICING ══════════════════════════════════
+function calcTransport() {
+  const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
+  const detail = document.getElementById('trDetail');
+  const priceBox = document.getElementById('trPriceBox');
+  const paySec = document.getElementById('paymentSec');
+  if (val === '不需要') { detail.classList.remove('show'); priceBox.style.display = 'none'; if(paySec) paySec.style.display='none'; return; }
+  detail.classList.add('show');
+  if(paySec) paySec.style.display='block';
+  const dp = parseInt(document.getElementById('trDistrict').value) || 0;
+  if (!dp) { priceBox.style.display = 'none'; return; }
+  const isBoth = val === '接+送';
+  const origTotal = isBoth ? dp * 2 : dp;
+  const discTotal = Math.round(origTotal * 0.8);
+  document.getElementById('trPriceType').textContent = val;
+  document.getElementById('trPriceOrig').textContent = '$' + origTotal;
+  document.getElementById('trPriceFinal').textContent = '$' + discTotal;
+  document.getElementById('trPriceAmt').textContent = '$' + discTotal;
+  priceBox.style.display = 'block';
+}
+// ══ VALIDATION ════════════════════════════════════════════════════
+function vf(id, fail, eid) {
+  document.getElementById(id)?.classList.toggle('error', fail);
+  document.getElementById(eid)?.classList.toggle('show', fail);
+  return !fail;
+}
+function validate() {
+  const n = document.getElementById('ownerName').value.trim();
+  const w = document.getElementById('whatsapp').value.trim();
+  const e = document.getElementById('email').value.trim();
+  const d = document.getElementById('dogName').value.trim();
+  const b = document.getElementById('dogBreed').value.trim();
+  const wt = document.getElementById('dogWeight').value.trim();
+  const gd = document.getElementById('dogGender').value;
+  const nu = document.getElementById('dogNeutered').value;
+  const db = document.getElementById('dogDob').value;
+  const hs = document.getElementById('dogHealthSel').value;
+  const l = document.getElementById('courseLevel').value;
+  const c = [...document.querySelectorAll('input[name=cls]:checked')];
+  let ok = true;
+  ok = vf('ownerName',  !n,                                        'e-name')  && ok;
+  ok = vf('whatsapp',   !/^\d{8}$/.test(w),                        'e-wa')    && ok;
+  ok = vf('email',      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),    'e-email') && ok;
+  ok = vf('dogName',    !d,                                         'e-dog')   && ok;
+  ok = vf('dogBreed',   !b,                                         'e-breed') && ok;
+  ok = vf('dogWeight',  !wt || Number(wt) <= 0,                    'e-weight') && ok;
+  ok = vf('dogGender',  !gd,                                        'e-gender') && ok;
+  ok = vf('dogNeutered',!nu,                                        'e-neutered') && ok;
+  ok = vf('dogDob',     !db,                                        'e-dob') && ok;
+  ok = vf('dogHealthSel', !hs,                                      'e-health') && ok;
+  if (hs === 'yes') ok = vf('dogHealthText', !document.getElementById('dogHealthText').value.trim(), 'e-health-text') && ok;
+  ok = vf('courseLevel',!l,                                         'e-level') && ok;
+  document.getElementById('e-classes').classList.toggle('show', !c.length);
+  if (!c.length) ok = false;
+  return ok;
+}
+// ══ SUBMIT ════════════════════════════════════════════════════════
+document.getElementById('mainForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  const payload = {
+    action:       'submit_academy',
+    timestamp:    new Date().toISOString(),
+    customerType: lookupActive ? '舊生' : '新學員',
+    ownerName:    document.getElementById('ownerName').value.trim(),
+    whatsapp:     document.getElementById('whatsapp').value.trim(),
+    email:        document.getElementById('email').value.trim(),
+    dogName:      document.getElementById('dogName').value.trim(),
+    dogBreed:     document.getElementById('dogBreed').value.trim(),
+    dogWeight:    document.getElementById('dogWeight').value.trim(),
+    dogGender:    document.getElementById('dogGender').value,
+    dogNeutered:  document.getElementById('dogNeutered').value,
+    dogDob:       document.getElementById('dogDob').value,
+    dogHealth:    document.getElementById('dogHealthSel').value === 'yes'
+                    ? document.getElementById('dogHealthText').value.trim() : '沒有',
+    courseLevel:  document.getElementById('courseLevel').value,
+    classes:      [...document.querySelectorAll('input[name=cls]:checked')].map(c => c.value).join(' | '),
+    arrivalTime:  document.querySelector('input[name=arr]:checked')?.value || '',
+    transport:    document.querySelector('input[name=transport]:checked')?.value || '不需要',
+    trDistrict:   document.getElementById('trDistrict')?.value || '',
+    trAddress:    document.getElementById('trAddress').value.trim(),
+    trFee:        document.getElementById('trPriceAmt')?.textContent || '$0',
+    remarks:      document.getElementById('remarks').value.trim(),
+    status:       '待審批',
+  };
+  const ref = 'PA-' + Date.now().toString(36).toUpperCase().slice(-6);
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, ref }),
+    });
+    document.getElementById('mainForm').style.display = 'none';
+    document.querySelector('.notice').style.display   = 'none';
+    document.getElementById('sDog').textContent = payload.dogName;
+    document.getElementById('sRef').textContent = ref;
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(err) {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    alert('提交時出現錯誤，請稍後重試或透過 WhatsApp 聯絡我們。');
+  }
+});
+// ══ INIT ══════════════════════════════════════════════════════════
+const _params = new URLSearchParams(location.search);
+// 正式上線：DEMO_MODE = false 時，自動隱藏示範號碼提示列
+if (!DEMO_MODE) { const _dh = document.getElementById('demoHint'); if (_dh) _dh.style.display = 'none'; }
+window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
+applyCourseFilter();
+buildTimes();
+const _demo = _params.get('demo');
+if (_demo) {
+  const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
+  const inp = document.getElementById('lookupPhone');
+  if (inp) { inp.value = ph; doLookup(); }
+  requestAnimationFrame(() => {
+    const gw = document.getElementById('gradeWrap');
+    if (gw && gw.classList.contains('show'))
+      window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 64 });
+  });
+}
+// 客戶手動修改任何預填欄位時，移除「已預填」高亮
+['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
+  document.getElementById(id)?.addEventListener('input', e => e.target.classList.remove('prefilled'));
+});
+['dogGender','dogNeutered','dogHealthSel'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', e => e.target.classList.remove('prefilled'));
+});
+</script>
+</body>
+</html>
+
+這是現在課堂預約前端HTML表單，請看看有什麼需要修改才可以看到社交成長階梯和已預約課堂
+
+Show less
+
+Thought process
+Thought process
+看到問題了。有兩個 JavaScript 函式用了錯誤的欄位名稱：
+
+
+Fix renderGrade to use behavioralLevel, fix renderPackages to map API field names
+Fix renderGrade to use behavioralLevel, fix renderPackages to map API field names
+兩個 bug 根源：
+
+renderGrade(d) 讀 d.grade，但 API 回傳的是 d.behavioralLevel → 階梯永遠不顯示
+renderPackages 讀 d.packages / d.classesTotal，但 API 回傳的是 d.pkgType / d.classCount / d.remainingLessons → 堂數追蹤空白
+
+Created a file, read a file, used a tool
+Created a file, read a file, used a tool
+在 Academy Booking.html 的 <script> 裡，找到 function renderGrade(d) 和 function renderPackages(d, upcomingClasses) 這兩個函式，整個替換成上面檔案的版本。
+
+兩處改動總結：
+
+renderGrade：把第 2 行 const idx = gradeIndex(d.grade) 改為先取 d.grade || d.behavioralLevel，再加兩行 fallback 讓 used/total 從 classCount/remainingLessons 取值。
+
+renderPackages：在現有 pkgs 偵測邏輯後加一個 if (!pkgs.length) 區塊，把 API 回傳的 pkgType/classCount/remainingLessons 轉成 renderTerm 能讀的格式。儲值套票（含 $ 或「儲值」字眼）不會被錯誤當成堂數追蹤。
+
+改完 push 到 GitHub 後，用 Chubby 的號碼測試，階梯應該會顯示 B+ 高亮，堂數追蹤會顯示進度條。如果 行為評級 一欄仍然空白，先在 CRM 補填，再重新搜尋。
+
+
+Academy html fixes
+JS 
+看見這個代碼很短，+在原本的代碼底下嗎？
+
+
+Thought process
+Thought process
+不是，這兩個函式是替換，不是新增。
+
+做法：
+
+打開 Academy Booking.html
+用 Ctrl+F（或 Cmd+F）搜尋 function renderGrade(d)，找到後把整個函式整體（從 function renderGrade(d){ 到對應的閉合 }）替換成檔案裡的新版本
+同樣搜尋 function renderPackages(d, upcomingClasses)，整個替換
+如果你想我直接幫你改好整個 HTML 檔案，把它放在你的資料夾裡，你只需要 push 上 GitHub 就好——把完整的 Academy Booking.html 直接貼給我就可以。
+
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pawradise · 社交學院報名</title>
+<link rel="stylesheet" href="pawradise-tokens.css">
+<link rel="stylesheet" href="pawradise.css">
+<style>
+.lead{font-size:13px;font-weight:600;color:var(--pw-ink-mute);line-height:1.6;margin:2px 0 16px;padding:0 2px;}
+.notice{background:var(--pw-paper);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);
+  border-left:4px solid var(--pw-gold);padding:16px 18px;margin-bottom:14px;}
+.notice-title{display:flex;align-items:center;gap:9px;font-weight:800;font-size:13px;color:var(--pw-ink);margin-bottom:11px;}
+.notice-title .ico{width:17px;height:17px;color:var(--pw-navy);stroke-width:2;}
+.notice-item{display:flex;gap:9px;margin-bottom:7px;font-size:12.5px;font-weight:600;color:var(--pw-ink-mute);line-height:1.6;}
+.notice-item:last-child{margin-bottom:0;}
+.ndot{color:var(--pw-gold-deep);flex-shrink:0;font-weight:900;}
+.notice-item b{color:var(--pw-ink-soft);font-weight:800;}
+.found-msg{display:none;background:var(--pw-success-bg);border-radius:var(--pw-r-sm);
+  padding:10px 13px;font-size:13px;font-weight:700;color:var(--pw-success);align-items:center;gap:8px;margin-top:11px;}
+.found-msg.show{display:flex;}
+.found-msg .ico{width:16px;height:16px;}
+.btn-clear{margin-left:auto;background:none;border:1.5px solid var(--pw-success);border-radius:var(--pw-r-sm);
+  padding:3px 11px;font-size:12px;font-weight:700;color:var(--pw-success);cursor:pointer;font-family:var(--pw-font-sans);}
+.notfound-msg{display:none;background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);
+  padding:10px 13px;font-size:13px;font-weight:700;color:var(--pw-warn);margin-top:11px;}
+.notfound-msg.show{display:block;}
+/* 多狗選擇器 */
+.dog-selector{display:none;margin-top:11px;background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-cream-deep);
+  border-radius:var(--pw-r-md);padding:12px 14px;}
+.dog-selector.show{display:block;}
+.dog-selector-lbl{display:block;font-size:12.5px;font-weight:800;color:var(--pw-ink-soft);margin-bottom:8px;line-height:1.45;}
+.dog-selector-lbl b{color:var(--pw-navy);font-weight:900;}
+.dog-select{font-weight:800;color:var(--pw-ink);}
+/* 示範模式提示 */
+.demo-hint{margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:7px;
+  background:var(--pw-cream-soft);border:1.5px dashed var(--pw-stroke);border-radius:var(--pw-r-md);padding:9px 11px;}
+.demo-hint-lbl{font-size:10.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--pw-ink-ghost);display:flex;align-items:center;gap:5px;margin-right:2px;}
+.demo-chip{background:var(--pw-paper);border:1.5px solid var(--pw-stroke);border-radius:var(--pw-r-pill);
+  padding:4px 11px;font-size:12px;font-weight:800;color:var(--pw-ink-soft);cursor:pointer;
+  font-family:var(--pw-font-sans);transition:all .18s;display:flex;align-items:center;gap:5px;}
+.demo-chip:hover{background:var(--pw-navy);color:#fff;border-color:var(--pw-navy);}
+.demo-chip b{font-weight:900;color:var(--pw-gold-deep);}
+.demo-chip:hover b{color:var(--pw-gold);}
+/* 套票 / 堂數追蹤 */
+.pkg-wrap{display:none;flex-direction:column;gap:10px;margin-top:12px;}
+.pkg-wrap.show{display:flex;}
+.pkg-wrap-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--pw-ink-ghost);}
+.pkg-wrap-title .ico{width:14px;height:14px;color:var(--pw-ink-ghost);stroke-width:2.2;}
+.pkg-tracker{background:var(--pw-paper);border:var(--pw-stroke) solid var(--pw-cream-deep);
+  border-radius:var(--pw-r-md);padding:14px 16px;}
+.pkg-tracker.low{border-color:var(--pw-warn);}
+.pkg-head{display:flex;align-items:center;gap:11px;}
+.pkg-head .ico{width:20px;height:20px;color:var(--pw-navy);flex-shrink:0;}
+.pkg-head-txt{flex:1;min-width:0;}
+.pkg-name{font-size:13.5px;font-weight:800;color:var(--pw-ink);line-height:1.35;}
+.pkg-tag{display:inline-block;margin-left:7px;vertical-align:middle;font-size:9.5px;font-weight:900;
+  letter-spacing:.04em;padding:2px 8px;border-radius:var(--pw-r-pill);background:var(--pw-info-bg);color:var(--pw-info);}
+.pkg-sub{font-size:11.5px;font-weight:600;color:var(--pw-ink-mute);margin-top:2px;}
+.pkg-remain{text-align:right;flex-shrink:0;line-height:1;}
+.pkg-remain strong{font-size:23px;font-weight:900;color:var(--pw-navy);}
+.pkg-tracker.low .pkg-remain strong{color:var(--pw-warn);}
+.pkg-remain span{display:block;font-size:10.5px;font-weight:700;color:var(--pw-ink-mute);margin-top:3px;}
+.pkg-bar{height:8px;border-radius:999px;background:var(--pw-cream-deep);margin:13px 0 12px;overflow:hidden;}
+.pkg-bar-fill{height:100%;border-radius:999px;background:var(--pw-navy);transition:width .5s ease;}
+.pkg-tracker.low .pkg-bar-fill{background:var(--pw-warn);}
+.pkg-stats{display:flex;}
+.pkg-stat{flex:1;text-align:center;border-right:1.5px solid var(--pw-cream-deep);}
+.pkg-stat:last-child{border-right:none;}
+.pkg-stat-num{display:block;font-size:18px;font-weight:900;color:var(--pw-ink);}
+.pkg-stat-lbl{font-size:10.5px;font-weight:700;color:var(--pw-ink-mute);margin-top:1px;}
+.pkg-renew{display:flex;align-items:center;gap:7px;margin-top:11px;padding:8px 11px;
+  background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);font-size:11.5px;font-weight:700;color:var(--pw-warn);}
+.pkg-renew .ico{width:14px;height:14px;flex-shrink:0;}
+/* 已預約課堂 */
+.pkg-booked{margin-top:12px;padding-top:12px;border-top:1.5px solid var(--pw-cream-deep);}
+.pkg-booked-lbl{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:900;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--pw-ink-ghost);margin-bottom:9px;}
+.pkg-booked-lbl .ico{width:13px;height:13px;color:var(--pw-ink-ghost);stroke-width:2.2;}
 /* 列表下方通用提示(框框外) */
 .pkg-foot-note{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:11px 13px;
   background:var(--pw-warn-bg);border-radius:var(--pw-r-md);font-size:12px;font-weight:700;
