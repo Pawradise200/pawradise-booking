@@ -1154,6 +1154,25 @@ function renderPackages(d) {
   let pkgs = [];
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
+ } else if (d.pkgType || d.pkgTotal) {
+    const total  = Number(d.pkgTotal ?? 0);
+    const remain = Number(d.remainingLessons ?? 0);
+    const booked = Array.isArray(d.upcomingClasses)
+      ? d.upcomingClasses.map(c => ({
+          date:      c.date  || c.classDate || '',
+          title:     c.title || c.className || '課堂',
+          time:      c.time  || '',
+          status:    'upcoming',
+          bookingId: c.bookingId || c.id || '',
+        }))
+      : [];
+    pkgs = [{
+      name:   d.pkgType || '課程套票',
+      total:  total,
+      used:   total - remain,
+      expiry: d.pkgExpiry || '',
+      booked: booked,
+    }];
   } else if (d.package || d.packageName || d.classesTotal != null) {
     pkgs = [{ name: d.package || d.packageName, total: d.classesTotal,
               used: d.classesUsed, expiry: d.packageExpiry || d.expiry }];
