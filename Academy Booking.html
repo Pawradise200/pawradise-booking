@@ -1001,30 +1001,20 @@ function gradeIndex(k){ return LADDER.findIndex(x => x.k === k); }
 
 function renderGrade(d){
   const wrap = document.getElementById('gradeWrap');
-  // [FIX] API 回傳 behavioralLevel，前端原用 grade，合併兩者
-  const level = d.grade || d.behavioralLevel || '';
-  const idx   = gradeIndex(level);
+  const idx = gradeIndex(d.grade);
   if (idx < 0) { wrap.classList.remove('show'); wrap.innerHTML = ''; return; }
   const cur = LADDER[idx];
   const dog = d.dogName || '狗狗';
   let used = d.semesterUsed, total = d.semesterTotal;
   if (used == null || total == null) {
     const tp = (d.packages || []).find(p => p.kind !== 'monthly');
-    if (tp) {
-      used  = Number(tp.used  ?? tp.classesUsed  ?? 0);
-      total = Number(tp.total ?? tp.classesTotal ?? 0);
-    }
-  }
-  // [FIX] packages 空時，從 API 的 classCount / remainingLessons 取數
-  if (used  == null || isNaN(used))  used  = Number(d.classCount       || 0);
-  if (!total || isNaN(total)) {
-    const rem = Number(d.remainingLessons || 0);
-    total = (used + rem) > 0 ? (used + rem) : 9;   // S1 預設 9 堂
+    if (tp) { used = Number(tp.used ?? tp.classesUsed ?? 0); total = Number(tp.total ?? tp.classesTotal ?? 0); }
   }
   const build = window.GRADE_VARIANT === 2 ? gradeVertical : gradeHorizontal;
   wrap.innerHTML = build(cur, idx, dog, used, total);
   wrap.classList.add('show');
 }
+
 function distText(idx){
   if (idx >= 4) return null;
   const toAp = 4 - idx, toA = 3 - idx;
@@ -1118,8 +1108,7 @@ function gotoBooking(){
 function renderPackages(d, upcomingClasses) {
   const wrap = document.getElementById('pkgWrap');
   const list = document.getElementById('pkgList');
- 
-  // ── 原有 packages 偵測邏輯（不變）
+  // Normalise: accept an array `packages`, or single flat fields on the record.
   let pkgs = [];
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
@@ -1127,62 +1116,6 @@ function renderPackages(d, upcomingClasses) {
     pkgs = [{ name: d.package || d.packageName, total: d.classesTotal,
               used: d.classesUsed, expiry: d.packageExpiry || d.expiry }];
   }
- 
-  // ── [FIX] API 欄位 fallback（pkgType / classCount / remainingLessons）
-  if (!pkgs.length) {
-    const usedCls  = Number(d.classCount       || 0);
-    const remCls   = Number(d.remainingLessons || 0);
-    const totalCls = (usedCls + remCls) > 0 ? (usedCls + remCls) : 0;
-    // 只有課堂記錄（不是 HK$ 儲值套票）才建立堂數追蹤卡
-    const isPkgCls = d.pkgType && !String(d.pkgType).includes('儲值') && !String(d.pkgType).includes('$');
-    if (totalCls > 0 || isPkgCls) {
-      pkgs = [{
-        name:   isPkgCls ? d.pkgType : (d.pkgType || 'S1 狗狗學期班'),
-        total:  totalCls || 9,
-        used:   usedCls,
-        expiry: d.pkgExpiry ? String(d.pkgExpiry).slice(0, 10) : '',
-      }];
-    }
-  }
- 
-  // ── 將出席記錄轉為 renderBooked 格式，按當前狗狗篩選（原邏輯不變）
-  const dogKey = (d.dogName || '').trim().toLowerCase();
-  const attendanceBooked = Array.isArray(upcomingClasses)
-    ? upcomingClasses
-        .filter(c => !dogKey || (c.dogName || '').trim().toLowerCase() === dogKey)
-        .map(c => ({
-          date:  c.classDate || '',
-          title: [c.lessonNum, c.courseLevel, c.classLabel].filter(Boolean).join(' · '),
-          time:  c.arrivalTime || '',
-          ref:   c.bookingRef  || '',
-        }))
-    : [];
- 
-  if (!pkgs.length && !attendanceBooked.length) {
-    wrap.classList.remove('show'); list.innerHTML = ''; return;
-  }
- 
-  if (pkgs.length) {
-    list.innerHTML = pkgs.map(p => p.kind === 'monthly' ? renderMonthly(p) : renderTerm(p)).join('');
-    const termLow = pkgs.some(p => {
-      if (p.kind === 'monthly') return false;
-      const total = Number(p.total ?? p.classesTotal ?? 0);
-      const used  = Number(p.used  ?? p.classesUsed  ?? 0);
-      const from  = Number(p.remindFrom ?? total);
-      return (used + 1) >= from;
-    });
-    if (termLow) {
-      list.innerHTML += `<div class="pkg-foot-note"><svg class="ico"><use href="#ico-alert"/></svg>學期課堂即將用完，請及早與導師聯絡安排下一學期續堂。</div>`;
-    }
-    const hasPkgBooked = pkgs.some(p => Array.isArray(p.booked) && p.booked.length);
-    if (!hasPkgBooked && attendanceBooked.length) {
-      list.innerHTML += renderAttendanceSection(attendanceBooked);
-    }
-  } else {
-    list.innerHTML = renderAttendanceSection(attendanceBooked);
-  }
-  wrap.classList.add('show');
-}
 
   // ── 將出席記錄轉為 renderBooked 格式，按當前狗狗篩選 ──
   const dogKey = (d.dogName || '').trim().toLowerCase();
