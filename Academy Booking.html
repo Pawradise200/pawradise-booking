@@ -1480,12 +1480,8 @@ const _demo = _params.get('demo');
 if (_demo) {
   const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
   const inp = document.getElementById('lookupPhone');
-  if (inp) { inp.value = ph; doLookup(); }
-  requestAnimationFrame(() => {
-    const gw = document.getElementById('gradeWrap');
-    if (gw && gw.classList.contains('show'))
-      window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 64 });
-  });
+  if (inp) { inp.value = ph; }
+  demoLoad(ph);
 }
 ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
   document.getElementById(id)?.addEventListener('input', e => e.target.classList.remove('prefilled'));
