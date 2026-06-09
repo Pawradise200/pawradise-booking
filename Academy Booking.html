@@ -27,6 +27,14 @@
   padding:10px 13px;font-size:13px;font-weight:700;color:var(--pw-warn);margin-top:11px;}
 .notfound-msg.show{display:block;}
 
+/* ── FIX 1: Loading state ── */
+.lookup-loading{display:none;align-items:center;gap:9px;padding:10px 13px;font-size:13px;
+  font-weight:700;color:var(--pw-ink-mute);margin-top:11px;background:var(--pw-cream-soft);
+  border-radius:var(--pw-r-sm);}
+.lookup-loading.show{display:flex;}
+.lookup-spinner{width:15px;height:15px;border:2px solid var(--pw-cream-deep);border-top-color:var(--pw-navy);
+  border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+
 /* 多狗選擇器 */
 .dog-selector{display:none;margin-top:11px;background:var(--pw-cream-soft);border:var(--pw-stroke) solid var(--pw-cream-deep);
   border-radius:var(--pw-r-md);padding:12px 14px;}
@@ -79,13 +87,22 @@
   background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);font-size:11.5px;font-weight:700;color:var(--pw-warn);}
 .pkg-renew .ico{width:14px;height:14px;flex-shrink:0;}
 
-/* 已預約課堂 */
+/* ── FIX 2: 課程追蹤 - 已預約課堂（含三狀態 + 編輯/取消按鈕）── */
 .pkg-booked{margin-top:12px;padding-top:12px;border-top:1.5px solid var(--pw-cream-deep);}
 .pkg-booked-lbl{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:900;
   letter-spacing:.05em;text-transform:uppercase;color:var(--pw-ink-ghost);margin-bottom:9px;}
 .pkg-booked-lbl .ico{width:13px;height:13px;color:var(--pw-ink-ghost);stroke-width:2.2;}
 
-/* 列表下方通用提示（框框外） */
+/* 已預約課堂三狀態區塊標題 */
+.booked-section-lbl{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:900;
+  letter-spacing:.05em;text-transform:uppercase;color:var(--pw-ink-ghost);margin:10px 0 6px;padding-top:8px;
+  border-top:1px dashed var(--pw-cream-deep);}
+.booked-section-lbl:first-child{border-top:none;margin-top:0;padding-top:0;}
+.booked-section-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.booked-section-dot.upcoming{background:var(--pw-navy);}
+.booked-section-dot.done{background:var(--pw-ink-ghost);}
+.booked-section-dot.cancelled{background:var(--pw-danger, #dc2626);}
+
 .pkg-foot-note{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:11px 13px;
   background:var(--pw-warn-bg);border-radius:var(--pw-r-md);font-size:12px;font-weight:700;
   line-height:1.5;color:var(--pw-warn);}
@@ -96,12 +113,30 @@
   width:42px;flex-shrink:0;background:var(--pw-navy);border-radius:var(--pw-r-sm);padding:5px 0;line-height:1;}
 .booked-date b{font-size:16px;font-weight:900;color:#fff;}
 .booked-date span{font-size:9px;font-weight:800;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.03em;}
+.booked-date.past{background:var(--pw-cream-deep);}
+.booked-date.past b{color:var(--pw-ink-mute);}
+.booked-date.past span{color:var(--pw-ink-ghost);}
+.booked-date.cancelled-date{background:#fef2f2;}
+.booked-date.cancelled-date b{color:#dc2626;}
+.booked-date.cancelled-date span{color:#fca5a5;}
 .booked-info{flex:1;min-width:0;}
 .booked-title{font-size:12.5px;font-weight:800;color:var(--pw-ink);}
+.booked-title.cancelled-txt{color:var(--pw-ink-mute);text-decoration:line-through;}
 .booked-meta{font-size:11px;font-weight:600;color:var(--pw-ink-mute);margin-top:1px;}
 .booked-pill{flex-shrink:0;font-size:10px;font-weight:900;padding:3px 9px;border-radius:var(--pw-r-pill);
   background:var(--pw-success-bg);color:var(--pw-success);}
 .booked-pill.past{background:var(--pw-cream-deep);color:var(--pw-ink-mute);}
+.booked-pill.cancelled{background:#fef2f2;color:#dc2626;}
+
+/* 已預約課堂的操作按鈕 */
+.booked-actions{display:flex;gap:6px;margin-top:6px;}
+.btn-booked-edit,.btn-booked-cancel{font-family:var(--pw-font-sans);font-size:10.5px;font-weight:800;
+  padding:4px 10px;border-radius:var(--pw-r-pill);cursor:pointer;border:1.5px solid;transition:all .15s;}
+.btn-booked-edit{background:var(--pw-paper);border-color:var(--pw-navy);color:var(--pw-navy);}
+.btn-booked-edit:hover{background:var(--pw-navy);color:#fff;}
+.btn-booked-cancel{background:var(--pw-paper);border-color:#dc2626;color:#dc2626;}
+.btn-booked-cancel:hover{background:#dc2626;color:#fff;}
+.btn-booked-cancel:disabled{opacity:.4;cursor:not-allowed;}
 
 /* Class list */
 .class-list{display:flex;flex-direction:column;gap:8px;}
@@ -243,7 +278,6 @@
 .gr-body{padding:4px 16px 16px;}
 .gr-desc{font-size:12.5px;font-weight:600;color:var(--pw-ink-soft);line-height:1.65;}
 .gr-desc.pad{padding:0 16px;margin-top:10px;}
-/* horizontal rail */
 .gr-rail{position:relative;display:grid;grid-template-columns:repeat(5,1fr);padding:32px 6px 12px;}
 .gr-track{position:absolute;left:10%;right:10%;top:60px;height:3px;background:var(--pw-cream-deep);border-radius:3px;}
 .gr-track-fill{height:100%;background:var(--g);border-radius:3px;transition:width .5s ease;}
@@ -269,7 +303,6 @@
   box-shadow:0 3px 9px color-mix(in srgb,var(--g) 45%,transparent);}
 .gr-pin::after{content:'';position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);
   border:4px solid transparent;border-top-color:var(--g);border-bottom:0;}
-/* status row */
 .gr-status{display:flex;gap:12px;align-items:center;background:#fff;border-radius:var(--pw-r-md);
   border:var(--pw-stroke) solid var(--gline);padding:12px 13px;margin-top:4px;}
 .gr-status-dino{width:64px;height:64px;flex-shrink:0;border-radius:var(--pw-r-md);background:var(--gsoft);
@@ -278,7 +311,6 @@
 .gr-badge{display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.03em;background:var(--g);color:#fff;
   padding:3px 9px;border-radius:var(--pw-r-pill);margin-bottom:6px;}
 .gr-status-txt .gr-desc{margin:0;}
-/* goal line */
 .gr-goal{display:flex;align-items:center;gap:8px;margin-top:11px;padding:10px 13px;border-radius:var(--pw-r-sm);
   background:#fff;border:var(--pw-stroke) dashed var(--pw-gold);font-size:12.5px;font-weight:800;
   color:var(--pw-gold-deep);line-height:1.4;}
@@ -286,14 +318,12 @@
 .gr-goal .gr-star{color:var(--pw-gold);flex-shrink:0;}
 .gr-goal.top{border-style:solid;color:var(--pw-success);border-color:var(--pw-success);}
 .gr-goal.top .gr-star{color:var(--pw-success);}
-/* attendance */
 .gr-attend{margin-top:11px;}
 .gr-attend-top{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;font-weight:700;
   color:var(--pw-ink-mute);margin-bottom:6px;}
 .gr-attend-top b{font-size:13px;font-weight:900;color:var(--pw-ink);}
 .gr-attend-bar{height:7px;border-radius:999px;background:var(--pw-cream-deep);overflow:hidden;}
 .gr-attend-bar div{height:100%;border-radius:999px;background:var(--g);transition:width .5s ease;}
-/* next step */
 .gr-next{margin-top:12px;background:#fff;border-radius:var(--pw-r-md);border:var(--pw-stroke) solid var(--gline);padding:13px 14px;}
 .gr-next-t{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900;color:var(--pw-ink);line-height:1.4;}
 .gr-next-t b{color:var(--g);}
@@ -312,7 +342,6 @@
 .gr-next.role{border-color:var(--pw-gold);background:color-mix(in srgb,var(--pw-gold) 10%,#fff);}
 .gr-next.role .gr-next-t{color:var(--pw-gold-deep);}
 .gr-next.role .gr-star{color:var(--pw-gold-deep);}
-/* vertical variant */
 .gr-hero{display:flex;align-items:center;gap:14px;padding:15px 16px 4px;}
 .gr-hero-badge{width:78px;height:78px;flex-shrink:0;border-radius:50%;background:#fff;border:3px solid var(--g);
   display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 18px color-mix(in srgb,var(--g) 28%,transparent);}
@@ -377,6 +406,7 @@
 <symbol id="ico-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
 <symbol id="ico-message" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></symbol>
 <symbol id="ico-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+<symbol id="ico-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
 </defs></svg>
 
 <header class="pw-header">
@@ -402,7 +432,7 @@
     <div class="sec-label"><svg class="ico"><use href="#ico-search"/></svg>舊生快速登入</div>
     <div class="lookup-row">
       <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
-      <button type="button" class="btn-search" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
+      <button type="button" class="btn-search" id="btnSearch" onclick="doLookup()"><svg class="ico ico-sm"><use href="#ico-search"/></svg>搜尋</button>
     </div>
     <div class="demo-hint" id="demoHint">
       <span class="demo-hint-lbl"><svg class="ico ico-sm" style="width:14px;height:14px;"><use href="#ico-search"/></svg>示範號碼 · 撳一下試各級</span>
@@ -411,6 +441,11 @@
       <button type="button" class="demo-chip" onclick="demoLoad('92345674')"><b>B+</b>適應期</button>
       <button type="button" class="demo-chip" onclick="demoLoad('92345676')"><b>A</b>社交型</button>
       <button type="button" class="demo-chip" onclick="demoLoad('92345678')"><b>A+</b>穩定犬</button>
+    </div>
+    <!-- FIX 1: Loading state element -->
+    <div class="lookup-loading" id="lookupLoading">
+      <div class="lookup-spinner"></div>
+      <span>資料正在載入，請稍等⋯⋯</span>
     </div>
     <div class="found-msg" id="foundMsg">
       <svg class="ico"><use href="#ico-check-circle"/></svg>
@@ -654,7 +689,6 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z
 
 const CFG = {
   classes: [
-    // ── S1 狗狗學期班（每堂上限 20 位，附接送區）──────────────────
     { id:'S1-0607', label:'S1 · 7 Jun 2026 (Sun)',  time:'週日', area:'新界區接送', enrolled:20, max:20, type:'S1' },
     { id:'S1-0610', label:'S1 · 10 Jun 2026 (Wed)', time:'週三', area:'九龍區接送', enrolled:16, max:20, type:'S1' },
     { id:'S1-0612', label:'S1 · 12 Jun 2026 (Fri)', time:'週五', area:'不設接送',   enrolled:13, max:20, type:'S1' },
@@ -679,7 +713,6 @@ const CFG = {
     { id:'S1-0726', label:'S1 · 26 Jul 2026 (Sun)', time:'週日', area:'不設接送',   enrolled:0,  max:20, type:'S1' },
     { id:'S1-0728', label:'S1 · 28 Jul 2026 (Tue)', time:'週二', area:'港島區接送', enrolled:0,  max:20, type:'S1' },
     { id:'S1-0730', label:'S1 · 30 Jul 2026 (Thu)', time:'週四', area:'新界區接送', enrolled:0,  max:20, type:'S1' },
-    // ── S2 情緒重建系統小組班（必須順序上；第二、三堂上限 4 位）──
     { id:'S2-0611', label:'S2 · 11 Jun 2026 (Thu) · 第一堂', time:'週四 19:00–20:30', seq:true, enrolled:0, max:6, type:'S2' },
     { id:'S2-0614', label:'S2 · 14 Jun 2026 (Sun) · 第一堂', time:'週日 12:00–13:30', seq:true, enrolled:2, max:6, type:'S2' },
     { id:'S2-0621', label:'S2 · 21 Jun 2026 (Sun) · 第二堂', time:'週日 19:00–20:30', seq:true, enrolled:0, max:4, type:'S2' },
@@ -700,11 +733,8 @@ let lookupActive = false;
 let _allDogs = [];
 
 // ══ 示範模式 ══════════════════════════════════════════════════════
-// DEMO_MODE = true 時，搜尋任何 8 位電話即會載入示範舊客記錄，方便預覽。
-// 學期制與月費計劃為互斥（同一舊客只會屬其中一種），故分兩個情境：
-//   · 電話尾數「雙數」→ 學期制舊客（S1 + S2）
-//   · 電話尾數「單數」→ 月費計劃舊客（Ultimate Explorer）
-// 正式上線請改為 false，改用後台 lookup 回傳的真實資料。
+// DEMO_MODE = true 時，示範號碼按鈕直接載入示範記錄，方便預覽。
+// 正式上線請改為 false。
 const DEMO_MODE = false;
 const DEMO_BASE = {
   ownerName: '陳大文', email: 'wangwang@email.com', dogName: '旺旺', breed: '柴犬',
@@ -715,12 +745,12 @@ const DEMO_TERM = {
   packages: [
     { name: 'S1 狗狗學期班 · 單學期共 9 堂', total: 9, used: 7, firstClass: '2026-06-02', validMonths: 3, remindFrom: 8,
       booked: [
-        { date: '2026-06-09', title: '第八堂', time: '下午 3:00' },
-        { date: '2026-06-16', title: '第九堂', time: '下午 3:00' },
+        { date: '2026-06-09', title: '第八堂', time: '下午 3:00', status: 'upcoming' },
+        { date: '2026-06-16', title: '第九堂', time: '下午 3:00', status: 'upcoming' },
       ] },
     { name: 'S2 情緒重建小組班 · 一共 4 堂', total: 4, used: 3, firstClass: '2026-06-11', validMonths: 2, remindFrom: 3,
       booked: [
-        { date: '2026-06-25', title: '第四堂', time: '上午 11:00' },
+        { date: '2026-06-25', title: '第四堂', time: '上午 11:00', status: 'upcoming' },
       ] },
   ],
 };
@@ -729,14 +759,13 @@ const DEMO_MONTHLY = {
   packages: [
     { kind: 'monthly', name: 'Ultimate Explorer', monthlyQuota: 'unlimited', usedThisMonth: 5,
       booked: [
-        { date: '2026-06-03', title: '嗅聞遊戲班', time: '下午 2:00' },
-        { date: '2026-06-07', title: '班體嘴动力班', time: '上午 11:00' },
-        { date: '2026-06-12', title: '探索遊戲班', time: '下午 3:30' },
+        { date: '2026-06-03', title: '嗅聞遊戲班', time: '下午 2:00', status: 'done' },
+        { date: '2026-06-07', title: '班體嘴动力班', time: '上午 11:00', status: 'cancelled' },
+        { date: '2026-06-12', title: '探索遊戲班', time: '下午 3:30', status: 'upcoming' },
       ] },
   ],
 };
-// 示範：以電話尾數對應五個分級（C / B / B+ / A / A+），方便逐一預覽。
-// （正式上線改為 DEMO_MODE=false，由後台 lookup 回傳 grade / semesterUsed / semesterTotal）
+
 const DEMO_PERSONA = {
   'C':  { dogName:'大力',  breed:'邊境牧羊犬', used:3 },
   'B':  { dogName:'妹豬',  breed:'貴婦犬',     used:5 },
@@ -753,14 +782,13 @@ function demoRecordFor(phone) {
     semesterUsed:p.used, semesterTotal:9,
     packages:[{ name:'S1 狗狗學期班 · 本學期共 9 堂', total:9, used:p.used, firstClass:'2026-05-05', validMonths:3, remindFrom:8,
       booked:[
-        { date:'2026-06-14', title:`第 ${p.used + 1} 堂` },
-        { date:'2026-06-21', title:`第 ${p.used + 2} 堂` },
+        { date:'2026-06-14', title:`第 ${p.used + 1} 堂`, status:'upcoming' },
+        { date:'2026-06-21', title:`第 ${p.used + 2} 堂`, status:'upcoming' },
       ].slice(0, Math.max(0, 9 - p.used)) }],
   };
 }
 
 // ══ BUILD UI ═════════════════════════════════════════════════════
-// 每個課程級別對應可報讀的課堂類型
 const LEVEL_TYPES = {
   'S1': ['S1'], 'S2': ['S2'], 'S1+S2': ['S1','S2'],
   'Light Explorer': ['S1'], 'Active Explorer': ['S1'], 'Ultimate Explorer': ['S1'],
@@ -772,7 +800,6 @@ const LEVEL_SCOPE = {
   'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
 };
 
-// 依所選課程級別重建可選課堂列表
 function applyCourseFilter() {
   const lvl = document.getElementById('courseLevel').value;
   buildClasses(LEVEL_TYPES[lvl] || null, lvl);
@@ -797,9 +824,7 @@ function buildClasses(allowedTypes, level) {
     const full = st === 'full';
     const badgeTxt = full ? '已滿額' : `尚餘 ${r} 位`;
     const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
-    // 副標題：日期已含星期，S1 不再重複；S2 只保留時間（去掉重複星期）
     const sub = c.type === 'S1' ? '' : (c.time || '').replace(/^週.\s*/, '');
-    // 第三行：S1 顯示接送區（S2「必須順序上」已移至課堂內容框）
     let tag = '';
     if (c.area) {
       const none = c.area.includes('不設');
@@ -845,16 +870,33 @@ function buildTimes() {
 }
 
 // ══ LOOKUP ════════════════════════════════════════════════════════
-// 示範：點選示範號碼 chip，自動填入並查詢，方便預覽各社交等級
+
+// FIX 3: 示範按鈕永遠使用示範資料，不受 DEMO_MODE 影響
 function demoLoad(phone) {
   const inp = document.getElementById('lookupPhone');
   if (inp) { inp.value = phone; }
-  doLookup();
+  // 示範按鈕：強制使用示範資料，不查詢後台
+  document.getElementById('foundMsg').classList.remove('show');
+  document.getElementById('notfoundMsg').classList.remove('show');
+  document.getElementById('lookupLoading').classList.remove('show');
+  fillRecord({ ...demoRecordFor(phone), phone });
   requestAnimationFrame(() => {
     const gw = document.getElementById('gradeWrap');
-    if (gw) window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
+    if (gw && gw.classList.contains('show'))
+      window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
   });
 }
+
+// FIX 1: doLookup 加入 loading state，並 disable 按鈕防止重複點擊
+function setLookupLoading(on) {
+  const loadEl  = document.getElementById('lookupLoading');
+  const btnEl   = document.getElementById('btnSearch');
+  const inputEl = document.getElementById('lookupPhone');
+  loadEl.classList.toggle('show', on);
+  if (btnEl)   { btnEl.disabled = on; }
+  if (inputEl) { inputEl.disabled = on; }
+}
+
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
   document.getElementById('foundMsg').classList.remove('show');
@@ -868,6 +910,8 @@ async function doLookup() {
     fillRecord({ ...demoRecordFor(phone), phone });
     return;
   }
+  // 正式模式：顯示 loading，查詢後台
+  setLookupLoading(true);
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
@@ -888,10 +932,12 @@ async function doLookup() {
     document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
     document.getElementById('notfoundMsg').classList.add('show');
     lookupActive = false;
+  } finally {
+    // 無論成功失敗，都移除 loading state
+    setLookupLoading(false);
   }
 }
 
-// 多狗選擇器：同一電話下有多於一隻狗時，以下拉選單讓家長選擇
 function showDogSelector(dogs) {
   const wrap = document.getElementById('dogSelectorWrap');
   if (!wrap) return;
@@ -916,7 +962,6 @@ function hideDogSelector() {
 }
 
 function fillRecord(d) {
-  // 預填資料但保持可編輯，客戶可手動更改
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
    ['dogDob', d.dob || '']].forEach(([id, val]) => {
@@ -927,7 +972,6 @@ function fillRecord(d) {
     const el = document.getElementById(id);
     if (el && val) { el.value = val; el.classList.add('prefilled'); }
   });
-  // 健康狀況
   if (d.health != null) {
     const hasHealth = d.health && d.health !== '沒有' && d.health !== 'no';
     const sel = document.getElementById('dogHealthSel');
@@ -950,6 +994,7 @@ function clearLookup() {
   document.getElementById('lookupPhone').value = '';
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
+  document.getElementById('lookupLoading').classList.remove('show');
   document.getElementById('returning-badge').style.display = 'none';
   hideDogSelector();
   _allDogs = [];
@@ -973,8 +1018,8 @@ function clearLookup() {
 }
 
 // ══ 套票 / 堂數追蹤 ════════════════════════════════════════════════
+
 // ══ 社交成長階梯 · 分級 ══
-// 五級階梯：C → B → B+ → A → A+（參考「狗狗社交成長階梯」）
 const LEVELS = { 1:'建立安全感', 2:'建立社交信心', 3:'穩定社交能力' };
 const LADDER = [
   { k:'C',  zh:'反應型', en:'Reactive',  img:'assets/dino-c.png',     level:1, g:'#4A7BAF',
@@ -1102,10 +1147,10 @@ function gotoBooking(){
   if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 70, behavior:'smooth' });
 }
 
+// ══ 課程追蹤 ═════════════════════════════════════════════════════
 function renderPackages(d) {
   const wrap = document.getElementById('pkgWrap');
   const list = document.getElementById('pkgList');
-  // Normalise: accept an array `packages`, or single flat fields on the record.
   let pkgs = [];
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
@@ -1116,14 +1161,12 @@ function renderPackages(d) {
   if (!pkgs.length) { wrap.classList.remove('show'); list.innerHTML = ''; return; }
 
   list.innerHTML = pkgs.map(p => p.kind === 'monthly' ? renderMonthly(p) : renderTerm(p)).join('');
-  // 學期套票：當已報讀堂數達到「提示起始堂數」即於框框外顯示續堂提示
-  // remindFrom = 由第幾堂開始提示（預設為最後一堂）
   const termLow = pkgs.some(p => {
     if (p.kind === 'monthly') return false;
     const total = Number(p.total ?? p.classesTotal ?? 0);
     const used  = Number(p.used ?? p.classesUsed ?? 0);
     const from  = Number(p.remindFrom ?? total);
-    return (used + 1) >= from;   // 即將上「第 from 堂」或之後
+    return (used + 1) >= from;
   });
   if (termLow) {
     list.innerHTML += `<div class="pkg-foot-note"><svg class="ico"><use href="#ico-alert"/></svg>學期課堂即將用完，請及早與導師聯絡安排下一學期續堂。</div>`;
@@ -1131,14 +1174,12 @@ function renderPackages(d) {
   wrap.classList.add('show');
 }
 
-// 學期制：固定堂數，按已出席計進度
 function renderTerm(p) {
   const total  = Number(p.total ?? p.classesTotal ?? 0);
   const used   = Number(p.used  ?? p.classesUsed  ?? 0);
   const remain = Math.max(0, total - used);
   const pct    = total ? Math.round((used / total) * 100) : 0;
   const low    = total > 0 && remain <= 1;
-  // 有效期：如有 firstClass，按 validMonths（預設 3）由首堂起計
   let expiry = p.expiry || '';
   if (p.firstClass) {
     const m  = Number(p.validMonths ?? 3);
@@ -1163,11 +1204,10 @@ function renderTerm(p) {
       <div class="pkg-stat"><span class="pkg-stat-num">${total}</span><span class="pkg-stat-lbl">總堂數</span></div>
       <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">已出席</span></div>
     </div>
-    ${renderBooked(p.booked)}
+    ${renderBooked(p.booked, p._pkgRef)}
   </div>`;
 }
 
-// 月費計劃：每月配額，每月 1 日重置（Light 1 堂 / Active 3 堂 / Ultimate 無限）
 function renderMonthly(p) {
   const unlimited = p.monthlyQuota == null || p.monthlyQuota === 'unlimited' || p.monthlyQuota === Infinity;
   const quota  = unlimited ? Infinity : Number(p.monthlyQuota);
@@ -1199,31 +1239,122 @@ function renderMonthly(p) {
       <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">本月已報</span></div>
     </div>
     ${low ? `<div class="pkg-renew"><svg class="ico"><use href="#ico-alert"/></svg>本月堂額已用完，下月 1 日自動重置。</div>` : ''}
-    ${renderBooked(p.booked)}
+    ${renderBooked(p.booked, p._pkgRef)}
   </div>`;
 }
 
-// 已預約課堂日子（共用）
-function renderBooked(booked) {
+// ══ FIX 2: renderBooked — 三狀態顯示 + 已預約課堂編輯/取消按鈕 ══
+// booked 陣列每個項目支援 status: 'upcoming' | 'done' | 'cancelled'
+// 後台若未提供 status，根據日期自動判斷（過去 = done，未來 = upcoming）
+function renderBooked(booked, pkgRef) {
   if (!Array.isArray(booked) || !booked.length) return '';
   const MON = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
   const today = new Date(); today.setHours(0,0,0,0);
-  const rows = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
+
+  // 分類：upcoming / done / cancelled
+  const classified = booked.slice().sort((a,b) => new Date(a.date) - new Date(b.date)).map(b => {
     const dt = new Date(b.date);
-    const past = dt < today;
+    let status = b.status;
+    // 若後台未提供 status，自動判斷
+    if (!status) { status = dt < today ? 'done' : 'upcoming'; }
+    return { ...b, _dt: dt, _status: status };
+  });
+
+  const upcoming   = classified.filter(b => b._status === 'upcoming');
+  const done       = classified.filter(b => b._status === 'done');
+  const cancelled  = classified.filter(b => b._status === 'cancelled');
+
+  const renderRow = (b, showActions) => {
+    const dt = b._dt;
+    const isCancelled = b._status === 'cancelled';
+    const isDone      = b._status === 'done';
+    const dateCls     = isCancelled ? 'cancelled-date' : isDone ? 'past' : '';
+    const titleCls    = isCancelled ? 'cancelled-txt' : '';
+    const pillCls     = isCancelled ? 'cancelled' : isDone ? 'past' : '';
+    const pillTxt     = isCancelled ? '已取消' : isDone ? '已完成' : '已預約';
+
+    // 已預約課堂才顯示操作按鈕
+    const actions = showActions ? `
+      <div class="booked-actions">
+        <button type="button" class="btn-booked-edit"
+          onclick="onEditBooking('${b.bookingId || ''}','${b.date}','${(b.title||'').replace(/'/g,"\\'")}')">
+          更改日期
+        </button>
+        <button type="button" class="btn-booked-cancel"
+          onclick="onCancelBooking(this,'${b.bookingId || ''}','${b.date}','${(b.title||'').replace(/'/g,"\\'")}')">
+          取消預約
+        </button>
+      </div>` : '';
+
     return `<div class="booked-row">
-      <div class="booked-date"><b>${dt.getDate()}</b><span>${MON[dt.getMonth()]}</span></div>
+      <div class="booked-date ${dateCls}"><b>${dt.getDate()}</b><span>${MON[dt.getMonth()]}</span></div>
       <div class="booked-info">
-        <div class="booked-title">${b.title || '課堂'}</div>
+        <div class="booked-title ${titleCls}">${b.title || '課堂'}</div>
         ${b.time ? `<div class="booked-meta">${b.time}</div>` : ''}
+        ${actions}
       </div>
-      <div class="booked-pill${past ? ' past' : ''}">${past ? '已完成' : '已預約'}</div>
+      <div class="booked-pill ${pillCls}">${pillTxt}</div>
     </div>`;
-  }).join('');
-  return `<div class="pkg-booked">
-    <div class="pkg-booked-lbl"><svg class="ico"><use href="#ico-calendar"/></svg>已預約課堂</div>
-    ${rows}
-  </div>`;
+  };
+
+  let html = '<div class="pkg-booked"><div class="pkg-booked-lbl"><svg class="ico"><use href="#ico-calendar"/></svg>課堂紀錄</div>';
+
+  if (upcoming.length) {
+    html += `<div class="booked-section-lbl"><div class="booked-section-dot upcoming"></div>已預約</div>`;
+    html += upcoming.map(b => renderRow(b, true)).join('');
+  }
+  if (done.length) {
+    html += `<div class="booked-section-lbl"><div class="booked-section-dot done"></div>已完成</div>`;
+    html += done.map(b => renderRow(b, false)).join('');
+  }
+  if (cancelled.length) {
+    html += `<div class="booked-section-lbl"><div class="booked-section-dot cancelled"></div>已取消</div>`;
+    html += cancelled.map(b => renderRow(b, false)).join('');
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ══ FIX 2: 取消預約 — 回寫後台更新名額 ══
+async function onCancelBooking(btnEl, bookingId, dateStr, title) {
+  if (!confirm(`確認取消「${title || '課堂'}」（${dateStr}）的預約？\n取消後該堂名額將自動釋出。`)) return;
+  btnEl.disabled = true;
+  btnEl.textContent = '處理中…';
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'cancel_booking',
+        bookingId,
+        date: dateStr,
+        title,
+        phone: document.getElementById('whatsapp').value.trim() || document.getElementById('lookupPhone').value.trim(),
+      }),
+    });
+    // 更新 UI：將此行標記為已取消
+    const row = btnEl.closest('.booked-row');
+    if (row) {
+      row.querySelector('.booked-date').className = 'booked-date cancelled-date';
+      row.querySelector('.booked-title').classList.add('cancelled-txt');
+      const pill = row.querySelector('.booked-pill');
+      if (pill) { pill.className = 'booked-pill cancelled'; pill.textContent = '已取消'; }
+      const actions = row.querySelector('.booked-actions');
+      if (actions) actions.remove();
+    }
+  } catch(e) {
+    btnEl.disabled = false;
+    btnEl.textContent = '取消預約';
+    alert('取消失敗，請透過 WhatsApp 9459 6420 聯絡學院處理。');
+  }
+}
+
+// 更改預約日期：導向 WhatsApp 通知（可擴展為日期選擇器）
+function onEditBooking(bookingId, dateStr, title) {
+  const msg = encodeURIComponent(`你好，我想更改「${title || '課堂'}」（${dateStr}）的預約日期，請問有哪些可選？`);
+  window.open(`https://wa.me/85294596420?text=${msg}`, '_blank', 'noopener');
 }
 
 // ══ TRANSPORT WITH 八折 PRICING ══════════════════════════════════
@@ -1341,7 +1472,6 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
 
 // ══ INIT ══════════════════════════════════════════════════════════
 const _params = new URLSearchParams(location.search);
-// 正式上線：DEMO_MODE = false 時，自動隱藏示範號碼提示列
 if (!DEMO_MODE) { const _dh = document.getElementById('demoHint'); if (_dh) _dh.style.display = 'none'; }
 window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
 applyCourseFilter();
@@ -1357,7 +1487,6 @@ if (_demo) {
       window.scrollTo({ top: gw.getBoundingClientRect().top + window.pageYOffset - 64 });
   });
 }
-// 客戶手動修改任何預填欄位時，移除「已預填」高亮
 ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob','dogHealthText'].forEach(id => {
   document.getElementById(id)?.addEventListener('input', e => e.target.classList.remove('prefilled'));
 });
