@@ -1191,7 +1191,7 @@ function renderPackages(d) {
         bookingId: c.bookingRef || c.bookingId || '',
       }));
       pkgs.push({
-        name:   'S1 社交學院課堂',
+      name:   d.courseLevel === 'S2' ? 'S2 情緒重建小組班' : d.courseLevel === 'S1+S2' ? 'S1+S2 課堂' : 'S1 社交學院課堂',
         total:  Number(d.classCount       || 0),
         used:   Number(d.classCount       || 0) - Number(d.remainingLessons || 0),
         expiry: '',
