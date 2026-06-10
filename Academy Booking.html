@@ -1204,27 +1204,37 @@ function renderPackages(d) {
 }
 
 // 套票顯示
-function renderVoucher(p) {
-  const total  = Number(p.total || 0);
-  const used   = Number(p.used  || 0);
+function renderTerm(p) {
+  const total  = Number(p.total ?? p.classesTotal ?? 0);
+  const used   = Number(p.used  ?? p.classesUsed  ?? 0);
   const remain = Math.max(0, total - used);
   const pct    = total ? Math.round((used / total) * 100) : 0;
-  const low    = total > 0 && remain <= total * 0.2;
-  let expiry = p.expiry ? `有效期至 ${p.expiry}` : '';
+  const low    = total > 0 && remain <= 1;
+  let expiry = p.expiry || '';
+  if (p.firstClass) {
+    const m  = Number(p.validMonths ?? 3);
+    const fc = new Date(p.firstClass);
+    const ex = new Date(fc); ex.setMonth(ex.getMonth() + m);
+    const fmt = dt => `${dt.getFullYear()}年${dt.getMonth() + 1}月${dt.getDate()}日`;
+    expiry = `有效期至 ${fmt(ex)}（首堂起計 ${m} 個月）`;
+  } else if (expiry) {
+    expiry = `有效期至 ${expiry}`;
+  }
   return `<div class="pkg-tracker${low ? ' low' : ''}" style="margin-bottom:10px;">
     <div class="pkg-head">
-      <svg class="ico"><use href="#ico-card"/></svg>
+      <svg class="ico"><use href="#ico-cap"/></svg>
       <div class="pkg-head-txt">
-        <div class="pkg-name">${p.name}</div>
+        <div class="pkg-name">${p.name || '課程'}</div>
         ${expiry ? `<div class="pkg-sub">${expiry}</div>` : ''}
       </div>
-      <div class="pkg-remain"><strong>$${remain}</strong><span>套票餘額</span></div>
+      <div class="pkg-remain"><strong>${remain}</strong><span>堂尚餘</span></div>
     </div>
     <div class="pkg-bar"><div class="pkg-bar-fill" style="width:${pct}%"></div></div>
     <div class="pkg-stats">
-      <div class="pkg-stat"><span class="pkg-stat-num">$${total}</span><span class="pkg-stat-lbl">套票總值</span></div>
-      <div class="pkg-stat"><span class="pkg-stat-num">$${used}</span><span class="pkg-stat-lbl">已使用</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">${total}</span><span class="pkg-stat-lbl">總堂數</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">已出席</span></div>
     </div>
+    ${renderBooked(p.booked, p._pkgRef)}
   </div>`;
 }
 // ══ FIX 2: renderBooked — 三狀態顯示 + 已預約課堂編輯/取消按鈕 ══
