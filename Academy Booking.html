@@ -1154,20 +1154,20 @@ function renderPackages(d) {
   let pkgs = [];
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
- } else if (d.pkgType || d.pkgTotal) {
+} else if (d.pkgType || d.pkgTotal || (Array.isArray(d.upcomingClasses) && d.upcomingClasses.length)) {
     const total  = Number(d.pkgTotal ?? 0);
     const remain = Number(d.remainingLessons ?? 0);
     const booked = Array.isArray(d.upcomingClasses)
       ? d.upcomingClasses.map(c => ({
-          date:      c.date  || c.classDate || '',
-          title:     c.title || c.className || '課堂',
-          time:      c.time  || '',
-          status:    'upcoming',
-          bookingId: c.bookingId || c.id || '',
+          date:      c.classDate || c.date || '',
+          title:     c.classLabel || c.title || c.lessonNum || '課堂',
+          time:      c.arrivalTime || c.time || '',
+          status:    c.status || 'upcoming',
+          bookingId: c.bookingRef || c.bookingId || '',
         }))
       : [];
     pkgs = [{
-      name:   d.pkgType || ' 課程追蹤',
+      name:   d.pkgType || 'S1 社交學院課堂',
       total:  total,
       used:   total - remain,
       expiry: d.pkgExpiry || '',
