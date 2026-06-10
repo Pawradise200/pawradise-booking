@@ -1485,3 +1485,55 @@ async function onEditBooking(bookingId, dateStr, title) {
     });
   });
 }
+// ══ TRANSPORT WITH 八折 PRICING ══════════════════════════════════
+function calcTransport() {
+  const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
+  const detail = document.getElementById('trDetail');
+  const priceBox = document.getElementById('trPriceBox');
+  const paySec = document.getElementById('paymentSec');
+  if (val === '不需要') { detail.classList.remove('show'); priceBox.style.display = 'none'; if(paySec) paySec.style.display='none'; return; }
+  detail.classList.add('show');
+  if(paySec) paySec.style.display='block';
+  const dp = parseInt(document.getElementById('trDistrict').value) || 0;
+  if (!dp) { priceBox.style.display = 'none'; return; }
+  const isBoth = val === '接+送';
+  const origTotal = isBoth ? dp * 2 : dp;
+  const discTotal = Math.round(origTotal * 0.8);
+  document.getElementById('trPriceType').textContent = val;
+  document.getElementById('trPriceOrig').textContent = '$' + origTotal;
+  document.getElementById('trPriceFinal').textContent = '$' + discTotal;
+  document.getElementById('trPriceAmt').textContent = '$' + discTotal;
+  priceBox.style.display = 'block';
+}
+
+// ══ VALIDATION ════════════════════════════════════════════════════
+function vf(id, fail, eid) {
+  document.getElementById(id)?.classList.toggle('error', fail);
+  document.getElementById(eid)?.classList.toggle('show', fail);
+  return !fail;
+}
+function validate() {
+  const n = document.getElementById('ownerName').value.trim();
+  const w = document.getElementById('whatsapp').value.trim();
+  const e = document.getElementById('email').value.trim();
+  const d = document.getElementById('dogName').value.trim();
+  const b = document.getElementById('dogBreed').value.trim();
+  const wt = document.getElementById('dogWeight').value.trim();
+  const gd = document.getElementById('dogGender').value;
+  const nu = document.getElementById('dogNeutered').value;
+  const db = document.getElementById('dogDob').value;
+  const hs = document.getElementById('dogHealthSel').value;
+  const l = document.getElementById('courseLevel').value;
+  const c = [...document.querySelectorAll('input[name=cls]:checked')];
+  let ok = true;
+  ok = vf('ownerName',  !n,                                        'e-name')  && ok;
+  ok = vf('whatsapp',   !/^\d{8}$/.test(w),                        'e-wa')    && ok;
+  ok = vf('email',      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),    'e-email') && ok;
+  ok = vf('dogName',    !d,                                         'e-dog')   && ok;
+  ok = vf('dogBreed',   !b,                                         'e-breed') && ok;
+  ok = vf('dogWeight',  !wt || Number(wt) <= 0,                    'e-weight') && ok;
+  ok = vf('dogGender',  !gd,                                        'e-gender') && ok;
+  ok = vf('dogNeutered',!nu,                                        'e-neutered') && ok;
+  ok = vf('dogDob',     !db,                                        'e-dob') && ok;
+  ok = vf('dogHealthSel', !hs,                                      'e-health') && ok;
+  if (hs === 'yes') ok = vf('dogHe
