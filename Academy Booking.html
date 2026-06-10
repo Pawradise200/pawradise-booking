@@ -1154,10 +1154,9 @@ function renderPackages(d) {
   const list = document.getElementById('pkgList');
   let pkgs = [];
 
-  // ① 示範模式：直接用 d.packages
+ // ① 示範模式：直接用 d.packages
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
-
   } else {
     // ② 有套票：加入套票區域
     if (d.pkgType || d.pkgTotal) {
@@ -1169,18 +1168,18 @@ function renderPackages(d) {
         _isSvoucher: true,
       });
     }
-
     // ③ 有課堂記錄：加入課堂追蹤區域
-    if (Array.isArray(d.upcomingClasses) && d.upcomingClasses.length || Number(d.classCount) > 0) {
-      const booked = Array.isArray(d.upcomingClasses)
-        ? d.upcomingClasses.map(c => ({
-            date:      c.classDate || c.date || '',
-            title:     c.classLabel || c.title || c.lessonNum || '課堂',
-            time:      c.arrivalTime || c.time || '',
-            status:    c.status || 'upcoming',
-            bookingId: c.bookingRef || c.bookingId || '',
-          }))
-        : [];
+    const dogClasses = Array.isArray(d.upcomingClasses)
+      ? d.upcomingClasses.filter(c => !c.dogName || c.dogName === d.dogName)
+      : [];
+    if (dogClasses.length > 0 || Number(d.classCount) > 0) {
+      const booked = dogClasses.map(c => ({
+        date:      c.classDate || c.date || '',
+        title:     c.classLabel || c.title || c.lessonNum || '課堂',
+        time:      c.arrivalTime || c.time || '',
+        status:    c.status || 'upcoming',
+        bookingId: c.bookingRef || c.bookingId || '',
+      }));
       pkgs.push({
         name:   'S1 社交學院課堂',
         total:  Number(d.classCount       || 0),
@@ -1191,7 +1190,6 @@ function renderPackages(d) {
       });
     }
   }
-
   if (!pkgs.length) { wrap.classList.remove('show'); list.innerHTML = ''; return; }
 
   list.innerHTML = pkgs.map(p => {
