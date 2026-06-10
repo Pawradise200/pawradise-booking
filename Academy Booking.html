@@ -1156,7 +1156,7 @@ function renderPackages(d) {
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
 } else if (d.pkgType || d.pkgTotal || (Array.isArray(d.upcomingClasses) && d.upcomingClasses.length)) {
-    const total  = Number(d.pkgTotal ?? 0);
+   const total  = Number(d.pkgTotal || d.classCount || 0);
     const remain = Number(d.remainingLessons ?? 0);
     const booked = Array.isArray(d.upcomingClasses)
       ? d.upcomingClasses.map(c => ({
