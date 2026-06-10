@@ -972,6 +972,7 @@ function hideDogSelector() {
 }
 
 function fillRecord(d) {
+  document.getElementById('notfoundMsg').classList.remove('show');
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
    ['dogDob', d.dob || '']].forEach(([id, val]) => {
