@@ -1555,10 +1555,14 @@ modal.querySelectorAll('.reschedule-opt').forEach(el => {
             dogName:   document.getElementById('dogName').value.trim(),
           }),
         });
-        alert(`✅ 已成功改期至 ${selected.label}`);
+      alert(`✅ 已成功改期至 ${selected.label}`);
         // 重新載入課堂追蹤
-        const phone2 = document.getElementById('lookupPhone').value.trim();
-        if (phone2) doLookup();
+        const phone2 = document.getElementById('lookupPhone').value.trim()
+                    || document.getElementById('whatsapp').value.trim();
+        if (phone2) {
+          document.getElementById('lookupPhone').value = phone2;
+          doLookup();
+        }
       } catch(e) {
         alert('改期失敗，請透過 WhatsApp 9459 6420 聯絡學院處理。');
       }
