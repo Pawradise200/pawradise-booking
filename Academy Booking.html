@@ -1200,8 +1200,69 @@ function renderPackages(d) {
 
   wrap.classList.add('show');
 }
+// ── 套票顯示 ──
+function renderVoucher(p) {
+  const total  = Number(p.total || 0);
+  const used   = Number(p.used  || 0);
+  const remain = Math.max(0, total - used);
+  const pct    = total ? Math.round((used / total) * 100) : 0;
+  const low    = total > 0 && remain <= total * 0.2;
+  const expiry = p.expiry ? `有效期至 ${p.expiry}` : '';
+  return `<div class="pkg-tracker${low ? ' low' : ''}" style="margin-bottom:10px;">
+    <div class="pkg-head">
+      <svg class="ico"><use href="#ico-card"/></svg>
+      <div class="pkg-head-txt">
+        <div class="pkg-name">${p.name || '課程套票'}</div>
+        ${expiry ? `<div class="pkg-sub">${expiry}</div>` : ''}
+      </div>
+      <div class="pkg-remain"><strong>$${remain.toLocaleString()}</strong><span>套票餘額</span></div>
+    </div>
+    <div class="pkg-bar"><div class="pkg-bar-fill" style="width:${pct}%"></div></div>
+    <div class="pkg-stats">
+      <div class="pkg-stat"><span class="pkg-stat-num">$${total.toLocaleString()}</span><span class="pkg-stat-lbl">套票總值</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">$${used.toLocaleString()}</span><span class="pkg-stat-lbl">已使用</span></div>
+    </div>
+  </div>`;
+}
 
-// 套票顯示
+// ── 月費計劃顯示 ──
+function renderMonthly(p) {
+  const unlimited = p.monthlyQuota == null || p.monthlyQuota === 'unlimited' || p.monthlyQuota === Infinity;
+  const quota  = unlimited ? Infinity : Number(p.monthlyQuota);
+  const used   = Number(p.usedThisMonth ?? 0);
+  const remain = unlimited ? Infinity : Math.max(0, quota - used);
+  const pct    = unlimited ? 100 : (quota ? Math.min(100, Math.round(used / quota * 100)) : 0);
+  const low    = !unlimited && remain <= 0;
+  const fmt    = dt => `${dt.getMonth() + 1}月${dt.getDate()}日`;
+  let cycle;
+  if (p.cycleStart && p.cycleEnd) {
+    cycle = `本月週期 ${fmt(new Date(p.cycleStart))} – ${fmt(new Date(p.cycleEnd))}`;
+  } else {
+    const n = new Date();
+    cycle = `本月週期 ${fmt(new Date(n.getFullYear(), n.getMonth(), 1))} – ${fmt(new Date(n.getFullYear(), n.getMonth() + 1, 0))}`;
+  }
+  const barStyle = unlimited ? 'width:100%;background:var(--pw-gold);' : `width:${pct}%`;
+  return `<div class="pkg-tracker monthly${low ? ' low' : ''}" style="margin-bottom:10px;">
+    <div class="pkg-head">
+      <svg class="ico"><use href="#ico-cap"/></svg>
+      <div class="pkg-head-txt">
+        <div class="pkg-name">${p.name || '月費計劃'}<span class="pkg-tag">月費</span></div>
+        <div class="pkg-sub">${cycle} · 每月 1 日重置</div>
+      </div>
+      <div class="pkg-remain"><strong>${unlimited ? '∞' : remain}</strong><span>本月尚餘</span></div>
+    </div>
+    <div class="pkg-bar"><div class="pkg-bar-fill" style="${barStyle}"></div></div>
+    <div class="pkg-stats">
+      <div class="pkg-stat"><span class="pkg-stat-num">${unlimited ? '無限' : quota}</span><span class="pkg-stat-lbl">每月堂額</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">本月已報</span></div>
+    </div>
+    ${low ? `<div class="pkg-renew"><svg class="ico"><use href="#ico-alert"/></svg>本月堂額已用完，下月 1 日自動重置。</div>` : ''}
+    ${renderBooked(p.booked, p._pkgRef)}
+  </div>`;
+}
+
+// ── 課堂追蹤顯示 ──
+// ── 課堂追蹤顯示 ──
 function renderTerm(p) {
   const total  = Number(p.total ?? p.classesTotal ?? 0);
   const used   = Number(p.used  ?? p.classesUsed  ?? 0);
