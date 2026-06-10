@@ -1531,9 +1531,15 @@ modal.querySelectorAll('.reschedule-opt').forEach(el => {
       const phone = document.getElementById('whatsapp').value.trim() ||
                     document.getElementById('lookupPhone').value.trim();
 
-      // 從 classId 解析新日期
-      const m = selected.id.match(/(\d{2})(\d{2})$/);
-      const newDate = m ? `2026-${m[1]}-${m[2]}` : '';
+     // 從 classId 解析新日期（直接用後台回傳的 date 欄位，或從 id 解析）
+      const newDate = selected.date || (() => {
+        const m = selected.id.match(/(\d{2})(\d{2})$/);
+        if (!m) return '';
+        const now = new Date();
+        const mm = parseInt(m[1], 10);
+        const yr = (now.getMonth() + 1 > mm) ? now.getFullYear() + 1 : now.getFullYear();
+        return `${yr}-${m[1]}-${m[2]}`;
+      })();
 
       try {
         await fetch(APPS_SCRIPT_URL, {
