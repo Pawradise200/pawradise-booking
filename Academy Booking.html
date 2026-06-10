@@ -1153,116 +1153,80 @@ function renderPackages(d) {
   const wrap = document.getElementById('pkgWrap');
   const list = document.getElementById('pkgList');
   let pkgs = [];
+
+  // ① 示範模式：直接用 d.packages
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
-} else if (d.pkgType || d.pkgTotal || (Array.isArray(d.upcomingClasses) && d.upcomingClasses.length)) {
-  const total  = d.pkgType ? Number(d.pkgTotal || 0) : Number(d.classCount || 0);
-    const remain = Number(d.remainingLessons ?? 0);
-    const booked = Array.isArray(d.upcomingClasses)
-      ? d.upcomingClasses.map(c => ({
-          date:      c.classDate || c.date || '',
-          title:     c.classLabel || c.title || c.lessonNum || '課堂',
-          time:      c.arrivalTime || c.time || '',
-          status:    c.status || 'upcoming',
-          bookingId: c.bookingRef || c.bookingId || '',
-        }))
-      : [];
-    pkgs = [{
-      name:   d.pkgType || 'S1 社交學院課堂',
-      total:  total,
-      used:   total - remain,
-      expiry: d.pkgExpiry || '',
-      booked: booked,
-    }];
-  } else if (d.package || d.packageName || d.classesTotal != null) {
-    pkgs = [{ name: d.package || d.packageName, total: d.classesTotal,
-              used: d.classesUsed, expiry: d.packageExpiry || d.expiry }];
+
+  } else {
+    // ② 有套票：加入套票區域
+    if (d.pkgType || d.pkgTotal) {
+      pkgs.push({
+        name:   d.pkgType || '課程套票',
+        total:  Number(d.pkgTotal  || 0),
+        used:   Number(d.pkgTotal  || 0) - Number(d.pkgBalance || 0),
+        expiry: d.pkgExpiry || '',
+        _isSvoucher: true,
+      });
+    }
+
+    // ③ 有課堂記錄：加入課堂追蹤區域
+    if (Array.isArray(d.upcomingClasses) && d.upcomingClasses.length || Number(d.classCount) > 0) {
+      const booked = Array.isArray(d.upcomingClasses)
+        ? d.upcomingClasses.map(c => ({
+            date:      c.classDate || c.date || '',
+            title:     c.classLabel || c.title || c.lessonNum || '課堂',
+            time:      c.arrivalTime || c.time || '',
+            status:    c.status || 'upcoming',
+            bookingId: c.bookingRef || c.bookingId || '',
+          }))
+        : [];
+      pkgs.push({
+        name:   'S1 社交學院課堂',
+        total:  Number(d.classCount       || 0),
+        used:   Number(d.classCount       || 0) - Number(d.remainingLessons || 0),
+        expiry: '',
+        booked: booked,
+        _isLesson: true,
+      });
+    }
   }
+
   if (!pkgs.length) { wrap.classList.remove('show'); list.innerHTML = ''; return; }
 
-  list.innerHTML = pkgs.map(p => p.kind === 'monthly' ? renderMonthly(p) : renderTerm(p)).join('');
-  const termLow = pkgs.some(p => {
-    if (p.kind === 'monthly') return false;
-    const total = Number(p.total ?? p.classesTotal ?? 0);
-    const used  = Number(p.used ?? p.classesUsed ?? 0);
-    const from  = Number(p.remindFrom ?? total);
-    return (used + 1) >= from;
-  });
-  if (termLow) {
-    list.innerHTML += `<div class="pkg-foot-note"><svg class="ico"><use href="#ico-alert"/></svg>學期課堂即將用完，請及早與導師聯絡安排下一學期續堂。</div>`;
-  }
+  list.innerHTML = pkgs.map(p => {
+    if (p.kind === 'monthly') return renderMonthly(p);
+    if (p._isSvoucher)        return renderVoucher(p);
+    return renderTerm(p);
+  }).join('');
+
   wrap.classList.add('show');
 }
 
-function renderTerm(p) {
-  const total  = Number(p.total ?? p.classesTotal ?? 0);
-  const used   = Number(p.used  ?? p.classesUsed  ?? 0);
+// 套票顯示
+function renderVoucher(p) {
+  const total  = Number(p.total || 0);
+  const used   = Number(p.used  || 0);
   const remain = Math.max(0, total - used);
   const pct    = total ? Math.round((used / total) * 100) : 0;
-  const low    = total > 0 && remain <= 1;
-  let expiry = p.expiry || '';
-  if (p.firstClass) {
-    const m  = Number(p.validMonths ?? 3);
-    const fc = new Date(p.firstClass);
-    const ex = new Date(fc); ex.setMonth(ex.getMonth() + m);
-    const fmt = dt => `${dt.getFullYear()}年${dt.getMonth() + 1}月${dt.getDate()}日`;
-    expiry = `有效期至 ${fmt(ex)}（首堂起計 ${m} 個月）`;
-  } else if (expiry) {
-    expiry = `有效期至 ${expiry}`;
-  }
+  const low    = total > 0 && remain <= total * 0.2;
+  let expiry = p.expiry ? `有效期至 ${p.expiry}` : '';
   return `<div class="pkg-tracker${low ? ' low' : ''}" style="margin-bottom:10px;">
     <div class="pkg-head">
-      <svg class="ico"><use href="#ico-cap"/></svg>
+      <svg class="ico"><use href="#ico-card"/></svg>
       <div class="pkg-head-txt">
-        <div class="pkg-name">${p.name || '課程'}</div>
+        <div class="pkg-name">${p.name}</div>
         ${expiry ? `<div class="pkg-sub">${expiry}</div>` : ''}
       </div>
-      <div class="pkg-remain"><strong>${remain}</strong><span>堂尚餘</span></div>
+      <div class="pkg-remain"><strong>$${remain}</strong><span>套票餘額</span></div>
     </div>
     <div class="pkg-bar"><div class="pkg-bar-fill" style="width:${pct}%"></div></div>
     <div class="pkg-stats">
-      <div class="pkg-stat"><span class="pkg-stat-num">${total}</span><span class="pkg-stat-lbl">總堂數</span></div>
-      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">已出席</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">$${total}</span><span class="pkg-stat-lbl">套票總值</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">$${used}</span><span class="pkg-stat-lbl">已使用</span></div>
     </div>
-    ${renderBooked(p.booked, p._pkgRef)}
   </div>`;
 }
-
-function renderMonthly(p) {
-  const unlimited = p.monthlyQuota == null || p.monthlyQuota === 'unlimited' || p.monthlyQuota === Infinity;
-  const quota  = unlimited ? Infinity : Number(p.monthlyQuota);
-  const used   = Number(p.usedThisMonth ?? 0);
-  const remain = unlimited ? Infinity : Math.max(0, quota - used);
-  const pct    = unlimited ? 100 : (quota ? Math.min(100, Math.round(used / quota * 100)) : 0);
-  const low    = !unlimited && remain <= 0;
-  const fmt = dt => `${dt.getMonth() + 1}月${dt.getDate()}日`;
-  let cycle;
-  if (p.cycleStart && p.cycleEnd) {
-    cycle = `本月週期 ${fmt(new Date(p.cycleStart))} – ${fmt(new Date(p.cycleEnd))}`;
-  } else {
-    const n = new Date();
-    cycle = `本月週期 ${fmt(new Date(n.getFullYear(), n.getMonth(), 1))} – ${fmt(new Date(n.getFullYear(), n.getMonth() + 1, 0))}`;
-  }
-  const barStyle = unlimited ? 'width:100%;background:var(--pw-gold);' : `width:${pct}%`;
-  return `<div class="pkg-tracker monthly${low ? ' low' : ''}" style="margin-bottom:10px;">
-    <div class="pkg-head">
-      <svg class="ico"><use href="#ico-cap"/></svg>
-      <div class="pkg-head-txt">
-        <div class="pkg-name">${p.name || '月費計劃'}<span class="pkg-tag">月費</span></div>
-        <div class="pkg-sub">${cycle} · 每月 1 日重置</div>
-      </div>
-      <div class="pkg-remain"><strong>${unlimited ? '∞' : remain}</strong><span>本月尚餘</span></div>
-    </div>
-    <div class="pkg-bar"><div class="pkg-bar-fill" style="${barStyle}"></div></div>
-    <div class="pkg-stats">
-      <div class="pkg-stat"><span class="pkg-stat-num">${unlimited ? '無限' : quota}</span><span class="pkg-stat-lbl">每月堂額</span></div>
-      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">本月已報</span></div>
-    </div>
-    ${low ? `<div class="pkg-renew"><svg class="ico"><use href="#ico-alert"/></svg>本月堂額已用完，下月 1 日自動重置。</div>` : ''}
-    ${renderBooked(p.booked, p._pkgRef)}
-  </div>`;
-}
-
 // ══ FIX 2: renderBooked — 三狀態顯示 + 已預約課堂編輯/取消按鈕 ══
 // booked 陣列每個項目支援 status: 'upcoming' | 'done' | 'cancelled'
 // 後台若未提供 status，根據日期自動判斷（過去 = done，未來 = upcoming）
