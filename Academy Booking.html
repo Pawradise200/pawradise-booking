@@ -800,19 +800,28 @@ const LEVEL_SCOPE = {
   'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
 };
 
-function applyCourseFilter() {
+async function applyCourseFilter() {
   const lvl = document.getElementById('courseLevel').value;
-  buildClasses(LEVEL_TYPES[lvl] || null, lvl);
+  await buildClasses(LEVEL_TYPES[lvl] || null, lvl);
   onClassChange();
 }
 
-function buildClasses(allowedTypes, level) {
+async function buildClasses(allowedTypes, level) {
   const listEl = document.getElementById('classList');
   if (!allowedTypes) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>請先於上方選擇「課程級別」，系統會顯示對應的課堂日期。</div>';
     return;
   }
-  const classes = CFG.classes.filter(c => allowedTypes.includes(c.type));
+  listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>載入課堂中⋯⋯</div>';
+  let classes = [];
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
+    const json = await res.json();
+    classes = (json.classes || []).filter(c => allowedTypes.includes(c.type));
+  } catch(e) {
+    listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>載入課堂失敗，請重試或 WhatsApp 9459 6420 查詢。</div>';
+    return;
+  }
   if (!classes.length) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>暫時未有對應此級別的課堂，請 WhatsApp 9459 6420 查詢。</div>';
     return;
@@ -826,16 +835,16 @@ function buildClasses(allowedTypes, level) {
     const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
     const sub = c.type === 'S1' ? '' : (c.time || '').replace(/^週.\s*/, '');
     let tag = '';
-    if (c.area) {
-      const none = c.area.includes('不設');
-      const rcls = c.area.includes('港島') ? 'r-hk'
-                 : c.area.includes('九龍') ? 'r-kln'
-                 : c.area.includes('新界') ? 'r-nt'
+    if (c.route) {
+      const none = c.route.includes('不設');
+      const rcls = c.route.includes('港島') ? 'r-hk'
+                 : c.route.includes('九龍') ? 'r-kln'
+                 : c.route.includes('新界') ? 'r-nt'
                  : 'muted';
-      tag = `<div class="cls-tag ${none ? 'muted' : rcls}"><svg class="ico"><use href="#ico-car"/></svg>${c.area}</div>`;
+      tag = `<div class="cls-tag ${none ? 'muted' : rcls}"><svg class="ico"><use href="#ico-car"/></svg>${c.route}</div>`;
     }
     return `<div class="cls-opt${full ? ' full' : ''}">
-      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-type="${c.type}"${full ? ' disabled' : ''}>
+      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-type="${c.type}" data-id="${c.id}"${full ? ' disabled' : ''}>
       <label class="cls-card" for="${c.id}">
         <div class="chkbox"><svg width="11" height="9" viewBox="0 0 10 8" fill="none">
           <path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
