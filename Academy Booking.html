@@ -1372,9 +1372,78 @@ async function onCancelBooking(btnEl, bookingId, dateStr, title) {
 }
 
 // 更改預約日期：導向 WhatsApp 通知（可擴展為日期選擇器）
-function onEditBooking(bookingId, dateStr, title) {
-  const msg = encodeURIComponent(`你好，我想更改「${title || '課堂'}」（${dateStr}）的預約日期，請問有哪些可選？`);
-  window.open(`https://wa.me/85294596420?text=${msg}`, '_blank', 'noopener');
+async function onEditBooking(bookingId, dateStr, title) {
+  // 從後台取得有空位的課堂
+  let availableClasses = [];
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
+    const json = await res.json();
+    availableClasses = (json.classes || []).filter(c => {
+      const remain = c.max - c.enrolled;
+      return remain > 0 && c.id !== bookingId && c.label !== title;
+    });
+  } catch(e) {
+    alert('載入課堂資料失敗，請稍後再試。');
+    return;
+  }
+
+  if (!availableClasses.length) {
+    alert('目前沒有其他有空位的課堂，請 WhatsApp 9459 6420 查詢。');
+    return;
+  }
+
+  // 建立選擇介面
+  const options = availableClasses.map((c, i) =>
+    `${i + 1}. ${c.label}（尚餘 ${c.max - c.enrolled} 位）`
+  ).join('\n');
+
+  const choice = prompt(
+    `請選擇新課堂日期（輸入數字）：\n\n${options}\n\n輸入 0 取消`
+  );
+
+  if (!choice || choice === '0') return;
+
+  const idx = parseInt(choice) - 1;
+  if (isNaN(idx) || idx < 0 || idx >= availableClasses.length) {
+    alert('無效選擇，請重試。');
+    return;
+  }
+
+  const selected = availableClasses[idx];
+  if (!confirm(`確認將「${title || '課堂'}」由 ${dateStr} 改為 ${selected.label}？`)) return;
+
+  const phone = document.getElementById('whatsapp').value.trim() ||
+                document.getElementById('lookupPhone').value.trim();
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action:     'reschedule_booking',
+        phone,
+        oldDate:    dateStr,
+        newDate:    selected.id.slice(-4).replace(/(\d{2})(\d{2})/, '2026-$1-$2'),
+        bookingId,
+        dogName:    document.getElementById('dogName').value.trim(),
+      }),
+    });
+
+    // 更新 UI
+    const row = document.querySelector(
+      `.booked-row .btn-booked-edit[onclick*="${dateStr}"]`
+    )?.closest('.booked-row');
+    if (row) {
+      row.querySelector('.booked-date b').textContent = selected.label.match(/\d+/)?.[0] || '';
+      row.querySelector('.booked-date span').textContent = selected.label.match(/[A-Za-z]+月?/)?.[0] || '';
+      row.querySelector('.booked-title').textContent = selected.label;
+    }
+
+    alert(`✅ 已成功改期至 ${selected.label}`);
+  } catch(e) {
+    alert('改期失敗，請透過 WhatsApp 9459 6420 聯絡學院處理。');
+  }
 }
 
 // ══ TRANSPORT WITH 八折 PRICING ══════════════════════════════════
