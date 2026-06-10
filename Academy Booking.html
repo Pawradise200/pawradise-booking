@@ -1399,45 +1399,50 @@ async function onEditBooking(bookingId, dateStr, title) {
     display:flex;align-items:center;justify-content:center;padding:16px;`;
 
   const modal = document.createElement('div');
-  modal.style.cssText = `
-    background:#fff;border-radius:16px;padding:20px;width:100%;max-width:420px;
-    max-height:80vh;display:flex;flex-direction:column;gap:12px;`;
+ modal.style.cssText = `
+    background:var(--pw-paper);border-radius:var(--pw-r-lg);padding:20px;width:100%;max-width:420px;
+    max-height:80vh;display:flex;flex-direction:column;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);`;
 
   modal.innerHTML = `
-    <div style="font-size:15px;font-weight:800;color:#1a2d4a;">選擇新課堂日期</div>
-    <div style="font-size:12px;color:#888;">目前：${title}（${dateStr}）</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pw-navy)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div style="font-size:14px;font-weight:900;color:var(--pw-navy);">選擇新課堂日期</div>
+    </div>
+    <div style="font-size:11.5px;font-weight:600;color:var(--pw-ink-mute);background:var(--pw-cream-soft);
+      border-radius:var(--pw-r-sm);padding:8px 11px;">
+      目前：${title}（${dateStr}）
+    </div>
     <div id="rescheduleList" style="overflow-y:auto;display:flex;flex-direction:column;gap:8px;max-height:50vh;">
       ${availableClasses.map((c, i) => {
         const remain = c.max - c.enrolled;
         const low = remain <= 3;
         return `<div class="reschedule-opt" data-idx="${i}" style="
-          padding:12px 14px;border:1.5px solid #e5e0d5;border-radius:10px;
+          padding:12px 14px;border:var(--pw-stroke) solid var(--pw-cream-deep);
+          border-radius:var(--pw-r-md);background:var(--pw-paper);
           cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:space-between;">
           <div>
-            <div style="font-size:13px;font-weight:800;color:#1a2d4a;">${c.label}</div>
-            ${c.route ? `<div style="font-size:11px;color:#888;margin-top:2px;">${c.route}</div>` : ''}
+            <div style="font-size:13px;font-weight:800;color:var(--pw-ink);">${c.label}</div>
+            ${c.route ? `<div style="font-size:11px;font-weight:600;color:var(--pw-ink-mute);margin-top:2px;">${c.route}</div>` : ''}
           </div>
-          <div style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;
-            background:${low ? '#fff7e6' : '#f0faf4'};color:${low ? '#d97706' : '#16a34a'};">
+          <div style="font-size:10.5px;font-weight:900;padding:3px 9px;border-radius:var(--pw-r-pill);
+            background:${low ? 'var(--pw-warn-bg)' : 'var(--pw-success-bg)'};
+            color:${low ? 'var(--pw-warn)' : 'var(--pw-success)'};">
             尚餘 ${remain} 位
           </div>
         </div>`;
       }).join('')}
     </div>
-    <div style="display:flex;gap:8px;">
-      <button id="rescheduleCancel" style="
-        flex:1;padding:12px;border:1.5px solid #e5e0d5;border-radius:10px;
-        background:#fff;font-size:13px;font-weight:800;color:#666;cursor:pointer;
-        font-family:inherit;">取消</button>
-    </div>`;
+    <button id="rescheduleCancel" style="
+      width:100%;padding:12px;border:var(--pw-stroke) solid var(--pw-cream-deep);
+      border-radius:var(--pw-r-md);background:var(--pw-paper);font-size:13px;font-weight:800;
+      color:var(--pw-ink-mute);cursor:pointer;font-family:var(--pw-font-sans);transition:.15s;">取消</button>`;
 
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
-
   // 懸停效果
-  modal.querySelectorAll('.reschedule-opt').forEach(el => {
-    el.addEventListener('mouseenter', () => el.style.borderColor = '#2c4a6e');
-    el.addEventListener('mouseleave', () => el.style.borderColor = '#e5e0d5');
+modal.querySelectorAll('.reschedule-opt').forEach(el => {
+    el.addEventListener('mouseenter', () => { el.style.borderColor = 'var(--pw-navy)'; el.style.background = '#F4F1E9'; });
+    el.addEventListener('mouseleave', () => { el.style.borderColor = 'var(--pw-cream-deep)'; el.style.background = 'var(--pw-paper)'; });
   });
 
   // 取消按鈕
