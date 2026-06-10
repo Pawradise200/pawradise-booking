@@ -1378,9 +1378,19 @@ async function onEditBooking(bookingId, dateStr, title) {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
     const json = await res.json();
+  const phone2 = document.getElementById('lookupPhone').value.trim();
+    const dogRecord = _allDogs.find(d => String(d.phone) === phone2) || {};
+    let dogCourseLevel = dogRecord.courseLevel || '';
+    if (!dogCourseLevel && Array.isArray(dogRecord.upcomingClasses) && dogRecord.upcomingClasses.length) {
+      dogCourseLevel = dogRecord.upcomingClasses[0].courseLevel || '';
+    }
+    let allowedTypes = ['S1'];
+    if (dogCourseLevel === 'S2') allowedTypes = ['S2'];
+    else if (dogCourseLevel === 'S1+S2') allowedTypes = ['S1', 'S2'];
+    else if (dogCourseLevel.includes('Explorer')) allowedTypes = ['S1'];
     availableClasses = (json.classes || []).filter(c => {
       const remain = c.max - c.enrolled;
-      return remain > 0 && c.label !== title;
+      return remain > 0 && c.label !== title && allowedTypes.includes(c.type);
     });
   } catch(e) {
     alert('載入課堂資料失敗，請稍後再試。');
