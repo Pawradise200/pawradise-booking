@@ -817,7 +817,12 @@ async function buildClasses(allowedTypes, level) {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
     const json = await res.json();
-    classes = (json.classes || []).filter(c => allowedTypes.includes(c.type));
+    const filtered = (json.classes || []).filter(c => allowedTypes.includes(c.type));
+    // 滿額課堂置底
+    classes = [
+      ...filtered.filter(c => c.max - c.enrolled > 0),
+      ...filtered.filter(c => c.max - c.enrolled <= 0),
+    ];
   } catch(e) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>載入課堂失敗，請重試或 WhatsApp 9459 6420 查詢。</div>';
     return;
