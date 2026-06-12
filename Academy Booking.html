@@ -1658,6 +1658,7 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
                     ? document.getElementById('dogHealthText').value.trim() : '沒有',
     courseLevel:  document.getElementById('courseLevel').value,
     classes:      [...document.querySelectorAll('input[name=cls]:checked')].map(c => c.value).join(' | '),
+classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c => c.dataset.id),
     arrivalTime:  document.querySelector('input[name=arr]:checked')?.value || '',
     transport:    document.querySelector('input[name=transport]:checked')?.value || '不需要',
     trDistrict:   document.getElementById('trDistrict')?.value || '',
