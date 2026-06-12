@@ -1169,7 +1169,7 @@ function renderPackages(d) {
   const list = document.getElementById('pkgList');
   let pkgs = [];
 
- // ① 示範模式：直接用 d.packages
+  // ① 示範模式：直接用 d.packages
   if (Array.isArray(d.packages)) {
     pkgs = d.packages;
   } else {
@@ -1183,24 +1183,63 @@ function renderPackages(d) {
         _isSvoucher: true,
       });
     }
-    // ③ 有課堂記錄：加入課堂追蹤區域
+
+    // ③ S1 / S2 獨立課堂追蹤
     const dogClasses = Array.isArray(d.upcomingClasses)
       ? d.upcomingClasses.filter(c => !c.dogName || c.dogName === d.dogName)
       : [];
-    if (dogClasses.length > 0 || Number(d.classCount) > 0) {
-      const booked = dogClasses.map(c => ({
+
+    // 按課堂標籤前綴分類已預約課堂
+    const mkBooked = lvl => dogClasses
+      .filter(c => ((lvl === 'S2') === /^S2/i.test(String(c.classLabel || c.title || ''))))
+      .map(c => ({
         date:      c.classDate || c.date || '',
         title:     c.classLabel || c.title || c.lessonNum || '課堂',
         time:      c.arrivalTime || c.time || '',
         status:    c.status || 'upcoming',
         bookingId: c.bookingRef || c.bookingId || '',
       }));
+
+    const s1T = Number(d.s1Total     || 0), s1R = Number(d.s1Remaining || 0);
+    const s2T = Number(d.s2Total     || 0), s2R = Number(d.s2Remaining || 0);
+    const s1Booked = mkBooked('S1'), s2Booked = mkBooked('S2');
+
+    if (s1T > 0 || s1R > 0 || s1Booked.length) {
       pkgs.push({
-      name:   d.courseLevel === 'S2' ? 'S2 情緒重建小組班' : d.courseLevel === 'S1+S2' ? 'S1+S2 課堂' : 'S1 社交學院課堂',
-        total:  Number(d.classCount       || 0),
-        used:   Number(d.classCount       || 0) - Number(d.remainingLessons || 0),
+        name:   'S1 狗狗學期班',
+        total:  s1T + s1R,
+        used:   s1T,
         expiry: '',
-        booked: booked,
+        booked: s1Booked,
+        _isLesson: true,
+      });
+    }
+    if (s2T > 0 || s2R > 0 || s2Booked.length) {
+      pkgs.push({
+        name:   'S2 情緒重建小組班',
+        total:  s2T + s2R,
+        used:   s2T,
+        expiry: '',
+        booked: s2Booked,
+        _isLesson: true,
+      });
+    }
+
+    // ④ 後備：新欄位未有數據時用舊欄位（遷移前的相容）
+    if (!pkgs.some(p => p._isLesson) && (Number(d.classCount) > 0 || dogClasses.length)) {
+      pkgs.push({
+        name:   d.courseLevel === 'S2' ? 'S2 情緒重建小組班'
+              : d.courseLevel === 'S1+S2' ? 'S1+S2 課堂' : 'S1 社交學院課堂',
+        total:  Number(d.classCount || 0),
+        used:   Number(d.classCount || 0) - Number(d.remainingLessons || 0),
+        expiry: '',
+        booked: dogClasses.map(c => ({
+          date:      c.classDate || c.date || '',
+          title:     c.classLabel || c.title || c.lessonNum || '課堂',
+          time:      c.arrivalTime || c.time || '',
+          status:    c.status || 'upcoming',
+          bookingId: c.bookingRef || c.bookingId || '',
+        })),
         _isLesson: true,
       });
     }
