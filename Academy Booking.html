@@ -1394,13 +1394,14 @@ async function onCancelBooking(btnEl, bookingId, dateStr, title) {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'cancel_booking',
-        bookingId,
-        date: dateStr,
-        title,
-        phone: document.getElementById('whatsapp').value.trim() || document.getElementById('lookupPhone').value.trim(),
-      }),
+    body: JSON.stringify({
+  action: 'cancel_booking',
+  bookingId,
+  date: dateStr,
+  title,
+  phone: document.getElementById('whatsapp').value.trim() || document.getElementById('lookupPhone').value.trim(),
+  dogName: document.getElementById('dogName').value.trim(),
+}),
     });
     // 更新 UI：將此行標記為已取消
     const row = btnEl.closest('.booked-row');
