@@ -1359,8 +1359,10 @@ function renderBooked(booked, pkgRef) {
   const done       = classified.filter(b => b._status === 'done');
   const cancelled  = classified.filter(b => b._status === 'cancelled');
 
-  const renderRow = (b, showActions) => {
+ const renderRow = (b, showActions) => {
     const dt = b._dt;
+    const todayHK = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+    const isToday = String(b.date).slice(0, 10) === todayHK;
     const isCancelled = b._status === 'cancelled';
     const isDone      = b._status === 'done';
     const dateCls     = isCancelled ? 'cancelled-date' : isDone ? 'past' : '';
@@ -1369,12 +1371,13 @@ function renderBooked(booked, pkgRef) {
     const pillTxt     = isCancelled ? '已取消' : isDone ? '已完成' : '已預約';
 
     // 已預約課堂才顯示操作按鈕
-    const actions = showActions ? `
-      <div class="booked-actions">
+    const editBtn = isToday ? '' : `
         <button type="button" class="btn-booked-edit"
           onclick="onEditBooking('${b.bookingId || ''}','${b.date}','${(b.title||'').replace(/'/g,"\\'")}')">
           更改日期
-        </button>
+        </button>`;
+    const actions = showActions ? `
+      <div class="booked-actions">${editBtn}
         <button type="button" class="btn-booked-cancel"
           onclick="onCancelBooking(this,'${b.bookingId || ''}','${b.date}','${(b.title||'').replace(/'/g,"\\'")}')">
           取消預約
@@ -1413,7 +1416,12 @@ function renderBooked(booked, pkgRef) {
 
 // ══ FIX 2: 取消預約 — 回寫後台更新名額 ══
 async function onCancelBooking(btnEl, bookingId, dateStr, title) {
-  if (!confirm(`確認取消「${title || '課堂'}」（${dateStr}）的預約？\n取消後該堂名額將自動釋出。`)) return;
+  const todayHK = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+  const isToday = String(dateStr).slice(0, 10) === todayHK;
+  const confirmMsg = isToday
+    ? `⚠️ 由於已踏入上課當日，根據本院的改期及取消政策，此堂將不獲補堂。\n\n確定仍要取消「${title || '課堂'}」（${dateStr}）嗎？`
+    : `確認取消「${title || '課堂'}」（${dateStr}）的預約？\n取消後該堂名額將自動釋出。`;
+  if (!confirm(confirmMsg)) return;
   btnEl.disabled = true;
   btnEl.textContent = '處理中…';
   try {
