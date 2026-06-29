@@ -664,6 +664,7 @@ async function submitForm() {
   const required=[
     {id:'f-owner',msg:'請填寫主人姓名'},
     {id:'f-phone',msg:'請填寫 WhatsApp 號碼'},
+    {id:'f-weight',msg:'請填寫體重（用作計算住宿價錢）'},
   ];
   for(const r of required){ if(!document.getElementById(r.id)?.value){alert(r.msg);return;} }
   const email=document.getElementById('f-email').value;
@@ -674,6 +675,13 @@ async function submitForm() {
   const coD=getDateTime('f-co-date','f-co-time');
   if(!ciD||!coD){alert('請填寫入住及離開日期時間');return;}
   if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
+
+  // ✅ 提交前重算 + 攔截：杜絕 0 晚 / $0 靜雞雞落單
+  const _ciDay=new Date(ciD.getFullYear(),ciD.getMonth(),ciD.getDate());
+  const _coDay=new Date(coD.getFullYear(),coD.getMonth(),coD.getDate());
+  if(Math.max(0,Math.round((_coDay-_ciDay)/86400000))<1){ alert('晚數不可為 0：Check-out 需在 Check-in 之後最少一天（即日服務請用日托預約）'); return; }
+  calcForm();  // 以當前欄位值重算一次價錢，確保 _grandTotal 同步
+  if(!(window._grandTotal>0)){ alert('金額尚未計算，請確認體重及所有必填欄位已填寫，待價錢顯示後再提交'); return; }
 
   const btn=document.getElementById('submitBtn');
   const res=document.getElementById('submitResult');
