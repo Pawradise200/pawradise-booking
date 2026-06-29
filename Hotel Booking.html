@@ -601,15 +601,22 @@ function calcForm() {
   const ciDay=new Date(ciD.getFullYear(),ciD.getMonth(),ciD.getDate());
   const coDay=new Date(coD.getFullYear(),coD.getMonth(),coD.getDate());
   const nights=Math.max(0,Math.round((coDay-ciDay)/86400000));
+  const isDaycare=(nights===0);                         // 同一日 = 日托
   const lateOut=(coD.getHours()+coD.getMinutes()/60)>=12;
   let disc=1,discLabel='';
   if(nights>=14){disc=0.95;discLabel='14晚以上 95折';}
   const base=nights*pd.overnight;
   const oTotal=Math.round(base*disc);
-  const dcFee=lateOut?pd.daycare:0;
-  let html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
-  if(disc<1) html+=`<div class="price-row disc"><span>${discLabel}</span><span>-$${base-oTotal}</span></div>`;
-  if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
+  // 日托（同一日）：一律收該體型日托價；過夜：12:00 後 check-out 加日托費
+  const dcFee=isDaycare?pd.daycare:(lateOut?pd.daycare:0);
+  let html;
+  if(isDaycare){
+    html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>日托（同日）</span><span>$${dcFee}</span></div>`;
+  }else{
+    html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
+    if(disc<1) html+=`<div class="price-row disc"><span>${discLabel}</span><span>-$${base-oTotal}</span></div>`;
+    if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
+  }
   let addons=0;
 
   // Grooming
@@ -676,10 +683,8 @@ async function submitForm() {
   if(!ciD||!coD){alert('請填寫入住及離開日期時間');return;}
   if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
 
-  // ✅ 提交前重算 + 攔截：杜絕 0 晚 / $0 靜雞雞落單
-  const _ciDay=new Date(ciD.getFullYear(),ciD.getMonth(),ciD.getDate());
-  const _coDay=new Date(coD.getFullYear(),coD.getMonth(),coD.getDate());
-  if(Math.max(0,Math.round((_coDay-_ciDay)/86400000))<1){ alert('晚數不可為 0：Check-out 需在 Check-in 之後最少一天（即日服務請用日托預約）'); return; }
+  // ✅ 提交前重算 + 攔截：日托（同日）放行，但杜絕無效時序 / $0 落單
+  if(coD<=ciD){ alert('Check-out 時間必須在 Check-in 之後（日托請填同日較後的離開時間）'); return; }
   calcForm();  // 以當前欄位值重算一次價錢，確保 _grandTotal 同步
   if(!(window._grandTotal>0)){ alert('金額尚未計算，請確認體重及所有必填欄位已填寫，待價錢顯示後再提交'); return; }
 
