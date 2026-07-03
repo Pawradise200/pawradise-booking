@@ -574,7 +574,7 @@
     </div>
 
     <!-- 到達時間 (S1) -->
-    <div class="sec">
+    <div class="sec" id="arrivalSec" style="display:none">
       <div class="sec-label"><svg class="ico"><use href="#ico-clock"/></svg>到達學校時間 <span class="req-note">S1 課堂適用</span></div>
       <div class="time-grid" id="timeGrid"></div>
     </div>
@@ -869,6 +869,19 @@ async function buildClasses(allowedTypes, level) {
 function onClassChange() {
   const checked = [...document.querySelectorAll('input[name=cls]:checked')];
   document.getElementById('s2Info').classList.toggle('show', checked.some(c => c.dataset.type === 'S2'));
+
+  // 到達學校時間：只適用於 S1 課堂。S2 課堂本身已帶明確時間，毋須填寫。
+  const hasS1 = checked.some(c => c.dataset.type === 'S1');
+  document.getElementById('arrivalSec').style.display = hasS1 ? '' : 'none';
+  if (!hasS1) {
+    // 非 S1（例如只報 S2）：清除勾選，避免送出錯誤的到達時間
+    document.querySelectorAll('input[name=arr]:checked').forEach(r => { r.checked = false; });
+  } else if (!document.querySelector('input[name=arr]:checked')) {
+    // 有 S1 但尚未選時間：還原預設第一個選項
+    const first = document.querySelector('input[name=arr]');
+    if (first) first.checked = true;
+  }
+
   const s = document.getElementById('selSummary');
   if (!checked.length) { s.classList.remove('show'); return; }
   document.getElementById('selList').innerHTML = checked.map(c => `<li>${c.value}</li>`).join('');
