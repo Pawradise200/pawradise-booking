@@ -800,6 +800,18 @@ const LEVEL_SCOPE = {
   'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
 };
 
+// 課堂資料快取：頁面載入時預先抓一次，之後切換課程級別即時重用；
+// 抓取失敗會清空快取，下次再試（不會卡死在錯誤狀態）
+let _classesPromise = null;
+function loadClassesOnce() {
+  if (!_classesPromise) {
+    _classesPromise = fetch(`${APPS_SCRIPT_URL}?action=getClasses`)
+      .then(res => res.json())
+      .catch(err => { _classesPromise = null; throw err; });
+  }
+  return _classesPromise;
+}
+
 async function applyCourseFilter() {
   const lvl = document.getElementById('courseLevel').value;
   await buildClasses(LEVEL_TYPES[lvl] || null, lvl);
@@ -815,8 +827,7 @@ async function buildClasses(allowedTypes, level) {
   listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>載入課堂中⋯⋯</div>';
   let classes = [];
   try {
-    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getClasses`);
-    const json = await res.json();
+    const json = await loadClassesOnce();
     const filtered = (json.classes || []).filter(c => allowedTypes.includes(c.type));
     // 滿額課堂置底
     classes = [
@@ -1743,6 +1754,7 @@ if (!DEMO_MODE) { const _dh = document.getElementById('demoHint'); if (_dh) _dh.
 window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
 applyCourseFilter();
 buildTimes();
+loadClassesOnce().catch(() => {});  // 預先載入課堂資料：客戶填資料期間背景抓好，選課零等待
 const _demo = _params.get('demo');
 if (_demo) {
   const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
