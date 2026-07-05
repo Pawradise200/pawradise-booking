@@ -544,9 +544,9 @@
           <option value="S1">S1 狗狗學期班</option>
           <option value="S2">S2 情緒重建系統小組班</option>
           <option value="S1+S2">S1 + S2 組合</option>
-          <option value="Light Explorer">月費 · Light Explorer</option>
-          <option value="Active Explorer">月費 · Active Explorer</option>
-          <option value="Ultimate Explorer">月費 · Ultimate Explorer</option>
+          <option value="Club Light">月費 · Club Light</option>
+          <option value="Club Active">月費 · Club Active</option>
+          <option value="Club Ultimate">月費 · Club Ultimate</option>
         </select>
         <div class="err-msg" id="e-level">請選擇課程級別</div>
       </div>
@@ -791,13 +791,21 @@ function demoRecordFor(phone) {
 // ══ BUILD UI ═════════════════════════════════════════════════════
 const LEVEL_TYPES = {
   'S1': ['S1'], 'S2': ['S2'], 'S1+S2': ['S1','S2'],
+  'Club Light': ['S1'], 'Club Active': ['S1'], 'Club Ultimate': ['S1'],
+  // 舊名稱相容（CRM 未改名的舊客戶）
   'Light Explorer': ['S1'], 'Active Explorer': ['S1'], 'Ultimate Explorer': ['S1'],
 };
 const LEVEL_SCOPE = {
   'S1':'此級別只可報讀 S1 狗狗學期班課堂', 'S2':'此級別只可報讀 S2 情緒重建小組班課堂',
   'S1+S2':'此組合可報讀 S1 及 S2 課堂',
+  'Club Light':'月費計劃可報讀 S1 課堂', 'Club Active':'月費計劃可報讀 S1 課堂',
+  'Club Ultimate':'月費計劃可報讀 S1 課堂',
   'Light Explorer':'月費計劃可報讀 S1 課堂', 'Active Explorer':'月費計劃可報讀 S1 課堂',
   'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
+};
+// CRM 舊級別名 → 新 Club 名（查詢回填時自動對應）
+const LEVEL_RENAME = {
+  'Light Explorer':'Club Light', 'Active Explorer':'Club Active', 'Ultimate Explorer':'Club Ultimate',
 };
 
 // 課堂資料快取：頁面載入時預先抓一次，之後切換課程級別即時重用；
@@ -891,6 +899,26 @@ function onClassChange() {
     // 有 S1 但尚未選時間：還原預設第一個選項
     const first = document.querySelector('input[name=arr]');
     if (first) first.checked = true;
+  }
+
+  // 月費配額鎖（Club Light/Active）：勾滿本月尚餘堂數即鎖其餘課堂；「無限」不設鎖
+  const mq = window.MONTHLY_QUOTA;
+  if (mq && mq.quota > 0) {
+    const remain = Math.max(0, mq.quota - mq.used);
+    const lock = checked.length >= remain;
+    document.querySelectorAll('input[name=cls]').forEach(cb => {
+      if (cb.checked) return;
+      if (lock) {
+        if (!cb.disabled) { cb.disabled = true; cb.dataset.qlock = '1'; }
+      } else if (cb.dataset.qlock) {
+        cb.disabled = false; delete cb.dataset.qlock;
+      }
+    });
+  } else {
+    // 非月費客戶／無限計劃：解除任何殘留的配額鎖
+    document.querySelectorAll('input[name=cls][data-qlock]').forEach(cb => {
+      cb.disabled = false; delete cb.dataset.qlock;
+    });
   }
 
   const s = document.getElementById('selSummary');
@@ -1020,7 +1048,12 @@ function fillRecord(d) {
     det.style.display = hasHealth ? 'block' : 'none';
     if (hasHealth) { const t = document.getElementById('dogHealthText'); t.value = d.health; t.classList.add('prefilled'); }
   }
-  if (d.courseLevel) { document.getElementById('courseLevel').value = d.courseLevel; applyCourseFilter(); }
+  // 月費配額狀態（供選堂上限鎖使用）：每月堂數有限值才鎖，「無限」或空白不鎖
+  const _mq = String(d.monthlyQuota != null ? d.monthlyQuota : '').trim();
+  window.MONTHLY_QUOTA = (_mq !== '' && _mq !== '無限' && _mq.toLowerCase() !== 'unlimited')
+    ? { quota: Number(_mq) || 0, used: Number(d.usedThisMonth || 0) } : null;
+  const _lvl = LEVEL_RENAME[d.courseLevel] || d.courseLevel;
+  if (_lvl) { document.getElementById('courseLevel').value = _lvl; applyCourseFilter(); }
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
@@ -1230,7 +1263,20 @@ function renderPackages(d) {
     const s2U = d.s2Attended != null ? Number(d.s2Attended) : Math.max(0, s2T - s2R);
     const s1Booked = mkBooked('S1'), s2Booked = mkBooked('S2');
 
-    if (s1T > 0 || s1R > 0 || s1Booked.length) {
+    // 月費會員（CRM「每月堂數」欄有值）：顯示月費卡；「無限」→ ∞。已預約課堂掛在月費卡下
+    const mqRaw = String(d.monthlyQuota != null ? d.monthlyQuota : '').trim();
+    const isMonthly = mqRaw !== '';
+    if (isMonthly) {
+      pkgs.push({
+        kind: 'monthly',
+        name: LEVEL_RENAME[d.courseLevel] || d.courseLevel || '月費計劃',
+        monthlyQuota: (mqRaw === '無限' || mqRaw.toLowerCase() === 'unlimited') ? 'unlimited' : Number(mqRaw),
+        usedThisMonth: Number(d.usedThisMonth || 0),
+        booked: s1Booked,
+      });
+    }
+
+    if (!isMonthly && (s1T > 0 || s1R > 0 || s1Booked.length)) {
       pkgs.push({ name:'S1 狗狗學期班', total: s1T, used: s1U, expiry:'', booked: s1Booked, _isLesson:true });
     }
     if (s2T > 0 || s2R > 0 || s2Booked.length) {
