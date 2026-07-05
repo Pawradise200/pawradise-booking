@@ -1030,6 +1030,14 @@ function hideDogSelector() {
 
 function fillRecord(d) {
   document.getElementById('notfoundMsg').classList.remove('show');
+  // 回填前先清空全部可回填欄位：CRM 冇資料的欄位必須留白畀客人自己填，
+  // 避免殘留上一位查詢客人（或示範資料）的內容互串
+  ['ownerName','whatsapp','email','dogName','dogBreed','dogWeight','dogDob',
+   'dogGender','dogNeutered','dogHealthSel','dogHealthText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('prefilled'); }
+  });
+  document.getElementById('healthDetailField').style.display = 'none';
   [['ownerName', d.ownerName], ['whatsapp', d.phone], ['email', d.email || ''],
    ['dogName', d.dogName], ['dogBreed', d.breed || ''], ['dogWeight', d.weight || ''],
    ['dogDob', d.dob || '']].forEach(([id, val]) => {
@@ -1052,8 +1060,10 @@ function fillRecord(d) {
   const _mq = String(d.monthlyQuota != null ? d.monthlyQuota : '').trim();
   window.MONTHLY_QUOTA = (_mq !== '' && _mq !== '無限' && _mq.toLowerCase() !== 'unlimited')
     ? { quota: Number(_mq) || 0, used: Number(d.usedThisMonth || 0) } : null;
+  // 課程級別：無論有冇值都重設（無值 → 還原「請選擇」，避免殘留上一位客人的級別）
   const _lvl = LEVEL_RENAME[d.courseLevel] || d.courseLevel;
-  if (_lvl) { document.getElementById('courseLevel').value = _lvl; applyCourseFilter(); }
+  document.getElementById('courseLevel').value = _lvl || '';
+  applyCourseFilter();
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
