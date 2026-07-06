@@ -449,7 +449,7 @@
     </div>
     <div class="found-msg" id="foundMsg">
       <svg class="ico"><use href="#ico-check-circle"/></svg>
-      <span>找到記錄：<b id="foundName"></b> — <span id="foundDog"></span></span>
+      <span>找到記錄：<b id="foundName"></b> — <span id="foundDog"></span><span id="foundNote" style="display:block;font-size:11.5px;font-weight:600;color:var(--pw-navy-lt,#4A7BAF);margin-top:2px;"></span></span>
       <button type="button" class="btn-clear" onclick="clearLookup()">清除</button>
     </div>
     <div class="dog-selector" id="dogSelectorWrap"></div>
@@ -544,9 +544,9 @@
           <option value="S1">S1・狗狗幼稚園</option>
           <option value="S2">S2・情緒重建小組班</option>
           <option value="S1+S2">S1+S2・組合</option>
-          <option value="Club Light">月費 · Club Light</option>
-          <option value="Club Active">月費 · Club Active</option>
-          <option value="Club Ultimate">月費 · Club Ultimate</option>
+          <option value="Light Explorer">月費 · Light Explorer</option>
+          <option value="Active Explorer">月費 · Active Explorer</option>
+          <option value="Ultimate Explorer">月費 · Ultimate Explorer</option>
         </select>
         <div class="err-msg" id="e-level">請選擇課程級別</div>
       </div>
@@ -803,9 +803,9 @@ const LEVEL_SCOPE = {
   'Light Explorer':'月費計劃可報讀 S1 課堂', 'Active Explorer':'月費計劃可報讀 S1 課堂',
   'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
 };
-// CRM 舊級別名 → 新 Club 名（查詢回填時自動對應）
+// CRM 舊級別名 → 正名（2026-07-06 老闆定字眼：Light/Active/Ultimate Explorer）
 const LEVEL_RENAME = {
-  'Light Explorer':'Club Light', 'Active Explorer':'Club Active', 'Ultimate Explorer':'Club Ultimate',
+  'Club Light':'Light Explorer', 'Club Active':'Active Explorer', 'Club Ultimate':'Ultimate Explorer',
 };
 
 // 課堂資料快取：頁面載入時預先抓一次，之後切換課程級別即時重用；
@@ -868,7 +868,7 @@ async function buildClasses(allowedTypes, level) {
       tag = `<div class="cls-tag ${none ? 'muted' : rcls}"><svg class="ico"><use href="#ico-car"/></svg>${c.route}</div>`;
     }
     return `<div class="cls-opt${full ? ' full' : ''}">
-      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-type="${c.type}" data-id="${c.id}"${full ? ' disabled' : ''}>
+      <input type="checkbox" name="cls" id="${c.id}" value="${c.label}" data-type="${c.type}" data-id="${c.id}" data-time="${String(c.time || '').replace(/^週.\s*/, '').replace(/"/g, '')}"${full ? ' disabled' : ''}>
       <label class="cls-card" for="${c.id}">
         <div class="chkbox"><svg width="11" height="9" viewBox="0 0 10 8" fill="none">
           <path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -923,7 +923,9 @@ function onClassChange() {
 
   const s = document.getElementById('selSummary');
   if (!checked.length) { s.classList.remove('show'); return; }
-  document.getElementById('selList').innerHTML = checked.map(c => `<li>${c.value}</li>`).join('');
+  // S2 課堂喺已選清單直接標明課堂時段（S1 時間由「到達學校時間」揀）
+  document.getElementById('selList').innerHTML = checked.map(c =>
+    `<li>${c.value}${c.dataset.type === 'S2' && c.dataset.time ? `｜${c.dataset.time}` : ''}</li>`).join('');
   s.classList.add('show');
 }
 
@@ -1064,6 +1066,14 @@ function fillRecord(d) {
   const _lvl = LEVEL_RENAME[d.courseLevel] || d.courseLevel;
   document.getElementById('courseLevel').value = _lvl || '';
   applyCourseFilter();
+  // 學院客判定：客戶類型含「學院」或有堂數/月費/級別紀錄。
+  // 酒店-only 客＝首次報學院，唔當舊生（唔彈課堂數目、提交行新學員審批流程）
+  window.HAS_ACADEMY = String(d.customerType || '').indexOf('學院') !== -1 ||
+    Number(d.s1Total || 0) > 0 || Number(d.s2Total || 0) > 0 ||
+    String(d.monthlyQuota || '').trim() !== '' || !!_lvl;
+  const noteEl = document.getElementById('foundNote');
+  if (noteEl) noteEl.textContent = window.HAS_ACADEMY ? ''
+    : '此電話目前只有酒店紀錄，屬首次報讀學院——資料已為您帶入，提交後專員會聯絡您確認學費及安排。';
   document.getElementById('foundName').textContent = d.ownerName;
   document.getElementById('foundDog').textContent  = d.dogName;
   document.getElementById('foundMsg').classList.add('show');
@@ -1098,6 +1108,9 @@ function clearLookup() {
   document.getElementById('courseLevel').value = '';
   applyCourseFilter();
   lookupActive = false;
+  window.HAS_ACADEMY = false;
+  const _fn = document.getElementById('foundNote');
+  if (_fn) _fn.textContent = '';
 }
 
 // ══ 套票 / 堂數追蹤 ════════════════════════════════════════════════
@@ -1262,10 +1275,17 @@ function renderPackages(d) {
       .map(c => ({
         date:      c.classDate || c.date || '',
      title:     c.lessonNum || c.classLabel || c.title || '課堂',
-        time:      c.arrivalTime || c.time || '',
+        // S1 顯示到達時間；S2 冇到達時間，顯示課堂本身時段（classTime 來自課堂名額表）
+        time:      c.arrivalTime || c.classTime || c.time || '',
         status:    c.status || 'upcoming',
         bookingId: c.bookingRef || c.bookingId || '',
       }));
+
+    // 只有學院／酒店+學院客先彈「課堂數目」卡；酒店-only 客唔會見到揀堂進度
+    const hasAcademy = String(d.customerType || '').indexOf('學院') !== -1 ||
+      Number(d.s1Total || 0) > 0 || Number(d.s2Total || 0) > 0 ||
+      String(d.monthlyQuota || '').trim() !== '' ||
+      String(d.courseLevel || '').trim() !== '' || dogClasses.length > 0;
 
    const s1T = Number(d.s1Total || 0), s1R = Number(d.s1Remaining || 0);
     const s2T = Number(d.s2Total || 0), s2R = Number(d.s2Remaining || 0);
@@ -1275,7 +1295,7 @@ function renderPackages(d) {
 
     // 月費會員（CRM「每月堂數」欄有值）：顯示月費卡；「無限」→ ∞。已預約課堂掛在月費卡下
     const mqRaw = String(d.monthlyQuota != null ? d.monthlyQuota : '').trim();
-    const isMonthly = mqRaw !== '';
+    const isMonthly = hasAcademy && mqRaw !== '';
     if (isMonthly) {
       pkgs.push({
         kind: 'monthly',
@@ -1286,15 +1306,15 @@ function renderPackages(d) {
       });
     }
 
-    if (!isMonthly && (s1T > 0 || s1R > 0 || s1Booked.length)) {
+    if (hasAcademy && !isMonthly && (s1T > 0 || s1R > 0 || s1Booked.length)) {
       pkgs.push({ name:'S1・狗狗幼稚園', total: s1T, used: s1U, expiry:'', booked: s1Booked, _isLesson:true });
     }
-    if (s2T > 0 || s2R > 0 || s2Booked.length) {
+    if (hasAcademy && (s2T > 0 || s2R > 0 || s2Booked.length)) {
       pkgs.push({ name:'S2・情緒重建小組班', total: s2T, used: s2U, expiry:'', booked: s2Booked, _isLesson:true });
     }
 
     // ④ 後備：新欄位未有數據時用舊欄位（遷移前的相容）
-    if (!pkgs.some(p => p._isLesson) && (Number(d.classCount) > 0 || dogClasses.length)) {
+    if (hasAcademy && !pkgs.some(p => p._isLesson) && (Number(d.classCount) > 0 || dogClasses.length)) {
       pkgs.push({
         name:   d.courseLevel === 'S2' ? 'S2・情緒重建小組班'
               : d.courseLevel === 'S1+S2' ? 'S1+S2 課堂' : 'S1・狗狗幼稚園課堂',
@@ -1304,7 +1324,7 @@ function renderPackages(d) {
         booked: dogClasses.map(c => ({
           date:      c.classDate || c.date || '',
           title:     c.classLabel || c.title || c.lessonNum || '課堂',
-          time:      c.arrivalTime || c.time || '',
+          time:      c.arrivalTime || c.classTime || c.time || '',
           status:    c.status || 'upcoming',
           bookingId: c.bookingRef || c.bookingId || '',
         })),
@@ -1562,6 +1582,7 @@ async function onEditBooking(bookingId, dateStr, title) {
     if (!dogCourseLevel && Array.isArray(dogRecord.upcomingClasses) && dogRecord.upcomingClasses.length) {
       dogCourseLevel = dogRecord.upcomingClasses[0].courseLevel || '';
     }
+    dogCourseLevel = LEVEL_RENAME[dogCourseLevel] || dogCourseLevel;
     let allowedTypes = ['S1'];
     if (dogCourseLevel === 'S2') allowedTypes = ['S2'];
     else if (dogCourseLevel === 'S1+S2') allowedTypes = ['S1', 'S2'];
@@ -1759,7 +1780,7 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
   const payload = {
     action:       'submit_academy',
     timestamp:    new Date().toISOString(),
-    customerType: lookupActive ? '舊生' : '新學員',
+    customerType: lookupActive ? (window.HAS_ACADEMY ? '舊生' : '酒店舊客・學院新生') : '新學員',
     ownerName:    document.getElementById('ownerName').value.trim(),
     whatsapp:     document.getElementById('whatsapp').value.trim(),
     email:        document.getElementById('email').value.trim(),
