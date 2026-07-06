@@ -412,7 +412,7 @@
 <header class="pw-header">
   <a class="back" href="Pawradise.html"><svg class="ico ico-sm"><use href="#ico-arrow-left"/></svg>返回</a>
   <div class="crest"><img src="assets/pawradise-crest.png" alt="Pawradise"></div>
-  <div class="htitle"><b>社交學院報名</b><span>S1狗狗學期 | S2情緒重建小組 | Calm Explorer Club</span></div>
+  <div class="htitle"><b>社交學院報名</b><span>S1 狗狗幼稚園 | S2 情緒重建小組班 | Calm Explorer Club</span></div>
   <div class="spacer"></div>
 </header>
 
@@ -541,9 +541,9 @@
         <label>課程級別 <span class="req">*</span></label>
         <select id="courseLevel" onchange="applyCourseFilter()">
           <option value="">請選擇</option>
-          <option value="S1">S1 狗狗學期班</option>
-          <option value="S2">S2 情緒重建系統小組班</option>
-          <option value="S1+S2">S1 + S2 組合</option>
+          <option value="S1">S1・狗狗幼稚園</option>
+          <option value="S2">S2・情緒重建小組班</option>
+          <option value="S1+S2">S1+S2・組合</option>
           <option value="Club Light">月費 · Club Light</option>
           <option value="Club Active">月費 · Club Active</option>
           <option value="Club Ultimate">月費 · Club Ultimate</option>
@@ -557,7 +557,7 @@
       <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>選擇課堂日期 <span class="req">*</span></div>
       <div class="class-list" id="classList"></div>
       <div class="s2-courses" id="s2Info">
-        <div class="s2-title">S2 情緒重建系統小組班 — 課堂內容</div>
+        <div class="s2-title">S2・情緒重建小組班 — 課堂內容</div>
         <ol>
           <li>第一堂 · 讀懂你的狗狗</li>
           <li>第二堂 · 距離就是答案</li>
@@ -743,12 +743,12 @@ const DEMO_BASE = {
 const DEMO_TERM = {
   ...DEMO_BASE, courseLevel: 'S1',
   packages: [
-    { name: 'S1 狗狗學期班 · 單學期共 9 堂', total: 9, used: 7, firstClass: '2026-06-02', validMonths: 3, remindFrom: 8,
+    { name: 'S1・狗狗幼稚園 · 單學期共 9 堂', total: 9, used: 7, firstClass: '2026-06-02', validMonths: 3, remindFrom: 8,
       booked: [
         { date: '2026-06-09', title: '第八堂', time: '下午 3:00', status: 'upcoming' },
         { date: '2026-06-16', title: '第九堂', time: '下午 3:00', status: 'upcoming' },
       ] },
-    { name: 'S2 情緒重建小組班 · 一共 4 堂', total: 4, used: 3, firstClass: '2026-06-11', validMonths: 2, remindFrom: 3,
+    { name: 'S2・情緒重建小組班 · 一共 4 堂', total: 4, used: 3, firstClass: '2026-06-11', validMonths: 2, remindFrom: 3,
       booked: [
         { date: '2026-06-25', title: '第四堂', time: '上午 11:00', status: 'upcoming' },
       ] },
@@ -780,7 +780,7 @@ function demoRecordFor(phone) {
   return {
     ...DEMO_BASE, dogName:p.dogName, breed:p.breed, courseLevel:'S1', grade:g,
     semesterUsed:p.used, semesterTotal:9,
-    packages:[{ name:'S1 狗狗學期班 · 本學期共 9 堂', total:9, used:p.used, firstClass:'2026-05-05', validMonths:3, remindFrom:8,
+    packages:[{ name:'S1・狗狗幼稚園 · 本學期共 9 堂', total:9, used:p.used, firstClass:'2026-05-05', validMonths:3, remindFrom:8,
       booked:[
         { date:'2026-06-14', title:`第 ${p.used + 1} 堂`, status:'upcoming' },
         { date:'2026-06-21', title:`第 ${p.used + 2} 堂`, status:'upcoming' },
@@ -796,7 +796,7 @@ const LEVEL_TYPES = {
   'Light Explorer': ['S1'], 'Active Explorer': ['S1'], 'Ultimate Explorer': ['S1'],
 };
 const LEVEL_SCOPE = {
-  'S1':'此級別只可報讀 S1 狗狗學期班課堂', 'S2':'此級別只可報讀 S2 情緒重建小組班課堂',
+  'S1':'此級別只可報讀 S1・狗狗幼稚園課堂', 'S2':'此級別只可報讀 S2・情緒重建小組班課堂',
   'S1+S2':'此組合可報讀 S1 及 S2 課堂',
   'Club Light':'月費計劃可報讀 S1 課堂', 'Club Active':'月費計劃可報讀 S1 課堂',
   'Club Ultimate':'月費計劃可報讀 S1 課堂',
@@ -1287,17 +1287,17 @@ function renderPackages(d) {
     }
 
     if (!isMonthly && (s1T > 0 || s1R > 0 || s1Booked.length)) {
-      pkgs.push({ name:'S1 狗狗學期班', total: s1T, used: s1U, expiry:'', booked: s1Booked, _isLesson:true });
+      pkgs.push({ name:'S1・狗狗幼稚園', total: s1T, used: s1U, expiry:'', booked: s1Booked, _isLesson:true });
     }
     if (s2T > 0 || s2R > 0 || s2Booked.length) {
-      pkgs.push({ name:'S2 情緒重建小組班', total: s2T, used: s2U, expiry:'', booked: s2Booked, _isLesson:true });
+      pkgs.push({ name:'S2・情緒重建小組班', total: s2T, used: s2U, expiry:'', booked: s2Booked, _isLesson:true });
     }
 
     // ④ 後備：新欄位未有數據時用舊欄位（遷移前的相容）
     if (!pkgs.some(p => p._isLesson) && (Number(d.classCount) > 0 || dogClasses.length)) {
       pkgs.push({
-        name:   d.courseLevel === 'S2' ? 'S2 情緒重建小組班'
-              : d.courseLevel === 'S1+S2' ? 'S1+S2 課堂' : 'S1 社交學院課堂',
+        name:   d.courseLevel === 'S2' ? 'S2・情緒重建小組班'
+              : d.courseLevel === 'S1+S2' ? 'S1+S2 課堂' : 'S1・狗狗幼稚園課堂',
         total:  Number(d.classCount || 0),
         used:   Number(d.classCount || 0) - Number(d.remainingLessons || 0),
         expiry: '',
