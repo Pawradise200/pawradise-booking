@@ -1265,8 +1265,10 @@ function renderPackages(d) {
     }
 
     // ③ S1 / S2 獨立課堂追蹤
+    // 狗名對比 normalize（去空格＋唔分大小寫）——防止「點點 」vs「點點」呢類差異令已預約課堂被隱藏
+    const dogKey = s => String(s || '').trim().toLowerCase();
     const dogClasses = Array.isArray(d.upcomingClasses)
-      ? d.upcomingClasses.filter(c => !c.dogName || c.dogName === d.dogName)
+      ? d.upcomingClasses.filter(c => !c.dogName || dogKey(c.dogName) === dogKey(d.dogName))
       : [];
 
     // 按課堂標籤前綴分類已預約課堂
