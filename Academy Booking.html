@@ -147,6 +147,11 @@
 .cls-scope{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:9px 13px;border-radius:var(--pw-r-sm);
   background:var(--pw-info-bg);color:var(--pw-info);font-size:12px;font-weight:800;line-height:1.45;}
 .cls-scope .ico{width:15px;height:15px;flex-shrink:0;stroke-width:2.1;}
+/* 接送課堂勾選（逐堂接送 2026-07-08） */
+#trLessonList{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.trl-row{display:flex;align-items:center;gap:8px;background:var(--pw-cream,#F5F0E8);
+  border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;}
+.trl-row input{width:16px;height:16px;accent-color:var(--pw-navy,#2C4A6E);}
 .cls-opt{position:relative;}
 .cls-opt input[type=checkbox]{position:absolute;opacity:0;pointer-events:none;}
 .cls-card{display:flex;align-items:center;gap:12px;padding:12px 14px;
@@ -635,6 +640,11 @@
           <input type="text" id="trAddress" placeholder="大廈名稱及街道，例：將軍澳帝景灣7座">
           <div class="hint">請確保大廈樓下可供私家車停泊交收，接送只限地面。</div>
         </div>
+        <div class="field" id="trLessonsField" style="display:none">
+          <label>需要接送的課堂 <span class="req">*</span></label>
+          <div id="trLessonList"></div>
+          <div class="hint">只有部分日子需要接送？剔走唔需要嗰啲，車費會按堂數自動計算。</div>
+        </div>
         <div class="tr-price-box" id="trPriceBox">
           <div class="tr-price-top">
             <span>接送費用（<span id="trPriceType"></span> · 八折優惠）</span>
@@ -920,6 +930,8 @@ function onClassChange() {
       cb.disabled = false; delete cb.dataset.qlock;
     });
   }
+
+  calcTransport();   // 揀堂變化 → 接送勾選清單＋車費重計
 
   const s = document.getElementById('selSummary');
   if (!checked.length) { s.classList.remove('show'); return; }
@@ -1554,24 +1566,56 @@ async function onCancelBooking(btnEl, bookingId, dateStr, title) {
 }
 
 // ══ TRANSPORT WITH 八折 PRICING ══════════════════════════════════
+// 接送課堂勾選（2026-07-08 逐堂接送）：預設全剔（＝舊行為），客人自行剔走唔使嗰啲
+function renderTrLessons() {
+  const field = document.getElementById('trLessonsField');
+  const list  = document.getElementById('trLessonList');
+  const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
+  const classes = [...document.querySelectorAll('input[name=cls]:checked')];
+  if (val === '不需要' || !classes.length) { field.style.display = 'none'; list.innerHTML = ''; return; }
+  // 保留現有勾選狀態（重繪唔會 reset）
+  const prev = {};
+  list.querySelectorAll('input[name=trcls]').forEach(cb => { prev[cb.value] = cb.checked; });
+  list.innerHTML = classes.map(c => {
+    const id = c.dataset.id || c.value;
+    const on = prev[id] != null ? prev[id] : true;
+    return `<label class="trl-row"><input type="checkbox" name="trcls" value="${id}"${on ? ' checked' : ''} onchange="calcTransport()"><span>${c.value}</span></label>`;
+  }).join('');
+  field.style.display = '';
+}
+
+function trSelectedIds() {
+  return [...document.querySelectorAll('input[name=trcls]:checked')].map(cb => cb.value);
+}
+
 function calcTransport() {
   const val = document.querySelector('input[name=transport]:checked')?.value || '不需要';
   const detail = document.getElementById('trDetail');
   const priceBox = document.getElementById('trPriceBox');
   const paySec = document.getElementById('paymentSec');
-  if (val === '不需要') { detail.classList.remove('show'); priceBox.style.display = 'none'; if(paySec) paySec.style.display='none'; return; }
+  if (val === '不需要') {
+    detail.classList.remove('show'); priceBox.style.display = 'none';
+    if(paySec) paySec.style.display='none';
+    document.getElementById('trLessonsField').style.display = 'none';
+    return;
+  }
   detail.classList.add('show');
   if(paySec) paySec.style.display='block';
+  renderTrLessons();
   const dp = parseInt(document.getElementById('trDistrict').value) || 0;
   if (!dp) { priceBox.style.display = 'none'; return; }
   const isBoth = val === '接+送';
-  const origTotal = isBoth ? dp * 2 : dp;
-  const discTotal = Math.round(origTotal * 0.8);
-  document.getElementById('trPriceType').textContent = val;
+  const nSel = trSelectedIds().length;
+  const n = document.querySelectorAll('input[name=cls]:checked').length ? nSel : 1;  // 未揀堂時先當一程預覽
+  const perOrig = isBoth ? dp * 2 : dp;
+  const perDisc = Math.round(perOrig * 0.8);
+  const origTotal = perOrig * Math.max(n, 0);
+  const discTotal = perDisc * Math.max(n, 0);
+  document.getElementById('trPriceType').textContent = val + (n > 1 ? ' × ' + n + ' 堂' : '');
   document.getElementById('trPriceOrig').textContent = '$' + origTotal;
   document.getElementById('trPriceFinal').textContent = '$' + discTotal;
   document.getElementById('trPriceAmt').textContent = '$' + discTotal;
-  priceBox.style.display = 'block';
+  priceBox.style.display = n === 0 ? 'none' : 'block';
 }
 
 // ══ VALIDATION ════════════════════════════════════════════════════
@@ -1642,6 +1686,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     trDistrict:   document.getElementById('trDistrict')?.value || '',
     trAddress:    document.getElementById('trAddress').value.trim(),
     trFee:        document.getElementById('trPriceAmt')?.textContent || '$0',
+    trClassIds:   trSelectedIds(),
     remarks:      document.getElementById('remarks').value.trim(),
     status:       '待審批',
   };
