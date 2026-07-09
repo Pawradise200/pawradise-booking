@@ -1289,8 +1289,10 @@ function renderPackages(d) {
       .map(c => ({
         date:      c.classDate || c.date || '',
      title:     c.lessonNum || c.classLabel || c.title || '課堂',
-        // S1 顯示到達時間；S2 冇到達時間，顯示課堂本身時段（classTime 來自課堂名額表）
-        time:      c.arrivalTime || c.classTime || c.time || '',
+        // S1 顯示家長自選到達時間；S2 一律顯示課堂實際時段（就算舊數據殘留到達時間都唔用，免家長混淆）
+        time:      lvl === 'S2'
+          ? String(c.classTime || '').replace(/^週.\s*/, '')
+          : (c.arrivalTime || c.classTime || c.time || ''),
         status:    c.status || 'upcoming',
         bookingId: c.bookingRef || c.bookingId || '',
       }));
