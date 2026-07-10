@@ -618,6 +618,7 @@ function calcForm() {
     if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
   }
   let addons=0;
+  let grFeeAmt=0,acFeeAmt=0,trFeeAmt=0;  // 分項金額（提交時傳後端拆帳用）
 
   // Grooming
   const grSel=document.querySelector('input[name=f-gr]:checked');
@@ -635,6 +636,7 @@ function calcForm() {
       const grLabel=(grType==='basic'?'Basic':'Full Set')+(grCut!=='none'?' + '+({razor:'全剷',half:'半手剪',full:'全手剪'}[grCut]||''):'');
       html+=`<div class="price-row addon"><span>美容（${grLabel}）住宿9折</span><span>$${grTotal}</span></div>`;
       addons+=grTotal;
+      grFeeAmt=grTotal;
     }
   }
 
@@ -644,6 +646,7 @@ function calcForm() {
     const acFee=acCount*622;
     html+=`<div class="price-row addon"><span>學院課堂 ${acCount} 堂</span><span>$${acFee}</span></div>`;
     addons+=acFee;
+    acFeeAmt=acFee;
     const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent='$'+acFee;
   } else { const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent=''; }
 
@@ -657,10 +660,12 @@ function calcForm() {
       const distName=distEl.options[distEl.selectedIndex]?.text||'';
       html+=`<div class="price-row addon"><span>接送（${distName}）${trSel.value==='both'?'× 2':''}</span><span>$${trTotal}</span></div>`;
       addons+=trTotal;
+      trFeeAmt=trTotal;
     }
   }
   const grand=oTotal+dcFee+addons;
   window._grandTotal = grand;  // 讓 submitForm 可以讀取
+  window._fees = { grooming: grFeeAmt, academy: acFeeAmt, transport: trFeeAmt };  // 分項（後端拆帳用）
   html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
   card.innerHTML=html;
   ps.style.display='block';
@@ -718,6 +723,9 @@ async function submitForm() {
     trDistrict:document.getElementById('f-tr-district')?.value||'',
     trAddress:document.getElementById('f-tr-addr')?.value||'',
     totalAmount: window._grandTotal || 0,
+    groomingFee: (window._fees && window._fees.grooming) || 0,
+    academyFee: (window._fees && window._fees.academy) || 0,
+    transportFee: (window._fees && window._fees.transport) || 0,
     status:'待審批',
   };
 
