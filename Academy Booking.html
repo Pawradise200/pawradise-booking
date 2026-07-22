@@ -1599,6 +1599,7 @@ function calcTransport() {
     detail.classList.remove('show'); priceBox.style.display = 'none';
     if(paySec) paySec.style.display='none';
     document.getElementById('trLessonsField').style.display = 'none';
+    document.getElementById('trPriceAmt').textContent = '$0';   // [Bug2 修復] 自行到校清返車費，防殘留值被提交
     return;
   }
   detail.classList.add('show');
@@ -1687,7 +1688,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     transport:    document.querySelector('input[name=transport]:checked')?.value || '不需要',
     trDistrict:   document.getElementById('trDistrict')?.value || '',
     trAddress:    document.getElementById('trAddress').value.trim(),
-    trFee:        document.getElementById('trPriceAmt')?.textContent || '$0',
+    trFee:        (document.querySelector('input[name=transport]:checked')?.value === '不需要') ? '$0' : (document.getElementById('trPriceAmt')?.textContent || '$0'),   // [Bug2 修復] 自行到校一律 $0
     trClassIds:   trSelectedIds(),
     remarks:      document.getElementById('remarks').value.trim(),
     status:       '待審批',
