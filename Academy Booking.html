@@ -1653,9 +1653,20 @@ function validate() {
   ok = vf('dogHealthSel', !hs,                                      'e-health') && ok;
   if (hs === 'yes') ok = vf('dogHealthText', !document.getElementById('dogHealthText').value.trim(), 'e-health-text') && ok;
   ok = vf('courseLevel',!l,                                         'e-level') && ok;
-  document.getElementById('e-classes').classList.toggle('show', !c.length);
+  const eCls = document.getElementById('e-classes');
+  eCls.textContent = '請最少選擇一堂';        // [2026-07-24] 覆位：唔好殘留「名額已滿」訊息
+  eCls.classList.toggle('show', !c.length);
   if (!c.length) ok = false;
   return ok;
+}
+
+// [2026-07-24] 名額已滿提示——沿用現有 #e-classes 錯誤位，唔加新元素、唔郁佈局
+function showClassesFullError(labels) {
+  const el = document.getElementById('e-classes');
+  el.textContent = '課堂名額已滿，請重新選擇日子'
+    + (labels && labels.length ? '（' + labels.join('、') + '）' : '');
+  el.classList.add('show');
+  document.getElementById('classList').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // ══ SUBMIT ════════════════════════════════════════════════════════
@@ -1694,6 +1705,25 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     status:       '待審批',
   };
   const ref = 'PA-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+  // [2026-07-24 爆班] 第一層：提交前用最新名額覆核。
+  //   頁面可能開咗好耐，班表係舊快照——趁未寫入先攔，家長即刻見到「已滿」。
+  try {
+    _classesPromise = null;                                   // 清快取，強制攞最新
+    const fresh = await loadClassesOnce();
+    const byId  = {};
+    (fresh.classes || []).forEach(c => { byId[c.id] = c; });
+    const fullNow = [...document.querySelectorAll('input[name=cls]:checked')]
+      .filter(el => { const c = byId[el.dataset.id]; return c && (c.max - c.enrolled) <= 0; })
+      .map(el => el.value);
+    if (fullNow.length) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      await applyCourseFilter();                              // 重畫班表：滿額堂會標示並置底
+      showClassesFullError(fullNow);
+      return;
+    }
+  } catch (chkErr) { /* 攞唔到最新名額 → 唔阻提交，交後端 gate 把關 */ }
 
   try {
     await fetch(APPS_SCRIPT_URL, {
