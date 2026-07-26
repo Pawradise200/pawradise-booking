@@ -506,14 +506,25 @@ async function intLookup() {
       document.getElementById('int-notes').value  = d.notes  || '';
       document.getElementById('notesSection').style.display = 'block';
       // Package
-      if (d.pkgTotal && Number(d.pkgTotal) > 0) {
-        document.getElementById('int-pkg-type').value   = d.pkgType || '';
-        document.getElementById('int-pkg-expiry').value = d.pkgExpiry || '';
-        document.getElementById('int-pkg-total').value  = '$' + Number(d.pkgTotal).toLocaleString();
-        document.getElementById('int-pkg-bal').value    = d.pkgBalance || '';
+      // [2026-07-26] 套票跟電話唔跟狗名：優先用後端 pkgPool（同電話 = 同一張、已剔除過期）；
+      //              後端未 redeploy 冇 pkgPool 就跌返舊嘅單狗欄位。
+      //              全部過期都要出 section（餘額顯示 0 + 提示過期額），唔可以靜靜隱藏。
+      const pp = json.pkgPool;
+      const pk = pp
+        ? { type: pp.type||'',
+            expiry: pp.expiry,
+            total: Number(pp.total)>0 ? pp.total : Number(pp.expiredTotal)||0,
+            balance: pp.balance, expiredBalance: Number(pp.expiredBalance)||0 }
+        : { type: d.pkgType||'', expiry: d.pkgExpiry, total: d.pkgTotal, balance: d.pkgBalance, expiredBalance: 0 };
+      if (pk.total && Number(pk.total) > 0) {
+        document.getElementById('int-pkg-type').value   = pk.type;
+        document.getElementById('int-pkg-expiry').value = pk.expiry || '';
+        document.getElementById('int-pkg-total').value  = '$' + Number(pk.total).toLocaleString();
+        document.getElementById('int-pkg-bal').value    = pk.balance || '';
         document.getElementById('pkgSection').style.display = 'block';
-        updateBalDisplay();
+        updateBalDisplay(pk.expiredBalance);
       } else {
+        _pkgExpiredBal = 0;
         document.getElementById('pkgSection').style.display = 'none';
       }
       // Pre-fill pricing tab weight
@@ -529,10 +540,17 @@ async function intLookup() {
   }
 }
 
-function updateBalDisplay() {
+let _pkgExpiredBal = 0;   // [2026-07-26] 過期套票餘額（只提示，唔計入可用額）
+function updateBalDisplay(expiredBal) {
+  if (expiredBal !== undefined) _pkgExpiredBal = Number(expiredBal) || 0;
   const bal = parseInt(document.getElementById('int-pkg-bal').value) || 0;
+  const exp = _pkgExpiredBal;
   const d = document.getElementById('bal-display');
-  if (bal > 0) { d.style.display = 'block'; d.textContent = '現有套票餘額：$' + bal.toLocaleString(); }
+  if (bal > 0 || exp > 0) {
+    d.style.display = 'block';
+    d.textContent = '可用套票餘額：$' + bal.toLocaleString()
+      + (exp > 0 ? '（另有已過期 $' + exp.toLocaleString() + '，系統唔會自動扣）' : '');
+  }
   else { d.style.display = 'none'; }
 }
 
@@ -603,11 +621,13 @@ function calcAll() {
   if (nights>=14){disc=0.95;discLabel='14晚以上 95折';}
   const base = nights*pd.overnight;
   const oTotal = Math.round(base*disc*roomDisc);
-  const dcFee  = lateOut?pd.daycare:0;
+  // [2026-07-26] 14 晚以上折扣同樣適用於日托費（住宿相關全數 95 折；同房 9 折只計房費）
+  const dcBase = lateOut?pd.daycare:0;
+  const dcFee  = Math.round(dcBase*disc);
 
   let html = `<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
   if (disc<1||roomDisc<1) html+=`<div class="price-row disc"><span>${discLabel}${room>=3?' 同房9折':''}</span><span>-$${base-oTotal}</span></div>`;
-  if (lateOut) html+=`<div class="price-row dc"><span>日托</span><span>+$${dcFee}</span></div>`;
+  if (lateOut) html+=`<div class="price-row dc"><span>日托${disc<1?' 95折':''}</span><span>+$${dcFee}</span></div>`;
 
   let addons=0;
   const grType=document.getElementById('gr-type').value;

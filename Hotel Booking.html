@@ -439,6 +439,8 @@ function getDateTime(dateId, timeId) {
 
 // ══ CUSTOMER LOOKUP ══════════════════════════════════════════════
 let _allDogs = [];
+// [2026-07-26] 套票池：跟電話（同一家長多隻狗共用同一張，唔係每隻狗一張），後端 lookup 回傳，已剔除過期
+let _pkgPool = null;
 
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
@@ -458,6 +460,7 @@ async function doLookup() {
     const json = await res.json();
     if (json.found && json.dogs && json.dogs.length > 0) {
       _allDogs = json.dogs;
+      _pkgPool = json.pkgPool || null;   // 舊 deployment 未有此欄 → null，跌返舊行為
       if (json.multiDog) {
         // 多隻狗狗：顯示選擇器
         resultEl.className = 'lookup-result found';
@@ -529,16 +532,26 @@ function prefillReturning(d) {
   document.getElementById('returning-badge').style.display='block';
 
   const pkgCard=document.getElementById('pkgInfoCard');
-  if(d.pkgBalance!=null && Number(d.pkgTotal)>0){
-    const bal=Number(d.pkgBalance), total=Number(d.pkgTotal);
+  // [2026-07-26] 套票跟電話唔跟狗名：優先用後端 pkgPool（同電話 = 同一張、已剔除過期）；
+  //              後端未 redeploy 冇 pkgPool 就跌返舊嘅單狗欄位，唔會白畫面。
+  //              全部過期嗰陣顯示過期嗰批數（卡照出、badge 會判「已過期」），唔會靜靜隱藏。
+  const pk = _pkgPool
+    ? (Number(_pkgPool.total)>0
+        ? { balance:_pkgPool.balance, total:_pkgPool.total, expiry:_pkgPool.expiry,
+            type:_pkgPool.type, count:Number(_pkgPool.count)||1 }
+        : { balance:_pkgPool.expiredBalance, total:_pkgPool.expiredTotal, expiry:_pkgPool.expiry,
+            type:_pkgPool.type, count:1 })
+    : { balance:d.pkgBalance, total:d.pkgTotal, expiry:d.pkgExpiry, type:d.pkgType, count:1 };
+  if(pk.balance!=null && Number(pk.total)>0){
+    const bal=Number(pk.balance), total=Number(pk.total);
     const usedPct=Math.round(((total-bal)/total)*100);
-    const expiry=d.pkgExpiry?new Date(d.pkgExpiry):null;
+    const expiry=pk.expiry?new Date(pk.expiry):null;
     const expired=expiry&&expiry<new Date();
     const exStr=expiry?expiry.toLocaleDateString('zh-HK',{year:'numeric',month:'short',day:'numeric'}):'不適用';
     const balEl=document.getElementById('pkgBalance');
     balEl.textContent='$'+bal.toLocaleString();
     balEl.className='pkg-row-val balance'+(bal<500?' warn':'');
-    document.getElementById('pkgType').textContent=d.pkgType||'套票';
+    document.getElementById('pkgType').textContent=pk.type||'套票';
     document.getElementById('pkgTotal').textContent='$'+total.toLocaleString();
     document.getElementById('pkgExpiry').textContent=exStr;
     document.getElementById('pkgExpiry').className='pkg-row-val expiry'+(expired?' warn':'');
@@ -556,6 +569,7 @@ function prefillReturning(d) {
 function clearPrefill() {
   isReturning=false;
   _allDogs=[];
+  _pkgPool=null;
   const selWrap=document.getElementById('dogSelectorWrap');
   if(selWrap){selWrap.style.display='none';selWrap.innerHTML='';}
   ['f-owner','f-phone','f-email','f-dogname','f-breed','f-weight','f-dob'].forEach(id=>{
@@ -608,14 +622,16 @@ function calcForm() {
   const base=nights*pd.overnight;
   const oTotal=Math.round(base*disc);
   // 日托（同一日）：一律收該體型日托價；過夜：12:00 後 check-out 加日托費
-  const dcFee=isDaycare?pd.daycare:(lateOut?pd.daycare:0);
+  // [2026-07-26] 14 晚以上折扣同樣適用於日托費（住宿相關全數 95 折）
+  const dcBase=isDaycare?pd.daycare:(lateOut?pd.daycare:0);
+  const dcFee=Math.round(dcBase*disc);
   let html;
   if(isDaycare){
     html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>日托（同日）</span><span>$${dcFee}</span></div>`;
   }else{
     html=`<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
     if(disc<1) html+=`<div class="price-row disc"><span>${discLabel}</span><span>-$${base-oTotal}</span></div>`;
-    if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）</span><span>+$${dcFee}</span></div>`;
+    if(lateOut) html+=`<div class="price-row dc"><span>日托（12:00後 check-out）${disc<1?' 95折':''}</span><span>+$${dcFee}</span></div>`;
   }
   let addons=0;
   let grFeeAmt=0,acFeeAmt=0,trFeeAmt=0;  // 分項金額（提交時傳後端拆帳用）
