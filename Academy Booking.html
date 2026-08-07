@@ -1741,12 +1741,41 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
   } catch (chkErr) { /* 攞唔到最新名額 → 唔阻提交，交後端 gate 把關 */ }
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    // [2026-08-08] 由 no-cors 盲發改為讀得到後端回應：
+    //   Content-Type 用 text/plain（簡單請求，唔觸發 preflight，Apps Script 先肯答；
+    //   已喺 live origin 實測 200+JSON），後端 doPost 照 JSON.parse body，零改動。
+    //   咁後端爆班 gate 拒絕時，家長先至見到「未成功」而唔係假成功畫面。
+    const res = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ ...payload, ref }),
     });
+    let result = null;
+    try { result = await res.json(); } catch (pe) { result = null; }   // 讀唔到回應→照舊當成功（後端有 staff 通知把關）
+    if (result && result.success === false) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      if (result.fullClasses && result.fullClasses.length) {
+        // 後端爆班攔截：剔走滿咗嘅堂（按 label 對返，同名額 sheet 同一來源）＋話返家長知
+        const fullSet = new Set(result.fullClasses.map(String));
+        [...document.querySelectorAll('input[name=cls]:checked')].forEach(el => {
+          if (!fullSet.has(el.value)) return;
+          el.checked = false;
+          el.disabled = true;
+          const opt = el.closest('.cls-opt');
+          if (opt) {
+            opt.classList.add('full');
+            const badge = opt.querySelector('.badge');
+            if (badge) { badge.textContent = '已滿額'; badge.className = 'badge b-full'; }
+          }
+        });
+        onClassChange();
+        showClassesFullError(result.fullClasses);
+      } else {
+        alert('報名未成功：' + (result.error || '請稍後重試，或透過 WhatsApp 9459 6420 聯絡我們。'));
+      }
+      return;
+    }
     document.getElementById('mainForm').style.display = 'none';
     document.querySelector('.notice').style.display   = 'none';
     document.getElementById('sDog').textContent = payload.dogName;
