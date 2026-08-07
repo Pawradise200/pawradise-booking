@@ -1661,10 +1661,12 @@ function validate() {
 }
 
 // [2026-07-24] 名額已滿提示——沿用現有 #e-classes 錯誤位，唔加新元素、唔郁佈局
+// [2026-08-08] 文案更新：而家只會剔走滿額堂、其餘揀選保留，講清楚俾家長知
 function showClassesFullError(labels) {
   const el = document.getElementById('e-classes');
-  el.textContent = '課堂名額已滿，請重新選擇日子'
-    + (labels && labels.length ? '（' + labels.join('、') + '）' : '');
+  el.textContent = '以下課堂已滿額，已從你的選擇中移除：'
+    + (labels && labels.length ? labels.join('、') : '')
+    + '。其餘已選課堂不受影響，可另揀日子後再按提交。';
   el.classList.add('show');
   document.getElementById('classList').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -1713,13 +1715,26 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     const fresh = await loadClassesOnce();
     const byId  = {};
     (fresh.classes || []).forEach(c => { byId[c.id] = c; });
-    const fullNow = [...document.querySelectorAll('input[name=cls]:checked')]
-      .filter(el => { const c = byId[el.dataset.id]; return c && (c.max - c.enrolled) <= 0; })
-      .map(el => el.value);
+    const fullEls = [...document.querySelectorAll('input[name=cls]:checked')]
+      .filter(el => { const c = byId[el.dataset.id]; return c && (c.max - c.enrolled) <= 0; });
+    const fullNow = fullEls.map(el => el.value);
     if (fullNow.length) {
       btn.disabled = false;
       btn.classList.remove('loading');
-      await applyCourseFilter();                              // 重畫班表：滿額堂會標示並置底
+      // [2026-08-08] 只 uncheck 滿咗嗰啲堂，其餘揀選原封保留——
+      //   舊做法 applyCourseFilter() 重畫會清晒全部揀選，家長重剔時漏堂
+      //   ＝以為報咗4堂實際得2堂（8月 妹豬/GumGum 真實事故）。
+      fullEls.forEach(el => {
+        el.checked = false;
+        el.disabled = true;
+        const opt = el.closest('.cls-opt');
+        if (opt) {
+          opt.classList.add('full');
+          const badge = opt.querySelector('.badge');
+          if (badge) { badge.textContent = '已滿額'; badge.className = 'badge b-full'; }
+        }
+      });
+      onClassChange();
       showClassesFullError(fullNow);
       return;
     }
