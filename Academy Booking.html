@@ -871,7 +871,10 @@ async function buildClasses(allowedTypes, level) {
     const full = st === 'full';
     const badgeTxt = full ? '已滿額' : `尚餘 ${r} 位`;
     const badgeCls = full ? 'b-full' : st === 'few' ? 'b-few' : 'b-open';
-    const sub = c.type === 'S1' ? '' : (c.time || '').replace(/^週.\s*/, '');
+    // Club 日唔顯示 11:00–17:00：同幼稚園一模一樣，寫出嚟家長會以為係另一種時間安排（2026-08-09 老闆定）
+    const sub = c.type === 'S1' ? ''
+              : c.type === 'CLUB' ? '會員專享'
+              : (c.time || '').replace(/^週.\s*/, '');
     let tag = '';
     if (c.route) {
       const none = c.route.includes('不設');
@@ -1294,9 +1297,11 @@ function renderPackages(d) {
         date:      c.classDate || c.date || '',
      title:     c.lessonNum || c.classLabel || c.title || '課堂',
         // S1 顯示家長自選到達時間；S2 一律顯示課堂實際時段（就算舊數據殘留到達時間都唔用，免家長混淆）
+        // [2026-08-09] 到達時間空白時會 fallback 落 classTime，嗰個值帶住「週X 」前綴（例：週二 11:00–17:00），
+        //   所以 fallback 都要剝一次前綴，否則家長喺已預約卡見到「週二 11:00–17:00」呢種怪格式
         time:      lvl === 'S2'
           ? String(c.classTime || '').replace(/^週.\s*/, '')
-          : (c.arrivalTime || c.classTime || c.time || ''),
+          : String(c.arrivalTime || c.classTime || c.time || '').replace(/^週.\s*/, ''),
         status:    c.status || 'upcoming',
         bookingId: c.bookingRef || c.bookingId || '',
       }));
@@ -1344,7 +1349,8 @@ function renderPackages(d) {
         booked: dogClasses.map(c => ({
           date:      c.classDate || c.date || '',
           title:     c.classLabel || c.title || c.lessonNum || '課堂',
-          time:      c.arrivalTime || c.classTime || c.time || '',
+          // 同上：fallback 落 classTime 時要剝走「週X 」前綴
+          time:      String(c.arrivalTime || c.classTime || c.time || '').replace(/^週.\s*/, ''),
           status:    c.status || 'upcoming',
           bookingId: c.bookingRef || c.bookingId || '',
         })),
