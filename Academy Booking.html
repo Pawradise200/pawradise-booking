@@ -801,17 +801,21 @@ function demoRecordFor(phone) {
 // ══ BUILD UI ═════════════════════════════════════════════════════
 const LEVEL_TYPES = {
   'S1': ['S1'], 'S2': ['S2'], 'S1+S2': ['S1','S2'],
-  'Club Light': ['S1'], 'Club Active': ['S1'], 'Club Ultimate': ['S1'],
+  // [2026-08-09] Calm Explorer Club 會員可自由選日：Club 日（CLUB）全開放，
+  //   幼稚園日（S1）另設會員名額。幼稚園學員只見到 S1，見唔到 Club 日。
+  'Club Light': ['S1','CLUB'], 'Club Active': ['S1','CLUB'], 'Club Ultimate': ['S1','CLUB'],
   // 舊名稱相容（CRM 未改名的舊客戶）
-  'Light Explorer': ['S1'], 'Active Explorer': ['S1'], 'Ultimate Explorer': ['S1'],
+  'Light Explorer': ['S1','CLUB'], 'Active Explorer': ['S1','CLUB'], 'Ultimate Explorer': ['S1','CLUB'],
 };
 const LEVEL_SCOPE = {
   'S1':'此級別只可報讀 S1・狗狗幼稚園課堂', 'S2':'此級別只可報讀 S2・情緒重建小組班課堂',
   'S1+S2':'此組合可報讀 S1 及 S2 課堂',
-  'Club Light':'月費計劃可報讀 S1 課堂', 'Club Active':'月費計劃可報讀 S1 課堂',
-  'Club Ultimate':'月費計劃可報讀 S1 課堂',
-  'Light Explorer':'月費計劃可報讀 S1 課堂', 'Active Explorer':'月費計劃可報讀 S1 課堂',
-  'Ultimate Explorer':'月費計劃可報讀 S1 課堂',
+  'Club Light':'月費計劃可報讀 Calm Explorer Club 日及 S1 課堂',
+  'Club Active':'月費計劃可報讀 Calm Explorer Club 日及 S1 課堂',
+  'Club Ultimate':'月費計劃可報讀 Calm Explorer Club 日及 S1 課堂',
+  'Light Explorer':'月費計劃可報讀 Calm Explorer Club 日及 S1 課堂',
+  'Active Explorer':'月費計劃可報讀 Calm Explorer Club 日及 S1 課堂',
+  'Ultimate Explorer':'月費計劃可報讀 Calm Explorer Club 日及 S1 課堂',
 };
 // CRM 舊級別名 → 正名（2026-07-06 老闆定字眼：Light/Active/Ultimate Explorer）
 const LEVEL_RENAME = {
@@ -899,8 +903,8 @@ function onClassChange() {
   const checked = [...document.querySelectorAll('input[name=cls]:checked')];
   document.getElementById('s2Info').classList.toggle('show', checked.some(c => c.dataset.type === 'S2'));
 
-  // 到達學校時間：只適用於 S1 課堂。S2 課堂本身已帶明確時間，毋須填寫。
-  const hasS1 = checked.some(c => c.dataset.type === 'S1');
+  // 到達學校時間：適用於全日班（S1 及 Calm Explorer Club）。S2 課堂本身已帶明確時間，毋須填寫。
+  const hasS1 = checked.some(c => c.dataset.type === 'S1' || c.dataset.type === 'CLUB');
   document.getElementById('arrivalSec').style.display = hasS1 ? '' : 'none';
   if (!hasS1) {
     // 非 S1（例如只報 S2）：清除勾選，避免送出錯誤的到達時間
