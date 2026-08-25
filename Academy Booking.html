@@ -634,6 +634,7 @@
               <option value="340">粉嶺 / 上水</option><option value="260">馬料水 / 烏溪沙 / 西沙</option>
             </optgroup>
           </select>
+          <div class="err-msg" id="e-district">請選擇地區（否則車費計算唔到，報名會卡喺待審批）</div>
         </div>
         <div class="field">
           <label>地址 <span class="req">*</span></label>
@@ -1685,6 +1686,14 @@ function validate() {
   ok = vf('dogHealthSel', !hs,                                      'e-health') && ok;
   if (hs === 'yes') ok = vf('dogHealthText', !document.getElementById('dogHealthText').value.trim(), 'e-health-text') && ok;
   ok = vf('courseLevel',!l,                                         'e-level') && ok;
+  // [2026-08-25 修復] 揀咗接送但未揀地區 → calcTransport() 計唔到車費，trPriceAmt
+  //   留喺舊值/空白，交表會送出 trFee=$0，令有接送嘅報名被錯誤自動確認（真實事故）。
+  const trVal = document.querySelector('input[name=transport]:checked')?.value || '不需要';
+  if (trVal !== '不需要') {
+    ok = vf('trDistrict', !document.getElementById('trDistrict').value, 'e-district') && ok;
+  } else {
+    vf('trDistrict', false, 'e-district');   // 冇揀接送就唔顯示呢個錯誤
+  }
   const eCls = document.getElementById('e-classes');
   eCls.textContent = '請最少選擇一堂';        // [2026-07-24] 覆位：唔好殘留「名額已滿」訊息
   eCls.classList.toggle('show', !c.length);
