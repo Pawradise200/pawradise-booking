@@ -1337,6 +1337,9 @@ function renderPackages(d) {
 
    const s1T = Number(d.s1Total || 0), s1R = Number(d.s1Remaining || 0);
     const s2T = Number(d.s2Total || 0), s2R = Number(d.s2Remaining || 0);
+    // [2026-09-06] 轉介獎勵堂（後端 refreshReferrals_ 每晚重算；學期堂用完自動扣）
+    const refT = Number(d.referralCount || 0), refU = Number(d.referralUsed || 0),
+          refR = Number(d.referralRemaining || 0);
     const s1U = d.s1Attended != null ? Number(d.s1Attended) : Math.max(0, s1T - s1R);
     const s2U = d.s2Attended != null ? Number(d.s2Attended) : Math.max(0, s2T - s2R);
     const s1Booked = mkBooked('S1'), s2Booked = mkBooked('S2');
@@ -1359,6 +1362,12 @@ function renderPackages(d) {
     }
     if (hasAcademy && (s2T > 0 || s2R > 0 || s2Booked.length)) {
       pkgs.push({ name:'S2・情緒重建小組班', total: s2T, used: s2U, expiry:'', booked: s2Booked, _isLesson:true });
+    }
+
+    // [2026-09-06] 轉介獎勵堂卡：學院客人人見到（Erica 定）——
+    // 未介紹過＝空狀態宣傳卡；介紹咗＝完整進度卡。酒店-only 客唔會見到（hasAcademy gate）
+    if (hasAcademy) {
+      pkgs.push({ kind:'referral', total: refT, used: refU, remain: refR });
     }
 
     // ④ 後備：新欄位未有數據時用舊欄位（遷移前的相容）
@@ -1384,8 +1393,9 @@ function renderPackages(d) {
   if (!pkgs.length) { wrap.classList.remove('show'); list.innerHTML = ''; return; }
 
   list.innerHTML = pkgs.map(p => {
-    if (p.kind === 'monthly') return renderMonthly(p);
-    if (p._isSvoucher)        return renderVoucher(p);
+    if (p.kind === 'monthly')  return renderMonthly(p);
+    if (p.kind === 'referral') return renderReferral(p);
+    if (p._isSvoucher)         return renderVoucher(p);
     return renderTerm(p);
   }).join('');
 
@@ -1485,6 +1495,41 @@ function renderTerm(p) {
       <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">已出席</span></div>
     </div>
     ${renderBooked(p.booked, p._pkgRef)}
+  </div>`;
+}
+// ── 轉介獎勵堂顯示（2026-09-06）──
+// remain 由後端計（已扣除過期＋已用），唔可以用 total−used 推——過期堂唔等於已用
+function renderReferral(p) {
+  const total  = Number(p.total  || 0);
+  const used   = Number(p.used   || 0);
+  const remain = Number(p.remain || 0);
+  // 空狀態（未介紹過）：宣傳卡，文案 Erica 2026-09-06 定；學院客人人見到
+  if (!total) {
+    return `<div class="pkg-tracker" style="margin-bottom:10px;">
+    <div class="pkg-head">
+      <svg class="ico"><use href="#ico-paw"/></svg>
+      <div class="pkg-head-txt">
+        <div class="pkg-name">轉介獎勵堂<span class="pkg-tag">Referral Offer</span></div>
+        <div class="pkg-sub">介紹朋友成功報讀學院，即送你 1 堂 S1 狗狗幼稚園課堂 · 發放日起 3 個月有效</div>
+      </div>
+    </div>
+  </div>`;
+  }
+  const pct    = total ? Math.min(100, Math.round(used / total * 100)) : 0;
+  return `<div class="pkg-tracker" style="margin-bottom:10px;">
+    <div class="pkg-head">
+      <svg class="ico"><use href="#ico-paw"/></svg>
+      <div class="pkg-head-txt">
+        <div class="pkg-name">轉介獎勵堂<span class="pkg-tag">多謝介紹</span></div>
+        <div class="pkg-sub">已介紹 ${total} 位朋友 · 學期堂用完自動使用 · 每堂發放日起 3 個月有效</div>
+      </div>
+      <div class="pkg-remain"><strong>${remain}</strong><span>堂尚餘</span></div>
+    </div>
+    <div class="pkg-bar"><div class="pkg-bar-fill" style="width:${pct}%"></div></div>
+    <div class="pkg-stats">
+      <div class="pkg-stat"><span class="pkg-stat-num">${total}</span><span class="pkg-stat-lbl">獎勵總堂</span></div>
+      <div class="pkg-stat"><span class="pkg-stat-num">${used}</span><span class="pkg-stat-lbl">已使用</span></div>
+    </div>
   </div>`;
 }
 // ══ FIX 2: renderBooked — 三狀態顯示 + 已預約課堂編輯/取消按鈕 ══
