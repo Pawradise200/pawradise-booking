@@ -1591,13 +1591,15 @@ function renderBooked(booked, pkgRef) {
     html += `<div class="booked-section-lbl"><div class="booked-section-dot upcoming"></div>已預約</div>`;
     html += upcoming.map(b => renderRow(b, true)).join('');
   }
+  // [2026-09-08 老闆定] 已完成／已取消只顯示最近 3 堂——全數列出會愈滾愈長；
+  // 有截先喺標籤加「（最近3堂）」，等家長知道唔係得咁少堂
   if (done.length) {
-    html += `<div class="booked-section-lbl"><div class="booked-section-dot done"></div>已完成</div>`;
-    html += done.map(b => renderRow(b, false)).join('');
+    html += `<div class="booked-section-lbl"><div class="booked-section-dot done"></div>已完成${done.length > 3 ? '（最近3堂）' : ''}</div>`;
+    html += done.slice(-3).map(b => renderRow(b, false)).join('');
   }
   if (cancelled.length) {
-    html += `<div class="booked-section-lbl"><div class="booked-section-dot cancelled"></div>已取消</div>`;
-    html += cancelled.map(b => renderRow(b, false)).join('');
+    html += `<div class="booked-section-lbl"><div class="booked-section-dot cancelled"></div>已取消${cancelled.length > 3 ? '（最近3堂）' : ''}</div>`;
+    html += cancelled.slice(-3).map(b => renderRow(b, false)).join('');
   }
 
   html += '</div>';
