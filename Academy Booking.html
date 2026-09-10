@@ -257,6 +257,17 @@
   border-radius:var(--pw-r-md);padding:12px 26px;font-size:13px;font-weight:700;color:var(--pw-ink-mute);}
 .ref-badge strong{font-size:17px;color:var(--pw-navy);font-weight:900;display:block;margin-top:3px;letter-spacing:.02em;}
 
+/* [2026-09-10] 提交等待畫面：Apps Script 處理可以要十幾秒，冇畫面家長會以為死機而重複提交 */
+.submit-wait{display:none;position:fixed;inset:0;z-index:999;background:rgba(92,62,39,.45);
+  align-items:center;justify-content:center;padding:24px;}
+.submit-wait.show{display:flex;}
+.submit-wait .wait-card{background:var(--pw-paper);border-radius:var(--pw-r-md);box-shadow:var(--pw-shadow-card);
+  padding:32px 36px;text-align:center;max-width:320px;}
+.submit-wait .wait-spin{width:34px;height:34px;border:3px solid var(--pw-navy);border-top-color:transparent;
+  border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+.submit-wait h3{font-size:17px;font-weight:900;color:var(--pw-ink);margin-bottom:6px;}
+.submit-wait p{font-size:13px;font-weight:600;color:var(--pw-ink-mute);line-height:1.7;}
+
 @media(max-width:480px){.time-grid{grid-template-columns:1fr 1fr;}.transport-opts{grid-template-columns:1fr;}}
 @media(max-width:380px){
   .time-grid{grid-template-columns:repeat(2,1fr);}
@@ -689,6 +700,15 @@
     <p>感謝您為 <b id="sDog"></b> 報名，稍後將會透過 WhatsApp 再次確認。<br>
     如已預約接送服務，前台同事會於預約前一天聯絡配合接送時間。<br>期待在學校見面！</p>
     <div class="ref-badge">參考號碼<strong id="sRef"></strong></div>
+  </div>
+
+  <!-- [2026-09-10] 提交處理中畫面（防重複提交） -->
+  <div class="submit-wait" id="submitWait" role="status" aria-live="polite">
+    <div class="wait-card">
+      <div class="wait-spin"></div>
+      <h3>已收到你的申請</h3>
+      <p>系統正在處理，請稍候數秒。<br>請勿重新整理或再次提交。</p>
+    </div>
   </div>
 
 </div>
@@ -1765,6 +1785,9 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
+  // [2026-09-10] 提交等待畫面：即刻話畀家長知收到咗，處理期間封住成頁防重複提交
+  const waitEl = document.getElementById('submitWait');
+  waitEl.classList.add('show');
 
   const payload = {
     action:       'submit_academy',
@@ -1808,6 +1831,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     if (fullNow.length) {
       btn.disabled = false;
       btn.classList.remove('loading');
+      waitEl.classList.remove('show');
       // [2026-08-08] 只 uncheck 滿咗嗰啲堂，其餘揀選原封保留——
       //   舊做法 applyCourseFilter() 重畫會清晒全部揀選，家長重剔時漏堂
       //   ＝以為報咗4堂實際得2堂（8月 妹豬/GumGum 真實事故）。
@@ -1842,6 +1866,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     if (result && result.success === false) {
       btn.disabled = false;
       btn.classList.remove('loading');
+      waitEl.classList.remove('show');
       if (result.fullClasses && result.fullClasses.length) {
         // 後端爆班攔截：剔走滿咗嘅堂（按 label 對返，同名額 sheet 同一來源）＋話返家長知
         const fullSet = new Set(result.fullClasses.map(String));
@@ -1863,6 +1888,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
       }
       return;
     }
+    waitEl.classList.remove('show');
     document.getElementById('mainForm').style.display = 'none';
     document.querySelector('.notice').style.display   = 'none';
     document.getElementById('sDog').textContent = payload.dogName;
@@ -1872,6 +1898,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
   } catch(err) {
     btn.disabled = false;
     btn.classList.remove('loading');
+    waitEl.classList.remove('show');
     alert('提交時出現錯誤，請稍後重試或透過 WhatsApp 聯絡我們。');
   }
 });
