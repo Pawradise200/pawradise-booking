@@ -28,6 +28,17 @@
 .notfound-msg.show{display:block;}
 
 /* ── FIX 1: Loading state ── */
+/* [2026-09-10] 入學條款同意閘 */
+.tc-box{max-height:280px;overflow-y:auto;background:var(--pw-cream-soft);border:1px solid var(--pw-cream-deep);
+  border-radius:var(--pw-r-lg);padding:14px 16px;font-size:12.5px;line-height:1.75;color:var(--pw-ink-soft);}
+.tc-box h4{font-size:12.5px;font-weight:800;color:var(--pw-ink);margin:12px 0 4px;}
+.tc-box h4:first-child{margin-top:0;}
+.tc-box p{margin:0 0 6px;}
+.tc-agree{display:flex;align-items:flex-start;gap:9px;margin-top:11px;font-size:13px;font-weight:700;color:var(--pw-ink);cursor:pointer;}
+.tc-agree input{width:17px;height:17px;margin-top:1px;flex:0 0 auto;accent-color:var(--pw-navy);}
+.enroll-note{display:none;margin-top:10px;padding:10px 13px;border-radius:var(--pw-r-lg);
+  background:var(--pw-info-bg);color:var(--pw-ink);font-size:12.5px;line-height:1.6;}
+.enroll-note.show{display:block;}
 .lookup-loading{display:none;align-items:center;gap:9px;padding:10px 13px;font-size:13px;
   font-weight:700;color:var(--pw-ink-mute);margin-top:11px;background:var(--pw-cream-soft);
   border-radius:var(--pw-r-sm);}
@@ -439,7 +450,7 @@
   <div class="notice">
     <div class="notice-title"><svg class="ico"><use href="#ico-clipboard"/></svg>報名前請細閱以下注意事項</div>
     <div class="notice-item"><span class="ndot">·</span><span><b>課堂名額：</b>S1 課堂每堂上限 <b>20 位</b>毛孩；S2 課堂每堂上限 <b>6 組</b>。名額以確認先後為準，額滿即止。</span></div>
-    <div class="notice-item"><span class="ndot">·</span><span><b>取消安排：</b>如需取消課堂，請至少 <b>1 天前</b>透過 WhatsApp 通知學校，每學期最多安排 <b>2 次</b>補課堂。</span></div>
+    <div class="notice-item"><span class="ndot">·</span><span><b>取消及改期：</b>如需取消或更改課堂，可隨時於本頁登入<b>自行取消預約</b>，堂數即時發還，再自行揀選其他日子上課。</span></div>
     <div class="notice-item"><span class="ndot">·</span><span><b>疫苗要求：</b>所有狗狗須持有效疫苗記錄及<b>狗牌</b>方可參加課堂。</span></div>
   </div>
 
@@ -568,8 +579,63 @@
       </div>
     </div>
 
+    <!-- [2026-09-10] 入學條款及細則（已同意現行版本嘅學員唔會見到；由 applyEnrollmentMode 控制） -->
+    <div class="sec" id="tcSec" style="display:none;">
+      <div class="sec-label"><svg class="ico"><use href="#ico-clipboard"/></svg>學院課程條款及細則</div>
+      <div class="enroll-note" id="enrollNote"><svg class="ico ico-sm"><use href="#ico-info"/></svg>請核對以上資料並細閱下方條款，提交後即完成入學手續，之後可隨時登入預約課堂。</div>
+      <div class="tc-box" id="tcBox">
+        <h4>一、一般條款</h4>
+        <p>1. Pawradise Limited（以下簡稱「本校」）只接受成年人士報讀學院課程，報名人須為狗隻之狗牌登記人或其授權之主要照顧者（以下簡稱「家長」）。學院課程只接受狗隻報讀：S1 狗狗幼稚園由狗隻入讀上課；S2 情緒重建小組班必須由家長陪同狗隻一同上課。</p>
+        <p>2.(a) 本校擁有絕對酌情權決定接受或拒絕任何狗隻報讀或繼續上課。兇猛、有攻擊記錄或健康狀況未如理想之狗隻，本校可拒絕上課或於課堂中途安排離開。家長若不肯定其狗隻之身體狀況是否適合上課，應於開課前交由獸醫檢查。</p>
+        <p>2.(b) 如家長隱瞞狗隻之兇猛傾向或攻擊記錄，並對本校工作人員、其他狗隻或在場人士造成傷害，本校保留索償的權利。</p>
+        <p>3. 報讀狗隻之年齡必須不少於四個月。</p>
+        <p>4. 狗隻如正在接受治療（包括需餵飼獸醫配方食物）或有長期病患，必須於報名時告知本校職員。</p>
+        <h4>二、健康及防疫</h4>
+        <p>5. 所有狗隻必須已接受基本防疫注射（五合一疫苗）；五個月大或以上的狗隻必須已接受預防瘋狗症注射並持有有效狗牌。家長須於入學前提供有效狗牌及針卡予本校作記錄；如未能即時提供，本校可要求家長補交。課堂屬多犬共處環境，本校建議狗隻於開課前接受狗房咳防疫注射（可由家長自行決定）。</p>
+        <p>6. 狗隻如出現傳染病徵狀（包括但不限於咳嗽、嘔吐、腹瀉、皮膚病）、正值發情期或身體不適，家長不得帶同上課；本校亦有權拒絕該狗隻當日上課。有關該堂之改期安排見第 15 條。</p>
+        <h4>三、學期制課程：堂數及有效期</h4>
+        <p>7. 除第四部分所述之月費制課程外，學院課程以學期制報讀。每學期包含之堂數以報名時本校公佈為準。</p>
+        <p>8. 家長須於繳付學費之日起計 3 個月內開始上該學期之第一堂課。每個學期之有效期由該學期第一堂上課日起計 3 個月；有效期屆滿時，未使用之堂數將自動作廢，不獲退款、補償或延期。如家長於繳付學費後 3 個月內仍未開始第一堂，該學期之有效期將視為由繳費日起計 3 個月屆滿當日自動開始計算。</p>
+        <p>9. 如因狗隻健康或其他特殊原因需暫停課程，家長須於有效期內以書面向本校提出申請，本校可酌情決定是否延長有效期及其附帶條件。</p>
+        <p>10. 續報新學期後，堂數及有效期按新學期重新計算，與上一學期之剩餘堂數互不影響。</p>
+        <h4>四、月費制課程（Calm Explorer Club）</h4>
+        <p>11. 本校部分課程（包括 Calm Explorer Club）以月費形式報讀，家長授權本校經其指定之支付平台每月自動扣款。每月包含之堂數以本校公佈為準。</p>
+        <p>12. 月費制課程之課堂必須於該收費月份內完成；當月未使用之堂數將於該月結束時自動作廢，不可累積或帶往下一個月，不獲退款或補償。</p>
+        <p>13. 如月費未能成功扣款，本校會通知家長補款；於補款完成前，本校有權暫停該狗隻之課堂預約。月費計劃之終止及重啟安排以本校公佈為準。</p>
+        <h4>五、預約、改期及缺席</h4>
+        <p>14. 所有課堂必須經本校預約系統或職員預約，並以本校確認為準。</p>
+        <p>15. 家長可透過本校預約系統自行更改或取消已預約之課堂；改期成功與否視乎課堂名額而定，截止辦理時間以預約系統顯示為準。</p>
+        <p>16. 如家長未有依上述方式取消或更改預約而無故缺席，該堂將視為已使用，不作補堂、不獲退款。</p>
+        <p>17. 如本校因天氣（包括八號或以上熱帶氣旋警告信號、黑色暴雨警告）、場地或其他本校控制範圍以外之情況需取消課堂，該堂不會計入已使用堂數；本校將取消該預約並發還該堂堂數，家長可透過預約系統自行改選其他日子上課，惟學期有效期不會因此延長。</p>
+        <p>18. 家長遲到，課堂仍按原定時間結束，恕不延長課堂時間或按比例退款。</p>
+        <h4>六、費用、退款及轉讓</h4>
+        <p>19. 學期制課程：家長必須於報名時繳付全期學費之總數，學位方獲確認。月費制課程按第四部分之安排收費。</p>
+        <p>20. 本校不設退款安排；學費及堂數不得轉讓予其他人士。如欲將剩餘堂數轉予同一家長名下之另一隻狗隻，或轉換至本校其他課程或服務，本校可酌情考慮，並保留最終決定權。</p>
+        <p>21. 如狗隻不幸過身，家長可與本校商量，本校會酌情處理餘下堂數（由過身日期開始計算，不超過 30 天內提出）。</p>
+        <h4>七、上課安排</h4>
+        <p>22. 本校有權因應狗隻之社交能力、行為狀況及課堂進度，調整分班、導師、上課時間表及課堂內容，而無需預先通知。</p>
+        <p>23. 課堂屬多犬互動環境。本校會採取合理措施保障狗隻安全，惟狗隻之間之互動存在固有風險，家長報讀即代表明白及接受有關風險。</p>
+        <p>24. 須家長陪同上課之課程（包括 S2 情緒重建小組班）：家長必須全程陪同狗隻上課、遵從導師指示，並於課堂期間對其狗隻保持監管。每隻狗隻之陪同人數限制以本校公佈為準。如家長未能出席，該堂不能單由狗隻上課，改期及缺席安排按第五部分處理。</p>
+        <p>25. 責任交接：狗隻由家長或其授權人士交予本校導師或職員接收後，方屬本校照管；當導師或職員將狗隻交還家長或其授權人士後，即視為完成交接，狗隻之看管責任隨即歸還家長，包括家長交接後仍逗留本校範圍之期間。家長於本校範圍內（課堂以外）必須為狗隻繫上牽繩並全程看管；狗隻於交接後因家長看管不當而引致之任何衝突、損傷或第三者損失，概由家長自行承擔及負責。</p>
+        <p>26. 在任何情況下，狗隻於本校照管期間之遺失、逃走、損傷、疾病甚至死亡，本校概不負責。家長及其同行人士於本校範圍內須自行注意人身及財物安全；如非因本校疏忽所致之損傷或損失，本校概不負責。如在任何情況下本校仍須就狗隻之損傷、疾病或死亡承擔任何法律責任，本校之最高賠償總額以家長就該學期已繳付之學費金額（月費制課程則以最近一次已繳付之月費金額）為上限。</p>
+        <h4>八、轉介獎勵</h4>
+        <p>27. 本校不定期推出轉介獎勵計劃。獎勵堂之發放資格、有效期及使用方式，概以本校當時公佈之規則為準；獎勵堂不可兌換現金、不可轉讓，並可隨時修改或終止。</p>
+        <h4>九、相片及影片</h4>
+        <p>28. 本校或會於課堂期間拍攝相片或影片，作課堂記錄、教學及本校宣傳用途。如家長不同意其本人或其狗隻之影像用於宣傳用途，請於報名時以書面通知本校。</p>
+        <h4>十、其他</h4>
+        <p>29. 為讓狗隻得到最合適的訓練安排，家長必須如實告知本校職員狗隻之身體狀況及行為記錄。如本校發現家長申報之資料出現欺詐成份，本校會透過警方或法律途徑作出控告。</p>
+        <p>30. 本條款內所指狗隻之含義，是指任何由本校同意接受其報讀學院課程之狗隻。</p>
+        <p>31. 本條款為中文版本。如有任何歧義或詮譯上的問題，概以中文版本為準。</p>
+        <p>32. 本校保留隨時修改本條款之絕對酌情權而無需預先通知。</p>
+        <p>33. 本條款及細則受香港特別行政區法律規管，並按其詮釋。</p>
+        <p>（2026 年 9 月版）</p>
+      </div>
+      <label class="tc-agree" for="tcAgree"><input type="checkbox" id="tcAgree"><span>本人已閱讀並同意上述《學院課程條款及細則》</span></label>
+      <div class="err-msg" id="e-tc">請細閱條款並剔選同意</div>
+    </div>
+
     <!-- 選擇課堂日期 -->
-    <div class="sec">
+    <div class="sec" id="classSec">
       <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>選擇課堂日期 <span class="req">*</span></div>
       <div class="class-list" id="classList"></div>
       <div class="s2-courses" id="s2Info">
@@ -596,7 +662,7 @@
     </div>
 
     <!-- 接送 -->
-    <div class="sec">
+    <div class="sec" id="transportSec">
       <div class="sec-label"><svg class="ico"><use href="#ico-van"/></svg>接送服務 <span class="req">*</span></div>
       <div class="tr-promo"><svg class="ico"><use href="#ico-info"/></svg>社交學院接送服務享有八折優惠</div>
       <div class="transport-opts">
@@ -668,7 +734,7 @@
     </div>
 
     <!-- 備註 -->
-    <div class="sec">
+    <div class="sec" id="remarksSec">
       <div class="sec-label"><svg class="ico"><use href="#ico-edit"/></svg>備註（選填）</div>
       <textarea id="remarks" placeholder="例：狗狗特別行為、照顧需要或其他問題"></textarea>
     </div>
@@ -1142,6 +1208,98 @@ function fillRecord(d) {
   renderGrade(d);
   renderPackages(d);
   lookupActive = true;
+  // [2026-09-10] 入學同意閘：學院客而未同意現行版本條款 → 轉「入學手續模式」
+  //   （收起揀堂／接送，淨返資料＋條款；提交行 submit_enrollment）。示範模式一律唔閘。
+  window.TC_CONSENTED = DEMO_MODE || String(d.consentVersion || '').trim() === TC_VERSION;
+  window.NEEDS_ENROLLMENT = window.HAS_ACADEMY && !window.TC_CONSENTED;
+  applyEnrollmentMode();
+}
+
+// ══ [2026-09-10] 入學條款同意閘 ══════════════════════════════════
+// 現行條款版本（後端 程式碼.js 有同名常數，條款有實質修改時兩邊一齊升版；
+// 升版後已同意舊版嘅家長下次登入會再彈一次閘）
+const TC_VERSION = '2026-09';
+window.TC_CONSENTED = false;       // 已同意現行版本（true＝條款區完全隱藏）
+window.NEEDS_ENROLLMENT = false;   // 入學手續模式（學院客未同意現行條款）
+
+function applyEnrollmentMode() {
+  const enroll = !!window.NEEDS_ENROLLMENT;
+  // 條款區：只有「已同意現行版本」先隱藏；新學員／首次報學院／入學模式都顯示
+  const tcSec = document.getElementById('tcSec');
+  if (tcSec) tcSec.style.display = window.TC_CONSENTED ? 'none' : 'block';
+  const note = document.getElementById('enrollNote');
+  if (note) note.classList.toggle('show', enroll);
+  // 入學手續模式：收起預約相關區塊，淨返 主人資料＋狗狗資料＋條款
+  //   （arrivalSec／paymentSec 本身預設隱藏、由其他邏輯開關，還原時還返 display:none）
+  ['classSec', 'arrivalSec', 'transportSec', 'remarksSec', 'paymentSec'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (enroll) { el.dataset.enrollHidden = '1'; el.style.display = 'none'; }
+    else if (el.dataset.enrollHidden) {
+      delete el.dataset.enrollHidden;
+      el.style.display = (id === 'arrivalSec' || id === 'paymentSec') ? 'none' : '';
+    }
+  });
+  const btnTxt = document.querySelector('#submitBtn span');
+  if (btnTxt) btnTxt.textContent = enroll ? '提交入學手續' : '提交報名';
+}
+
+// 入學手續提交：只寫基本資料＋條款同意，唔涉任何課堂預約
+async function submitEnrollment() {
+  if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  const waitEl = document.getElementById('submitWait');
+  waitEl.classList.add('show');
+  const payload = {
+    action:         'submit_enrollment',
+    timestamp:      new Date().toISOString(),
+    whatsapp:       document.getElementById('whatsapp').value.trim() || document.getElementById('lookupPhone').value.trim(),
+    ownerName:      document.getElementById('ownerName').value.trim(),
+    email:          document.getElementById('email').value.trim(),
+    dogName:        document.getElementById('dogName').value.trim(),
+    dogBreed:       document.getElementById('dogBreed').value.trim(),
+    dogWeight:      document.getElementById('dogWeight').value.trim(),
+    dogGender:      document.getElementById('dogGender').value,
+    dogNeutered:    document.getElementById('dogNeutered').value,
+    dogDob:         document.getElementById('dogDob').value,
+    dogHealth:      document.getElementById('dogHealthSel').value === 'yes'
+                      ? document.getElementById('dogHealthText').value.trim() : '沒有',
+    consentVersion: TC_VERSION,
+  };
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+    let result = null;
+    try { result = await res.json(); } catch (pe) { result = null; }
+    if (result && result.success === false) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      waitEl.classList.remove('show');
+      alert('入學手續未完成：' + (result.error || '請稍後重試，或透過 WhatsApp 9459 6420 聯絡我們。'));
+      return;
+    }
+    waitEl.classList.remove('show');
+    document.getElementById('mainForm').style.display = 'none';
+    document.querySelector('.notice').style.display   = 'none';
+    const scr = document.getElementById('successScreen');
+    scr.querySelector('h2').textContent = '入學手續已完成！';
+    scr.querySelector('p').textContent  = '歡迎 ' + (payload.dogName || '毛孩') +
+      ' 加入 Pawradise 學院！您的資料及條款同意已完成記錄，之後可以隨時回到本頁登入並預約課堂。';
+    const refBadge = scr.querySelector('.ref-badge');
+    if (refBadge) refBadge.style.display = 'none';
+    scr.classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    waitEl.classList.remove('show');
+    alert('提交時出現錯誤，請稍後重試或透過 WhatsApp 聯絡我們。');
+  }
 }
 
 function clearLookup() {
@@ -1170,6 +1328,12 @@ function clearLookup() {
   applyCourseFilter();
   lookupActive = false;
   window.HAS_ACADEMY = false;
+  // [2026-09-10] 清除查詢＝還原新學員狀態：條款區顯示（要剔）、預約區全開
+  window.TC_CONSENTED = false;
+  window.NEEDS_ENROLLMENT = false;
+  const _tcCk = document.getElementById('tcAgree');
+  if (_tcCk) _tcCk.checked = false;
+  applyEnrollmentMode();
   const _fn = document.getElementById('foundNote');
   if (_fn) _fn.textContent = '';
 }
@@ -1751,7 +1915,15 @@ function validate() {
   ok = vf('dogDob',     !db,                                        'e-dob') && ok;
   ok = vf('dogHealthSel', !hs,                                      'e-health') && ok;
   if (hs === 'yes') ok = vf('dogHealthText', !document.getElementById('dogHealthText').value.trim(), 'e-health-text') && ok;
-  ok = vf('courseLevel',!l,                                         'e-level') && ok;
+  // [2026-09-10] 入學手續模式唔要求揀課程級別（級別由學校安排）；一般報名照舊必填
+  ok = vf('courseLevel', !window.NEEDS_ENROLLMENT && !l,            'e-level') && ok;
+  // [2026-09-10] 條款同意：條款區顯示緊（未同意現行版本）就必須剔
+  const _tcSec = document.getElementById('tcSec');
+  if (_tcSec && _tcSec.style.display !== 'none') {
+    const _agreed = document.getElementById('tcAgree').checked;
+    document.getElementById('e-tc').classList.toggle('show', !_agreed);
+    if (!_agreed) ok = false;
+  }
   // [2026-08-25 修復] 揀咗接送但未揀地區 → calcTransport() 計唔到車費，trPriceAmt
   //   留喺舊值/空白，交表會送出 trFee=$0，令有接送嘅報名被錯誤自動確認（真實事故）。
   const trVal = document.querySelector('input[name=transport]:checked')?.value || '不需要';
@@ -1760,10 +1932,13 @@ function validate() {
   } else {
     vf('trDistrict', false, 'e-district');   // 冇揀接送就唔顯示呢個錯誤
   }
-  const eCls = document.getElementById('e-classes');
-  eCls.textContent = '請最少選擇一堂';        // [2026-07-24] 覆位：唔好殘留「名額已滿」訊息
-  eCls.classList.toggle('show', !c.length);
-  if (!c.length) ok = false;
+  // [2026-09-10] 入學手續模式唔使揀堂
+  if (!window.NEEDS_ENROLLMENT) {
+    const eCls = document.getElementById('e-classes');
+    eCls.textContent = '請最少選擇一堂';      // [2026-07-24] 覆位：唔好殘留「名額已滿」訊息
+    eCls.classList.toggle('show', !c.length);
+    if (!c.length) ok = false;
+  }
   return ok;
 }
 
@@ -1781,6 +1956,8 @@ function showClassesFullError(labels) {
 // ══ SUBMIT ════════════════════════════════════════════════════════
 document.getElementById('mainForm').addEventListener('submit', async e => {
   e.preventDefault();
+  // [2026-09-10] 入學手續模式：行 submit_enrollment（資料＋條款同意），唔行報名流程
+  if (window.NEEDS_ENROLLMENT) { await submitEnrollment(); return; }
   if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -1815,6 +1992,8 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     trClassIds:   trSelectedIds(),
     remarks:      document.getElementById('remarks').value.trim(),
     status:       '待審批',
+    // [2026-09-10] 新學員／首次報學院報名時一併剔條款 → 後端 stamp 落 CRM（已同意者條款區隱藏＝空值）
+    consentVersion: document.getElementById('tcAgree')?.checked ? TC_VERSION : '',
   };
   const ref = 'PA-' + Date.now().toString(36).toUpperCase().slice(-6);
 
@@ -1908,6 +2087,7 @@ const _params = new URLSearchParams(location.search);
 if (!DEMO_MODE) { const _dh = document.getElementById('demoHint'); if (_dh) _dh.style.display = 'none'; }
 window.GRADE_VARIANT = _params.get('v') === '2' ? 2 : 1;
 applyCourseFilter();
+applyEnrollmentMode();   // [2026-09-10] 初始狀態：未查詢＝新學員視角，條款區顯示
 buildTimes();
 loadClassesOnce().catch(() => {});  // 預先載入課堂資料：客戶填資料期間背景抓好，選課零等待
 const _demo = _params.get('demo');
