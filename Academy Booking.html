@@ -1208,10 +1208,12 @@ function fillRecord(d) {
   renderGrade(d);
   renderPackages(d);
   lookupActive = true;
-  // [2026-09-10] 入學同意閘：學院客而未同意現行版本條款 → 轉「入學手續模式」
-  //   （收起揀堂／接送，淨返資料＋條款；提交行 submit_enrollment）。示範模式一律唔閘。
+  // [2026-09-10] 入學同意閘。示範模式一律唔閘。
+  // [2026-09-11 Erica 定] 「入學手續模式」只留畀骨架行（導師啱啱開檔，主人姓名空白）；
+  //   現有學院家長照舊正常頁面，條款區顯示喺表單內，報名時剔一次 → 後端 stamp → 之後永不再現。
   window.TC_CONSENTED = DEMO_MODE || String(d.consentVersion || '').trim() === TC_VERSION;
-  window.NEEDS_ENROLLMENT = window.HAS_ACADEMY && !window.TC_CONSENTED;
+  const _isSkeleton = !String(d.ownerName || '').trim();
+  window.NEEDS_ENROLLMENT = window.HAS_ACADEMY && !window.TC_CONSENTED && _isSkeleton;
   applyEnrollmentMode();
 }
 
