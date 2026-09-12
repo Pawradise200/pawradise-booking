@@ -1123,11 +1123,16 @@ async function doLookup() {
     } else {
       document.getElementById('notfoundMsg').classList.add('show');
       lookupActive = false;
+      // [2026-09-13] 搵唔到＝新學員：查詢之後先顯示條款區
+      window.TC_TOUCHED = true;
+      applyEnrollmentMode();
     }
   } catch(e) {
     document.getElementById('notfoundMsg').textContent = '查詢失敗，請繼續手動填寫資料。';
     document.getElementById('notfoundMsg').classList.add('show');
     lookupActive = false;
+    window.TC_TOUCHED = true;
+    applyEnrollmentMode();
   } finally {
     // 無論成功失敗，都移除 loading state
     setLookupLoading(false);
@@ -1214,6 +1219,7 @@ function fillRecord(d) {
   window.TC_CONSENTED = DEMO_MODE || String(d.consentVersion || '').trim() === TC_VERSION;
   const _isSkeleton = !String(d.ownerName || '').trim();
   window.NEEDS_ENROLLMENT = window.HAS_ACADEMY && !window.TC_CONSENTED && _isSkeleton;
+  window.TC_TOUCHED = true;   // [2026-09-13] 查完電話先顯示條款區
   applyEnrollmentMode();
 }
 
@@ -1223,12 +1229,15 @@ function fillRecord(d) {
 const TC_VERSION = '2026-09';
 window.TC_CONSENTED = false;       // 已同意現行版本（true＝條款區完全隱藏）
 window.NEEDS_ENROLLMENT = false;   // 入學手續模式（學院客未同意現行條款）
+window.TC_TOUCHED = false;         // [2026-09-13 Erica 定] 輸入電話查詢後（或直接填表撳提交）先顯示條款區
 
 function applyEnrollmentMode() {
   const enroll = !!window.NEEDS_ENROLLMENT;
-  // 條款區：只有「已同意現行版本」先隱藏；新學員／首次報學院／入學模式都顯示
+  // 條款區顯示規則：未同意現行版本，且（查過電話 或 入學手續模式）先出現；
+  // 一入頁唔顯示（Erica 9/13 定）。直接填表跳過查詢嘅人，validate() 會喺提交時先揭開。
   const tcSec = document.getElementById('tcSec');
-  if (tcSec) tcSec.style.display = window.TC_CONSENTED ? 'none' : 'block';
+  if (tcSec) tcSec.style.display =
+    (!window.TC_CONSENTED && (window.TC_TOUCHED || window.NEEDS_ENROLLMENT)) ? 'block' : 'none';
   const note = document.getElementById('enrollNote');
   if (note) note.classList.toggle('show', enroll);
   // 入學手續模式：收起預約相關區塊，淨返 主人資料＋狗狗資料＋條款
@@ -1333,6 +1342,7 @@ function clearLookup() {
   // [2026-09-10] 清除查詢＝還原新學員狀態：條款區顯示（要剔）、預約區全開
   window.TC_CONSENTED = false;
   window.NEEDS_ENROLLMENT = false;
+  window.TC_TOUCHED = false;
   const _tcCk = document.getElementById('tcAgree');
   if (_tcCk) _tcCk.checked = false;
   applyEnrollmentMode();
@@ -1919,7 +1929,12 @@ function validate() {
   if (hs === 'yes') ok = vf('dogHealthText', !document.getElementById('dogHealthText').value.trim(), 'e-health-text') && ok;
   // [2026-09-10] 入學手續模式唔要求揀課程級別（級別由學校安排）；一般報名照舊必填
   ok = vf('courseLevel', !window.NEEDS_ENROLLMENT && !l,            'e-level') && ok;
-  // [2026-09-10] 條款同意：條款區顯示緊（未同意現行版本）就必須剔
+  // [2026-09-10] 條款同意：未同意現行版本就必須剔。
+  // [2026-09-13] 跳過電話查詢直接填表嘅人，去到提交呢一刻先揭開條款區要求剔
+  if (!window.TC_CONSENTED && !window.TC_TOUCHED) {
+    window.TC_TOUCHED = true;
+    applyEnrollmentMode();
+  }
   const _tcSec = document.getElementById('tcSec');
   if (_tcSec && _tcSec.style.display !== 'none') {
     const _agreed = document.getElementById('tcAgree').checked;
