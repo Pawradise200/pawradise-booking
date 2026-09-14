@@ -74,7 +74,8 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .seal .ring img{width:50px;height:50px;object-fit:contain}
 .seal .bd{position:absolute;left:50%;bottom:0;transform:translateX(-50%);background:var(--pw-navy-deep);color:var(--pw-gold);font-size:.5rem;font-weight:900;letter-spacing:.18em;border-radius:var(--pill);padding:2px 10px;white-space:nowrap}
 .medal-card{position:relative;overflow:hidden;text-align:center;padding:22px 18px 18px}
-.medal-card .cf{position:absolute;pointer-events:none}
+.medal-card .cf{position:absolute;pointer-events:none;z-index:0}
+.medal-card>*:not(.cf){position:relative;z-index:1}
 .stat3{display:flex;gap:8px;margin-top:14px}
 .stat3 div{flex:1;background:var(--pw-cream);border-radius:14px;padding:10px 4px}
 .stat3 .k{font-size:.58rem;font-weight:800;color:var(--pw-ink-faint)}
@@ -201,7 +202,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
       <div class="stat3">
         <div><div class="k">總分</div><div class="v" id="stTotal"></div><div class="s">三關合計</div></div>
         <div><div class="k">技能徽章</div><div class="v" id="stBadge"></div><div class="s" id="stBadgeSub"></div></div>
-        <div><div class="k">參加場次</div><div class="v" id="stSess" style="font-size:.82rem;line-height:1.5"></div><div class="s">2026 首屆</div></div>
+        <div><div class="k">參加場次</div><div class="v" id="stSess" style="font-size:.9rem;line-height:1.45"></div><div class="s">2026 首屆</div></div>
       </div>
     </div>
 
@@ -383,7 +384,7 @@ function renderResult(d){
   el('stTotal').innerHTML = r.total + '<span style="font-size:.7rem;color:var(--pw-ink-faint)"> / 21</span>';
   el('stBadge').textContent = unlocked;
   el('stBadgeSub').textContent = unlocked === 6 ? '全部解鎖' : '共 6 枚';
-  el('stSess').textContent = d.sessionLabel || '';
+  el('stSess').textContent = String(d.sessionLabel || '').replace('上晝', '').replace('下晝', '');
   paintConfetti(r.grade);
 
   el('wallSub').textContent = '已解鎖 ' + unlocked + ' / 6 —— 每一個徽章都是可以在狗狗幼稚園儲到的能力';
