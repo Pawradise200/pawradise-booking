@@ -92,7 +92,10 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
   <div id="confirmedView">
     <div class="card status-card">
       <div class="dog-row">
-        <div class="dog-ava">🐶</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div class="dog-ava" id="dogAva" style="background-size:cover;background-position:center">🐶</div>
+          <label style="font-size:.6rem;font-weight:800;color:var(--pw-navy,#2C4A6E);cursor:pointer">📷 換頭像<input type="file" id="avaInput" accept="image/*" style="display:none"></label>
+        </div>
         <div style="flex:1">
           <div class="dog-name" id="dogName"></div>
           <div class="dog-meta" id="dogMeta"></div>
@@ -213,11 +216,37 @@ function render(d){
     pill.textContent = '候補中'; pill.className = 'pill pill-wait';
   }
 
+  if (d.avatarUrl) { var av = el('dogAva'); av.textContent = ''; av.style.backgroundImage = 'url(' + d.avatarUrl + ')'; }
+  el('avaInput').addEventListener('change', uploadAvatar);
+
   if (d.result) { renderResult(d); return; }
 
   el('confirmedView').style.display = 'block';
   if (d.sessionLabel.indexOf('公眾') !== -1) EVENT_START = new Date(2026, 9, 24, 15, 0, 0);
   tickCountdown(); setInterval(tickCountdown, 30000);
+}
+
+
+function uploadAvatar(ev){
+  var f = ev.target.files && ev.target.files[0];
+  if (!f) return;
+  var img = new Image();
+  img.onload = function(){
+    var size = 256, c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    var ctx = c.getContext('2d');
+    var s = Math.min(img.width, img.height);
+    ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+    var dataUrl = c.toDataURL('image/jpeg', 0.82);
+    fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'avatar', t: token, image: dataUrl }) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res.ok) { var av = el('dogAva'); av.textContent = ''; av.style.backgroundImage = 'url(' + dataUrl + ')'; }
+        else { alert(res.message || '頭像功能即將開放，請遲啲再試'); }
+      }).catch(function(){ alert('網絡出錯，請再試一次'); });
+  };
+  img.src = URL.createObjectURL(f);
 }
 
 function tickCountdown(){
