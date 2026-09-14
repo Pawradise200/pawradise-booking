@@ -203,7 +203,7 @@ function render(d){
   el('pageSub').textContent = '報名編號 ' + d.regNo + ' · 此連結只屬於你，請妥善保存';
   el('dogName').textContent = d.dogName;
   el('dogMeta').textContent = d.breed;
-  el('schoolName').textContent = (d.breed !== '其他／混種' ? d.breed + '學校 · ' : '') + d.group;
+  el('schoolName').textContent = (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
   el('sessLabel').textContent = d.sessionLabel;
   el('sessTime').textContent = d.sessionTime;
   if (d.identity !== 'academy') el('dressNote').style.display = 'none';
@@ -262,7 +262,7 @@ function renderResult(d){
     grid.appendChild(div);
   });
   el('certName').textContent = d.dogName;
-  el('certGroup').textContent = (d.breed !== '其他／混種' ? d.breed + '學校 · ' : '') + d.group;
+  el('certGroup').textContent = (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
   el('certGrade').textContent = r.grade;
   el('followUp').innerHTML = d.identity === 'academy'
     ? '<h2>下一步</h2><p style="font-size:.82rem;font-weight:600">' + d.dogName + ' 的詳細評估報告已交由導師準備。導師會在下一堂恆常課堂，逐項講解表現亮點與在家練習方向——不用另約時間。</p><a class="cta" href="https://wa.me/85294596420" target="_blank" rel="noopener">有問題？WhatsApp 導師</a>'
