@@ -139,6 +139,16 @@ textarea{min-height:64px;resize:vertical}
 .warn-box{background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);padding:10px 14px;font-size:.72rem;font-weight:700;color:var(--pw-warn);margin-top:14px}
 .submit-btn{width:100%;margin-top:22px;background:var(--pw-gold);color:var(--pw-navy-deep);font-weight:900;font-size:1.05rem;border:none;border-radius:var(--pw-r-pill);padding:16px;cursor:pointer;box-shadow:var(--pw-shadow-card)}
 .submit-btn:disabled{opacity:.55;cursor:default}
+.terms-box{border:1.5px solid var(--pw-cream-deep,#EDE6D8);border-radius:12px;background:var(--pw-cream-soft,#FAF5EE);margin-bottom:12px;overflow:hidden}
+.terms-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;cursor:pointer;font-weight:900;font-size:.85rem;color:var(--pw-ink,#1F3552)}
+.terms-head .tg{font-size:.72rem;font-weight:800;color:var(--pw-gold-deep,#E08850)}
+.terms-body{display:none;padding:0 14px 14px;font-size:.78rem;font-weight:600;color:var(--pw-ink-soft,#2C4A6E);line-height:1.85}
+.terms-body h4{font-size:.78rem;font-weight:900;color:var(--pw-ink,#1F3552);margin:10px 0 2px}
+.checkline input:disabled + span{opacity:.5}
+.lock-hint{font-size:.7rem;font-weight:800;color:var(--pw-gold-deep,#E08850);margin:2px 0 0 26px}
+.proc-box{display:none;gap:10px;align-items:center;background:var(--pw-warn-bg,#FEF9C3);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:.82rem;font-weight:800;color:var(--pw-warn,#A16207);line-height:1.6}
+.spin{width:18px;height:18px;border:2.5px solid rgba(161,98,7,.25);border-top-color:#A16207;border-radius:50%;flex-shrink:0;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 .err-box{display:none;background:#FEE2E2;color:#B91C1C;border-radius:var(--pw-r-sm);padding:10px 14px;font-size:.78rem;font-weight:700;margin-top:12px}
 body.academy .public-only{display:none}
 body:not(.academy) .academy-only{display:none}
@@ -419,11 +429,37 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
 
       <div class="f-group">
         <label class="checkline"><input type="checkbox" id="mediaConsent"><span>本人同意活動當日的攝影及錄影片段，可用於 Pawradise 宣傳用途（狗狗上鏡授權）<span class="req"> *</span></span></label>
-        <label class="checkline"><input type="checkbox" id="termsConsent"><span>本人已閱讀並同意活動細則及風險免責聲明<span class="req"> *</span></span></label>
+        <div class="terms-box">
+          <div class="terms-head" onclick="toggleTerms()">
+            <span>📋 活動細則</span>
+            <span class="tg" id="termsToggle">展開閱讀 ▾</span>
+          </div>
+          <div class="terms-body" id="termsBody">
+            <h4>報到與時間</h4>
+            ・請於指定報到時間內完成報到，不設提早入場。<br>
+            ・遲到而未能參與已開始的關卡，恕不另行安排補玩。
+            <h4>當日安排</h4>
+            ・全程請為狗狗使用拖繩，遊戲進行時由導師接手。<br>
+            ・觀賞其他同學進行遊戲時，請保持安靜，避免影響場上狗狗。<br>
+            ・導師有權按狗狗當日狀態調整參加安排，或在狗狗出現壓力反應時暫停其參與。
+            <h4>健康與資格</h4>
+            ・報名後請以 WhatsApp 補交狗狗有效狗牌及疫苗針卡照片，未補交者不可入場。<br>
+            ・本活動不接受《危險狗隻規例》所列犬種報名。<br>
+            ・狗狗當日身體不適，請聯絡我們安排改期。<br>
+            ・未絕育的女生如賽日前後一週遇上發情期，請聯絡我們安排改期。
+            <h4>天氣</h4>
+            ・如當日上午懸掛八號風球或黑色暴雨警告，活動將改期並另行通知。
+            <h4>相片及影片</h4>
+            ・活動當日的相片及影片可能用於 Pawradise 宣傳用途，詳見上鏡授權一項。
+          </div>
+        </div>
+        <label class="checkline"><input type="checkbox" id="termsConsent" disabled><span>本人已閱讀並同意上述活動細則<span class="req"> *</span></span></label>
+        <div class="lock-hint" id="termsLockHint">請先展開閱讀活動細則</div>
       </div>
 
       <div class="warn-box">📌 報名後請以 WhatsApp 補交狗狗有效狗牌及疫苗針卡照片。本活動不接受《危險狗隻規例》所列犬種報名。</div>
       <div class="err-box" id="errBox"></div>
+      <div class="proc-box" id="procBox"><div class="spin"></div><div id="procText">報名處理中，請稍候⋯⋯（約需 5–15 秒）<br>請唔好重複撳，亦唔好關閉此頁</div></div>
       <button class="submit-btn" id="submitBtn" onclick="submitForm()">提交報名</button>
       <div class="hint" style="text-align:center;margin-top:10px">提交後會顯示付款指示；付款確認後你會收到報名成功電郵及同學專屬頁連結</div>
     </form>
@@ -563,20 +599,76 @@ function submitForm(){
   if (!p.mediaConsent || !p.termsConsent) { showErr('請剔選上鏡授權及活動細則同意'); return; }
   if (!API_URL) { showErr('報名系統即將開放，請稍後再試或 WhatsApp 我們'); return; }
 
-  var btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = '提交中…';
+  startProcessing();
   fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(p)
-  }).then(function(r){ return r.json(); }).then(function(res){
-    btn.disabled = false; btn.textContent = '提交報名';
-    if (!res.ok) { showErr(res.message || '未能提交，請 WhatsApp 我們完成報名'); return; }
-    renderPaidView(res);
+  }).then(function(r){ return r.text(); }).then(function(txt){
+    var res = null;
+    try { res = JSON.parse(txt); } catch (e) { res = null; }
+    // 成功：直接出付款畫面
+    if (res && res.ok) { stopProcessing(); renderPaidView(res); return; }
+    // 明確拒絕（重複報名／已滿／未開放）：照實話畀家長知
+    if (res && res.ok === false && res.message) { stopProcessing(true); showErr(res.message); return; }
+    // 回應唔可用（Google 轉址失敗／收到 HTML／冇 message）——後台其實好可能已經收到，
+    // 唔可以話人失敗，要向後台查證先
+    verifyAfterSubmit(p, 0);
   }).catch(function(){
-    btn.disabled = false; btn.textContent = '提交報名';
-    showErr('網絡出錯，請再試一次或 WhatsApp 我們');
+    verifyAfterSubmit(p, 0);
   });
+}
+
+// 提交後查證：後台真係收到就照出付款畫面，避免家長重複報名
+function verifyAfterSubmit(p, tries){
+  setProcText('報名已送出，正在確認結果⋯⋯請稍候，唔好重複提交');
+  var url = API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&dog=' + encodeURIComponent(p.dogName);
+  setTimeout(function(){
+    fetch(url).then(function(r){ return r.text(); }).then(function(txt){
+      var res = null;
+      try { res = JSON.parse(txt); } catch (e) { res = null; }
+      if (res && res.ok && res.found) { stopProcessing(); renderPaidView(res); return; }
+      retryOrFail(p, tries);
+    }).catch(function(){ retryOrFail(p, tries); });
+  }, tries === 0 ? 4000 : 6000);
+}
+
+function retryOrFail(p, tries){
+  if (tries < 2) { verifyAfterSubmit(p, tries + 1); return; }
+  stopProcessing(true);
+  showErr('未能確認報名結果，請唔好重複提交——請 WhatsApp 我們 9459 6420 核對，我們會即時跟進');
+}
+
+function startProcessing(){
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = '提交中…';
+  setProcText('報名處理中，請稍候⋯⋯（約需 5–15 秒）<br>請唔好重複撳，亦唔好關閉此頁');
+  document.getElementById('procBox').style.display = 'flex';
+}
+
+function setProcText(html){
+  var t = document.getElementById('procText');
+  if (t) t.innerHTML = html;
+}
+
+function stopProcessing(allowRetry){
+  document.getElementById('procBox').style.display = 'none';
+  var btn = document.getElementById('submitBtn');
+  btn.textContent = '提交報名';
+  btn.disabled = !allowRetry;
+}
+
+function toggleTerms(){
+  var body = document.getElementById('termsBody');
+  var tg = document.getElementById('termsToggle');
+  var openNow = body.style.display !== 'block';
+  body.style.display = openNow ? 'block' : 'none';
+  tg.textContent = openNow ? '收起 ▴' : '展開閱讀 ▾';
+  if (openNow) {
+    document.getElementById('termsConsent').disabled = false;
+    var hint = document.getElementById('termsLockHint');
+    if (hint) hint.style.display = 'none';
+  }
 }
 
 function renderPaidView(res){
