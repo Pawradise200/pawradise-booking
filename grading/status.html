@@ -56,16 +56,17 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .report-eb{font-family:var(--disp);font-weight:600;font-size:.62rem;color:#C98D2C;letter-spacing:.28em;text-align:center}
 .report-t{font-family:var(--disp);font-weight:700;font-size:1.25rem;color:var(--pw-ink);text-align:center;margin-top:2px;letter-spacing:.16em}
 .report-sub{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin-top:2px}
-.rrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1.5px dashed var(--pw-cream-deep)}
+.rrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1.5px dashed var(--pw-cream-deep)}
 .rrow:last-child{border-bottom:none}
 .rrow img{width:42px;height:42px;flex-shrink:0}
-.rrow .nm{font-weight:800;font-size:.82rem;color:var(--pw-ink)}
+.rrow .mid{flex:1;min-width:0}
+.rrow .nm{font-weight:800;font-size:.8rem;color:var(--pw-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rrow .bar{height:7px;background:#F0E9DC;border-radius:var(--pill);overflow:hidden;margin-top:5px}
 .rrow .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pw-gold),var(--pw-gold-deep));border-radius:var(--pill)}
-.rrow .rt{text-align:right;flex-shrink:0}
+.rrow .bn{font-size:.58rem;font-weight:700;color:var(--pw-sniff);margin-top:4px;line-height:1.5}
+.rrow .rt{text-align:right;flex:0 0 44px}
 .rrow .rt b{font-family:var(--disp);font-weight:700;font-size:1.3rem;color:var(--pw-gold-deep)}
 .rrow .rt s{text-decoration:none;font-size:.62rem;font-weight:800;color:var(--pw-ink-faint)}
-.rrow .rt em{display:block;font-style:normal;font-size:.56rem;font-weight:700;color:var(--pw-sniff)}
 .report-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:12px}
 .report-foot .cm{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);line-height:1.7}
 .seal{position:relative;width:70px;height:76px;transform:rotate(-8deg);flex-shrink:0}
@@ -319,7 +320,7 @@ function escapeHtml(t){
 
 // 彩帶：等第越高越熱鬧（優才生最密）
 function paintConfetti(grade){
-  var n = grade.indexOf('優才') === 0 ? 26 : (grade.indexOf('高材') === 0 ? 14 : 6);
+  var n = (grade === '模範生' ? 26 : grade === '高材生' ? 15 : grade === '好學生' ? 9 : 5);
   var cols = ['#F4B860', '#F4A6B8', '#7FB2E5', '#A8C686', '#FFD98A'];
   var card = el('medalCard'), html = '';
   for (var i = 0; i < n; i++) {
@@ -368,10 +369,10 @@ function renderResult(d){
     g.bon.forEach(function(bi){ if (r.bonus[bi]) { add++; notes.push(SKILLS[bi] + ' +1'); } });
     var pts = g.base + add;
     rows += '<div class="rrow"><img src="../assets/' + g.img + '" alt="">' +
-      '<div style="flex:1"><div class="nm">' + g.nm + '</div>' +
-      '<div class="bar"><i style="width:' + Math.round(pts / 7 * 100) + '%"></i></div></div>' +
-      '<div class="rt"><b>' + pts + '</b><s> / 7</s>' +
-      (notes.length ? '<em>' + notes.join('・') + '</em>' : '') + '</div></div>';
+      '<div class="mid"><div class="nm">' + g.nm + '</div>' +
+      '<div class="bar"><i style="width:' + Math.round(pts / 7 * 100) + '%"></i></div>' +
+      (notes.length ? '<div class="bn">' + notes.join('・') + '</div>' : '') + '</div>' +
+      '<div class="rt"><b>' + pts + '</b><s> / 7</s></div></div>';
   });
   el('reportRows').innerHTML = rows;
   el('reportComment').innerHTML = r.comment
