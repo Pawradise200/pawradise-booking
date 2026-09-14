@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>狗狗呈分試 2026｜Pawradise 狗狗幼稚園</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka:wght@500;600;700&family=Huninn&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pw-navy:#2C4A6E; --pw-navy-deep:#1F3552; --pw-navy-light:#4A7BAF;
+  --pw-gold:#F4B860; --pw-gold-deep:#E08850;
+  --pw-cream:#F5F0E8; --pw-cream-soft:#FAF5EE; --pw-cream-deep:#EDE6D8; --pw-paper:#FFFFFF;
+  --pw-ink:#1F3552; --pw-ink-soft:#2C4A6E; --pw-ink-mute:#6B7A8F; --pw-ink-faint:#A8B2C0;
+  --pw-brown-deep:#5C3E27; --pw-tan:#D9994A; --pw-heart:#EF6E6E;
+  --pw-sniff:#6B8E3D; --pw-warn:#A16207; --pw-warn-bg:#FEF9C3;
+  --pw-success:#15803D; --pw-success-bg:#DCFCE7;
+  --pw-r-sm:8px; --pw-r-md:12px; --pw-r-lg:18px; --pw-r-xl:24px; --pw-r-pill:999px;
+  --pw-shadow-card:0 4px 20px rgba(92,62,39,.12);
+  --pw-shadow-pop:0 12px 40px rgba(92,62,39,.20);
+  --sans:'Nunito','Helvetica Neue',system-ui,sans-serif;
+  --disp:'Fredoka','Huninn','Nunito',sans-serif;
+  --disp-zh:'Huninn','Nunito',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:0 20px}
+section{padding:34px 0 6px}
+img{max-width:100%}
+
+/* ===== Hero ===== */
+.hero{background:linear-gradient(160deg,#FFD98A 0%,var(--pw-gold) 55%,var(--pw-gold-deep) 130%);color:var(--pw-navy-deep);padding:48px 0 96px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:56px;background:var(--pw-cream);border-radius:50% 50% 0 0/100% 100% 0 0;z-index:1}
+.hero .wrap{position:relative;z-index:2}
+.hero .eyebrow{font-weight:900;font-size:.7rem;letter-spacing:.18em;color:var(--pw-brown-deep);text-transform:uppercase}
+.hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(2.6rem,9vw,3.6rem);line-height:1.15;margin:10px 0 6px;text-shadow:0 2px 0 rgba(255,255,255,.35)}
+.hero .sub{font-size:1rem;font-weight:700;color:var(--pw-brown-deep);max-width:30em}
+.date-pill{display:inline-flex;align-items:center;gap:8px;background:var(--pw-paper);color:var(--pw-navy-deep);font-weight:900;font-size:.85rem;border-radius:var(--pw-r-pill);padding:9px 18px;margin-top:16px;box-shadow:var(--pw-shadow-pop);transform:rotate(-1.5deg)}
+.cta-row{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:var(--sans);font-weight:900;font-size:1rem;border-radius:var(--pw-r-pill);padding:14px 28px;text-decoration:none;transition:transform .18s ease}
+.btn-navy{background:var(--pw-navy-deep);color:#FFD98A;box-shadow:var(--pw-shadow-card)}
+.btn-navy:hover{transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.55);color:var(--pw-navy-deep);box-shadow:inset 0 0 0 2px rgba(31,53,82,.35)}
+.fl{position:absolute;z-index:1;opacity:.5;pointer-events:none;animation:bob 4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-9px) rotate(var(--r,0deg))}}
+.mascot{position:absolute;right:-6px;bottom:36px;z-index:1}
+
+/* 學院橫幅 */
+.aca-banner{display:none;margin-top:-46px;position:relative;z-index:3;align-items:center;gap:13px;background:linear-gradient(135deg,var(--pw-navy-deep),var(--pw-navy));color:#fff;border-radius:var(--pw-r-lg);padding:16px 18px;box-shadow:var(--pw-shadow-pop)}
+body.academy .aca-banner{display:flex}
+.aca-banner .t1{font-family:var(--disp);font-weight:600;font-size:1.05rem}
+.aca-banner .t2{font-size:.72rem;font-weight:800;color:var(--pw-gold)}
+
+/* 一起返學 */
+.tg-card{background:var(--pw-paper);border:2px dashed var(--pw-gold);border-radius:var(--pw-r-xl);box-shadow:var(--pw-shadow-card);padding:22px 24px;transform:rotate(-.4deg)}
+.tg-card .eb{font-weight:900;font-size:.66rem;letter-spacing:.14em;color:var(--pw-gold-deep);text-transform:uppercase}
+.tg-card h2{font-family:var(--disp);font-weight:700;font-size:1.5rem;color:var(--pw-navy-deep);margin:6px 0 8px}
+.tg-card p{font-size:.9rem;font-weight:600}
+.hl{background:linear-gradient(transparent 62%,#FFD98A 62%);font-weight:800;color:var(--pw-ink)}
+
+.sec-eb{font-weight:900;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pw-tan);margin-bottom:4px}
+.sec-h{font-family:var(--disp-zh);font-weight:700;font-size:1.4rem;color:var(--pw-ink)}
+.sec-note{font-size:.85rem;color:var(--pw-ink-mute);margin-top:4px}
+.paw-div{display:flex;justify-content:center;align-items:center;gap:18px;padding:18px 0 2px}
+
+/* 遊戲卡 */
+.game{background:var(--pw-paper);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);padding:20px;margin-top:14px;display:flex;gap:15px;align-items:flex-start}
+.game .badge{flex:0 0 52px;height:52px;border-radius:var(--pw-r-md);display:flex;align-items:center;justify-content:center}
+.game h3{font-weight:900;font-size:1.05rem;color:var(--pw-ink)}
+.game .dim{display:inline-block;font-size:.68rem;font-weight:800;border-radius:var(--pw-r-pill);padding:3px 10px;margin:6px 0 8px}
+.game p{font-size:.85rem}
+.g1 .badge{background:var(--pw-warn-bg)}.g1 .dim{background:var(--pw-warn-bg);color:var(--pw-warn)}
+.g2 .badge{background:#FDEBDD}.g2 .dim{background:#FDEBDD;color:var(--pw-gold-deep)}
+.g3 .badge{background:#EDF3E2}.g3 .dim{background:#EDF3E2;color:var(--pw-sniff)}
+
+/* 等第獎牌 */
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:16px}
+.tier{background:var(--pw-paper);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);padding:14px 6px;text-align:center}
+.tier .n{font-weight:900;font-size:.82rem;color:var(--pw-ink);margin-top:7px}
+.tier .r{font-size:.66rem;font-weight:700;color:var(--pw-ink-mute)}
+.crown{display:flex;gap:13px;align-items:center;background:linear-gradient(135deg,var(--pw-navy-deep),var(--pw-navy));border-radius:var(--pw-r-lg);padding:15px 17px;box-shadow:var(--pw-shadow-card);margin-top:12px}
+.crown .c1{font-family:var(--disp);font-weight:600;font-size:.95rem;color:#FFD98A}
+.crown .c2{font-size:.72rem;font-weight:700;color:#C9D6E6}
+.cert-note{background:#FFF6E4;border:2px dashed var(--pw-gold);border-radius:var(--pw-r-md);padding:12px 16px;font-size:.8rem;font-weight:700;margin-top:12px}
+
+/* 活動詳情 */
+.info-card{display:flex;flex-direction:column;gap:14px;background:var(--pw-paper);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);padding:20px;margin-top:14px}
+.info-row{display:flex;gap:12px;align-items:flex-start}
+.info-row svg{flex-shrink:0;margin-top:2px}
+.info-row .k{font-size:.66rem;font-weight:800;color:var(--pw-ink-faint);letter-spacing:.06em}
+.info-row .v{font-size:.85rem;font-weight:800;color:var(--pw-ink);line-height:1.5}
+.inc-list{display:flex;flex-direction:column;gap:7px}
+.inc-item{display:flex;gap:9px;align-items:flex-start;font-size:.82rem;font-weight:700;color:var(--pw-ink)}
+
+/* 見面禮 */
+.gift-card{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(135deg,#FFF3DC,#FFE9C2);border:2px dashed var(--pw-gold-deep);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);padding:18px 20px;margin-top:14px;transform:rotate(-.3deg)}
+.gift-card .g1t{font-family:var(--disp);font-weight:600;font-size:1.02rem;color:var(--pw-gold-deep)}
+.gift-card .g2t{font-size:.8rem;font-weight:600;margin-top:3px}
+.gift-card b{color:var(--pw-ink)}
+body.academy .gift-card{display:none}
+
+/* 表單 */
+.form-card{background:var(--pw-paper);border-radius:var(--pw-r-xl);box-shadow:var(--pw-shadow-pop);padding:26px 22px;margin-top:14px}
+.f-group{margin-top:18px}
+label.f-label{display:block;font-weight:800;font-size:.8rem;color:var(--pw-ink);margin-bottom:7px}
+.req{color:var(--pw-heart)}
+input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;font-family:var(--sans);font-size:.95rem;font-weight:600;color:var(--pw-ink);background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:12px 14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--pw-navy-light);background:#fff}
+textarea{min-height:64px;resize:vertical}
+.seg{display:grid;gap:8px}
+.seg2{grid-template-columns:repeat(2,1fr)}
+.seg4{grid-template-columns:repeat(2,1fr)}
+.seg input{display:none}
+.seg label{display:block;text-align:center;font-weight:800;font-size:.8rem;color:var(--pw-ink-mute);background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:11px 6px;cursor:pointer}
+.seg input:checked+label{background:var(--pw-navy);border-color:var(--pw-navy);color:#fff;box-shadow:var(--pw-shadow-card)}
+.seg .sub{display:block;font-size:.62rem;font-weight:600;margin-top:2px;color:inherit;opacity:.75}
+.hint{font-size:.72rem;font-weight:600;color:var(--pw-ink-faint);margin-top:6px}
+.school-badge{display:none;margin-top:12px;background:linear-gradient(135deg,var(--pw-navy-deep),var(--pw-navy));color:#fff;border-radius:var(--pw-r-lg);padding:15px 17px;align-items:center;gap:13px;box-shadow:var(--pw-shadow-card)}
+.school-badge.on{display:flex;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.school-badge .s1{font-size:.66rem;font-weight:800;color:var(--pw-gold);letter-spacing:.1em}
+.school-badge .s2{font-family:var(--disp);font-weight:600;font-size:1.05rem}
+.price-box{background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.price-box .p1{font-weight:800;font-size:.82rem;color:var(--pw-ink)}
+.price-box .p1s{font-size:.68rem;font-weight:600;color:var(--pw-ink-faint);margin-top:2px}
+.price-col{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.price-old{font-size:.7rem;font-weight:700;color:var(--pw-ink-faint);text-decoration:line-through}
+.price-now{font-family:var(--disp);font-weight:700;font-size:1.3rem;color:var(--pw-gold-deep)}
+.price-tag{display:inline-block;font-size:.62rem;font-weight:800;color:var(--pw-success);background:var(--pw-success-bg);border-radius:var(--pw-r-pill);padding:2px 9px}
+.quota-line{font-size:.72rem;font-weight:800;color:var(--pw-gold-deep);margin-top:8px}
+.safe-box{display:flex;flex-direction:column;gap:14px;background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-lg);padding:16px;margin-top:18px}
+.safe-box .st{font-weight:900;font-size:.82rem;color:var(--pw-ink)}
+.safe-box .sh{font-size:.7rem;font-weight:600;color:var(--pw-ink-faint)}
+.safe-q{font-weight:800;font-size:.76rem;color:var(--pw-ink)}
+.safe-note{font-size:.66rem;font-weight:600;color:var(--pw-ink-faint)}
+.checkline{display:flex;gap:10px;align-items:flex-start;font-size:.78rem;font-weight:600;margin-top:10px;cursor:pointer}
+.checkline input{width:18px;height:18px;margin-top:2px;accent-color:var(--pw-navy)}
+.warn-box{background:var(--pw-warn-bg);border-radius:var(--pw-r-sm);padding:10px 14px;font-size:.72rem;font-weight:700;color:var(--pw-warn);margin-top:14px}
+.submit-btn{width:100%;margin-top:22px;background:var(--pw-gold);color:var(--pw-navy-deep);font-weight:900;font-size:1.05rem;border:none;border-radius:var(--pw-r-pill);padding:16px;cursor:pointer;box-shadow:var(--pw-shadow-card)}
+.submit-btn:disabled{opacity:.55;cursor:default}
+.err-box{display:none;background:#FEE2E2;color:#B91C1C;border-radius:var(--pw-r-sm);padding:10px 14px;font-size:.78rem;font-weight:700;margin-top:12px}
+body.academy .public-only{display:none}
+body:not(.academy) .academy-only{display:none}
+
+/* ===== 提交後：申請已提交／付款頁 ===== */
+#paidView{display:none}
+body.submitted #mainView{display:none}
+body.submitted #paidView{display:block}
+.pv-hero{background:linear-gradient(160deg,#FFD98A 0%,var(--pw-gold) 55%,var(--pw-gold-deep) 130%);padding:40px 0 34px}
+.pv-circle{display:flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:50%;background:#fff;box-shadow:var(--pw-shadow-pop)}
+.pv-h1{font-family:var(--disp);font-weight:700;font-size:1.8rem;color:var(--pw-navy-deep);margin-top:14px}
+.pv-sub{font-size:.85rem;font-weight:700;color:var(--pw-brown-deep);margin-top:4px}
+.pv-card{background:var(--pw-paper);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);padding:18px 20px;margin-top:14px}
+.pv-row{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;margin-top:8px}
+.pv-row .k{color:var(--pw-ink-mute)}.pv-row .v{color:var(--pw-ink);text-align:right}
+.pv-amount{display:flex;justify-content:space-between;align-items:center;border-top:1.5px solid var(--pw-cream-deep);padding-top:10px;margin-top:10px}
+.pv-tag{align-self:flex-start;font-size:.66rem;font-weight:900;color:var(--pw-warn);background:var(--pw-warn-bg);border-radius:var(--pw-r-pill);padding:3px 11px}
+.step{display:flex;gap:12px;align-items:flex-start;margin-top:14px}
+.step .no{flex:0 0 26px;height:26px;border-radius:50%;background:var(--pw-gold);color:var(--pw-navy-deep);font-weight:900;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.step .t{font-weight:800;font-size:.85rem;color:var(--pw-ink)}
+.step .d{font-size:.75rem;font-weight:600;color:var(--pw-ink-mute);margin-top:2px}
+.pay-info{display:flex;flex-direction:column;gap:6px;background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:12px 14px;font-size:.8rem;font-weight:700;margin-top:8px}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:46px;background:var(--pw-navy-deep);color:#FFD98A;border-radius:var(--pw-r-pill);font-weight:900;font-size:.9rem;margin-top:8px;text-decoration:none;box-shadow:var(--pw-shadow-card)}
+
+footer{background:var(--pw-navy-deep);color:#B9C7DA;text-align:center;padding:34px 20px;font-size:.75rem;font-weight:600;margin-top:48px}
+footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div id="mainView">
+<!-- ======================= HERO ======================= -->
+<header class="hero">
+  <svg class="fl" width="34" height="34" viewBox="0 0 24 24" fill="#FFFFFF" opacity="0.4" style="top:10%;right:6%;--r:14deg"><path d="M12 2l2.4 6.9H21l-5.4 4.2 2 7L12 15.8 6.4 20l2-7L3 8.9h6.6z"/></svg>
+  <svg class="fl" width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF" opacity="0.35" style="top:34%;right:22%;--r:-10deg;animation-delay:1.2s"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>
+  <svg class="mascot" width="140" height="140" viewBox="0 0 120 120">
+    <ellipse cx="30" cy="62" rx="13" ry="26" fill="#5C3E27" transform="rotate(14 30 62)"/>
+    <ellipse cx="90" cy="62" rx="13" ry="26" fill="#5C3E27" transform="rotate(-14 90 62)"/>
+    <circle cx="60" cy="62" r="34" fill="#7B5538"/>
+    <ellipse cx="60" cy="74" rx="18" ry="13" fill="#FAF5EE"/>
+    <circle cx="47" cy="58" r="3.5" fill="#1F3552"/><circle cx="73" cy="58" r="3.5" fill="#1F3552"/>
+    <circle cx="48.2" cy="56.8" r="1.1" fill="#FFF"/><circle cx="74.2" cy="56.8" r="1.1" fill="#FFF"/>
+    <circle cx="41" cy="68" r="4" fill="#F4A6B8" opacity=".7"/><circle cx="79" cy="68" r="4" fill="#F4A6B8" opacity=".7"/>
+    <circle cx="60" cy="68" r="5" fill="#1F3552"/>
+    <path d="M60 73v6" stroke="#1F3552" stroke-width="2" stroke-linecap="round"/>
+    <path d="M54 82c2 3 10 3 12 0" stroke="#1F3552" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M26 28 60 14l34 14-34 13z" fill="#1F3552"/>
+    <rect x="48" y="32" width="24" height="8" rx="4" fill="#2C4A6E"/>
+    <path d="M94 28v10" stroke="#F4B860" stroke-width="2.4" stroke-linecap="round"/>
+    <circle cx="94" cy="41" r="3.2" fill="#F4B860"/>
+  </svg>
+  <div class="wrap">
+    <div class="eyebrow">Pawradise 狗狗幼稚園 · 年度大日子</div>
+    <h1>狗狗呈分試</h1>
+    <p class="sub public-only">未返過學也考得——三關遊戲，找出牠的隱藏實力，帶走牠的第一張成績表。</p>
+    <p class="sub academy-only">三關遊戲，找出牠的隱藏實力——家長跟狗狗一起參與校園體驗的大日子，一起經歷更多。</p>
+  </div>
+</header>
+
+<!-- 學院專屬橫幅（?mode=academy 先顯示） -->
+<div class="wrap">
+  <div class="aca-banner">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F4B860" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9.5 12 5 2 9.5l10 4.5 10-4.5z"/><path d="M6 11.8V17c0 1 2.7 3 6 3s6-2 6-3v-5.2"/></svg>
+    <div><div class="t1">學院學生專屬報名</div><div class="t2">已為你配對上晝學院場・學院學生優惠</div></div>
+  </div>
+</div>
+
+<!-- ======================= 一起返學 ======================= -->
+<section>
+  <div class="wrap">
+    <div class="tg-card">
+      <div class="eb">Why This Day Is Special</div>
+      <h2>這一天，一起返學 🎒</h2>
+      <p class="academy-only">平日上學，家長放低狗狗便要離開；呈分試這天不一樣——<span class="hl">你可以跟毛孩一起參加遊戲，跟他一起闖關</span>，一起上頒獎台，影一張戴著獎牌的合照。</p>
+      <p class="public-only">毛孩的第一次返學體驗，就由你陪牠一起完成——<span class="hl">你可以跟毛孩一起參加遊戲，跟他一起闖關</span>，一起上頒獎台，影一張戴著獎牌的合照。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 三關遊戲 ======================= -->
+<section id="games" style="padding-top:10px">
+  <div class="wrap">
+    <div class="sec-eb">The Three Games</div>
+    <h2 class="sec-h">三關遊戲・三種隱藏實力</h2>
+    <p class="sec-note">每關滿分 5 分，另設兩項技能加分，合計滿分 21 分。</p>
+
+    <div class="game g1">
+      <div class="badge"><svg width="34" height="34" viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="40" rx="17" ry="5" fill="#A16207" opacity=".3"/><circle cx="30" cy="13" r="5.5" fill="#A16207"/><path d="M27 9c-2-1-4 0-4.5 2 1.5 1.5 3.5 1.5 5 0z" fill="#A16207"/><path d="M30 19c-9 2-13 9-13 19h16c4-9 1-17-3-19z" fill="#A16207"/><path d="M14 35c-3.4-.6-5-3.4-3.4-6" stroke="#A16207" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>
+      <div>
+        <h3>定力擂台大風吹</h3>
+        <span class="dim">考核：定力・干擾下的自我控制</span>
+        <p>狗狗安坐定點墊上，干擾一回合比一回合升級——導師走過、拍波、零食袋、甚至零食就放在面前。四腳離墊即出局，看誰坐到最後。</p>
+      </div>
+    </div>
+
+    <div class="game g2">
+      <div class="badge"><svg width="34" height="34" viewBox="0 0 48 48" fill="none"><path d="M31 6v28" stroke="#E08850" stroke-width="3" stroke-linecap="round"/><path d="M31 6h13l-3.2 5.5L44 17H31z" fill="#E08850"/><circle cx="13" cy="33" r="2.2" fill="#E08850"/><circle cx="18" cy="30.5" r="2.2" fill="#E08850"/><circle cx="23" cy="33" r="2.2" fill="#E08850"/><path d="M18 35.5c-3 0-5.2 2-5.2 4.4 0 1.5 1.2 2.6 2.8 2.6h4.8c1.6 0 2.8-1.1 2.8-2.6 0-2.4-2.2-4.4-5.2-4.4z" fill="#E08850"/><path d="M4 30h4M2 35h4M4 40h4" stroke="#E08850" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+      <div>
+        <h3>穿越誘惑使命必達</h3>
+        <span class="dim">考核：抗誘惑・Call Back</span>
+        <p>一條佈滿玩具與零食誘惑的跑道，家長在終點只可呼喚名字。狗狗要穿越重重引誘，四腳跳入彩色呼拉圈，任務完成。</p>
+      </div>
+    </div>
+
+    <div class="game g3">
+      <div class="badge"><svg width="34" height="34" viewBox="0 0 48 48" fill="none"><circle cx="20" cy="20" r="12" stroke="#6B8E3D" stroke-width="3.4"/><line x1="29" y1="29" x2="41" y2="41" stroke="#6B8E3D" stroke-width="4.4" stroke-linecap="round"/><circle cx="16.5" cy="16.5" r="1.8" fill="#6B8E3D"/><circle cx="20.5" cy="15" r="1.8" fill="#6B8E3D"/><circle cx="24.5" cy="16.5" r="1.8" fill="#6B8E3D"/><path d="M20.5 19c-2.6 0-4.6 1.8-4.6 3.9 0 1.3 1 2.3 2.4 2.3h4.4c1.4 0 2.4-1 2.4-2.3 0-2.1-2-3.9-4.6-3.9z" fill="#6B8E3D"/><path d="M38 8l1.3 2.8 2.8 1.3-2.8 1.3L38 16.2l-1.3-2.8-2.8-1.3 2.8-1.3z" fill="#6B8E3D" opacity=".75"/></svg></div>
+      <div>
+        <h3>尋寶奇兵</h3>
+        <span class="dim">考核：嗅覺專注・獨立解難</span>
+        <p>場內收藏三份寶藏，限時兩分鐘。不靠提示、單憑鼻子逐一尋回——考的是專注力，也是狗狗最天然的超能力。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 等第獎牌 ======================= -->
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="sec-eb">Grades &amp; Medals</div>
+    <h2 class="sec-h">成績等第・獎牌制度</h2>
+    <div class="tiers">
+      <div class="tier"><svg width="38" height="43" viewBox="0 0 48 54"><path d="M14 2h8l5 15-9 4z" fill="#2C4A6E"/><path d="M34 2h-8l-5 15 9 4z" fill="#4A7BAF"/><circle cx="24" cy="35" r="14" fill="#F0B94E"/><circle cx="24" cy="35" r="10.5" fill="none" stroke="#C98D2C" stroke-width="2"/><path d="M24 28l2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="#FFF" opacity=".9"/></svg><div class="n">模範生</div></div>
+      <div class="tier"><svg width="38" height="43" viewBox="0 0 48 54"><path d="M14 2h8l5 15-9 4z" fill="#2C4A6E"/><path d="M34 2h-8l-5 15 9 4z" fill="#4A7BAF"/><circle cx="24" cy="35" r="14" fill="#C7CDD6"/><circle cx="24" cy="35" r="10.5" fill="none" stroke="#98A2B0" stroke-width="2"/><path d="M24 28l2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="#FFF" opacity=".9"/></svg><div class="n">高材生</div></div>
+      <div class="tier"><svg width="38" height="43" viewBox="0 0 48 54"><path d="M14 2h8l5 15-9 4z" fill="#2C4A6E"/><path d="M34 2h-8l-5 15 9 4z" fill="#4A7BAF"/><circle cx="24" cy="35" r="14" fill="#CE9463"/><circle cx="24" cy="35" r="10.5" fill="none" stroke="#A06A40" stroke-width="2"/><path d="M24 28l2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7z" fill="#FFF" opacity=".9"/></svg><div class="n">好學生</div></div>
+      <div class="tier"><svg width="38" height="43" viewBox="0 0 24 24" fill="none" stroke="#6B8E3D" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="margin-top:6px"><path d="M12 22V9"/><path d="M12 9C12 5 9 3 5 3c0 4 3 6 7 6z"/><path d="M12 13c0-4 3-6 7-6 0 4-3 6-7 6z"/></svg><div class="n">潛力新星</div><div class="r">附成長建議</div></div>
+    </div>
+    <div class="crown">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F4B860" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8.4-8 10-4.5-1.6-8-5-8-10V6z"/><path d="M12 8.5l1.2 2.4 2.6.4-1.9 1.9.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.9 2.6-.4z" fill="#F4B860" stroke="none"/></svg>
+      <div><div class="c1">模範生加冕禮</div><div class="c2">獲學校頒授校褸披肩＋模範生金鈕</div></div>
+    </div>
+    <div class="cert-note">🎓 達到等第標準即獲頒對應獎牌；賽後於專屬頁查閱成績、六格技能榜及電子證書。</div>
+  </div>
+</section>
+
+<!-- ======================= 活動詳情 ======================= -->
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="sec-eb">Event Info</div>
+    <h2 class="sec-h">活動詳情</h2>
+    <div class="info-card">
+      <div class="info-row">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#E08850" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div><div class="k">日期</div><div class="v">2026 年 10 月 24 日（星期六）</div></div>
+      </div>
+      <div class="info-row">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#E08850" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+        <div><div class="k">時間</div>
+          <div class="v academy-only">學院場 10:00 開考・請於 9:30–10:00 內完成報到（不設提早入場）</div>
+          <div class="v public-only">公眾場 15:00 開考・請於 14:30–15:00 內完成報到（不設提早入場）</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#E08850" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div><div class="k">地點</div><div class="v">Pawradise・尖沙咀彌敦道 200 號 The Stone Rise 16 樓（登記點）</div></div>
+      </div>
+      <div class="info-row academy-only">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#E08850" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 12 6l3-2 5 3-2 4-2-1v10H8V10l-2 1-2-4z"/></svg>
+        <div><div class="k">服裝</div><div class="v">請為狗狗穿上校服出席——全場大合照統一造型</div></div>
+      </div>
+      <div>
+        <div class="k" style="font-size:.66rem;font-weight:800;color:var(--pw-ink-faint);letter-spacing:.06em;margin-bottom:8px">內容包括</div>
+        <div class="inc-list">
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>三關遊戲考核</div>
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>頒獎典禮及等第大合照</div>
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>出席證書</div>
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>2026 限定刺繡襟章・精美包裝</div>
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>等第獎牌（達標獲發）</div>
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>成績卡及六格技能榜</div>
+          <div class="inc-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="#E08850" style="flex-shrink:0;margin-top:3px"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>專業攝影・相片即場傳送</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 報名登記 ======================= -->
+<section id="signup" style="padding-top:10px">
+  <div class="wrap">
+    <div class="sec-eb">Sign Up</div>
+    <h2 class="sec-h">報名登記</h2>
+    <div class="quota-line" id="quotaLine"></div>
+
+    <!-- 新同學見面禮（公開版限定） -->
+    <div class="gift-card public-only">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#E08850" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><rect x="3" y="8" width="18" height="4" rx="1"/><rect x="5" y="12" width="14" height="9" rx="1"/><line x1="12" y1="8" x2="12" y2="21"/><path d="M12 8c-2 0-5-1-5-3.5C7 3 8.5 2 10 2c2 0 2 3 2 6z"/><path d="M12 8c2 0 5-1 5-3.5C17 3 15.5 2 14 2c-2 0-2 3-2 6z"/></svg>
+      <div>
+        <div class="g1t">新同學見面禮</div>
+        <div class="g2t">凡報名即附：<b>S1 狗狗幼稚園・一天常規課堂</b>＋導師一對一講解評估報告。導師會根據你狗狗的特質與當日表現，<b>度身訂造專屬的練習建議</b>——每一隻狗狗的下一步都不一樣。</div>
+      </div>
+    </div>
+
+    <form class="form-card" id="regForm" onsubmit="return false;">
+      <!-- 場次＋價錢 -->
+      <div class="price-box">
+        <div>
+          <div class="p1 academy-only">上晝學院場・10.24（六）・9:30–10:00 報到</div>
+          <div class="p1 public-only">下晝公眾場・10.24（六）・14:30–15:00 報到</div>
+          <div class="p1s academy-only">每位狗狗考生・含頒獎典禮及等第大合照・報告將於恆常課堂講解</div>
+          <div class="p1s public-only">每位狗狗考生・含頒獎典禮及新同學見面禮</div>
+        </div>
+        <div class="price-col">
+          <span class="price-old" id="priceOld">原價 $499</span>
+          <span class="price-now" id="priceNow">$299</span>
+          <span class="price-tag" id="priceTag">首場優惠</span>
+        </div>
+      </div>
+
+      <div class="f-group"><label class="f-label" for="parentName">家長姓名 <span class="req">*</span></label><input type="text" id="parentName" placeholder="例如：陳小姐"></div>
+      <div class="f-group"><label class="f-label" for="phone">聯絡電話（WhatsApp）<span class="req">*</span></label><input type="tel" id="phone" placeholder="9123 4567"></div>
+      <div class="f-group"><label class="f-label" for="email">電郵地址 <span class="req">*</span></label><input type="email" id="email" placeholder="用於接收確認電郵"><div class="hint">付款確認後，考生專屬頁連結會發送至此電郵</div></div>
+      <div class="f-group"><label class="f-label" for="dogName">狗狗名字 <span class="req">*</span></label><input type="text" id="dogName" placeholder="例如：DAKI"></div>
+
+      <div class="f-group">
+        <label class="f-label" for="breed">品種 <span class="req">*</span></label>
+        <select id="breed"><option value="">請選擇品種</option><optgroup label="小型犬"><option data-g="小型犬組">貴婦（玩具／迷你）</option><option data-g="小型犬組">松鼠狗（博美）</option><option data-g="小型犬組">芝娃娃</option><option data-g="小型犬組">約瑟爹利</option><option data-g="小型犬組">西施</option><option data-g="小型犬組">馬爾濟斯</option><option data-g="小型犬組">比熊</option><option data-g="小型犬組">八哥</option><option data-g="小型犬組">迷你臘腸</option><option data-g="小型犬組">標準臘腸</option><option data-g="小型犬組">迷你雪納瑞</option><option data-g="小型犬組">西高地</option><option data-g="小型犬組">北京狗</option><option data-g="小型犬組">蝴蝶犬</option><option data-g="小型犬組">日本銀狐</option><option data-g="小型犬組">積羅素爹利</option><option data-g="小型犬組">迷你賓沙</option><option data-g="小型犬組">意大利靈緹</option><option data-g="小型犬組">波士頓爹利</option><option data-g="小型犬組">拉薩犬</option><option data-g="小型犬組">中國冠毛犬</option><option data-g="小型犬組">日本狆</option><option data-g="小型犬組">蘇格蘭爹利</option><option data-g="小型犬組">凱恩爹利</option><option data-g="小型犬組">曼徹斯特爹利</option><option data-g="小型犬組">芝田犬</option></optgroup><optgroup label="中型犬"><option data-g="中型犬組">柴犬</option><option data-g="中型犬組">哥基</option><option data-g="中型犬組">法國鬥牛犬</option><option data-g="中型犬組">比高</option><option data-g="中型犬組">可卡</option><option data-g="中型犬組">標準雪納瑞</option><option data-g="中型犬組">貝靈頓</option><option data-g="中型犬組">騎士查理王</option><option data-g="中型犬組">喜樂蒂</option><option data-g="中型犬組">沙皮</option><option data-g="中型犬組">英國老虎狗</option><option data-g="中型犬組">牛頭爹利</option><option data-g="中型犬組">惠比特</option><option data-g="中型犬組">鬆獅</option><option data-g="中型犬組">澳洲牧羊犬</option><option data-g="中型犬組">英國史賓格</option><option data-g="中型犬組">巴仙吉</option><option data-g="中型犬組">澳洲牧牛犬</option><option data-g="中型犬組">美國愛斯基摩犬</option><option data-g="中型犬組">西藏㹴</option></optgroup><optgroup label="大型犬"><option data-g="大型犬組">金毛尋回犬</option><option data-g="大型犬組">拉布拉多</option><option data-g="大型犬組">哈士奇</option><option data-g="大型犬組">薩摩耶</option><option data-g="大型犬組">德國牧羊犬</option><option data-g="大型犬組">邊境牧羊犬</option><option data-g="大型犬組">秋田</option><option data-g="大型犬組">阿拉斯加</option><option data-g="大型犬組">標準貴婦</option><option data-g="大型犬組">唐狗</option><option data-g="大型犬組">都柏文</option><option data-g="大型犬組">洛威拿</option><option data-g="大型犬組">伯恩山</option><option data-g="大型犬組">斑點狗</option><option data-g="大型犬組">威瑪</option><option data-g="大型犬組">大丹</option><option data-g="大型犬組">大白熊</option><option data-g="大型犬組">聖伯納</option><option data-g="大型犬組">紐芬蘭犬</option><option data-g="大型犬組">古代英國牧羊犬</option><option data-g="大型犬組">蘇俄牧羊犬</option><option data-g="大型犬組">拳師犬</option><option data-g="大型犬組">愛爾蘭雪達</option><option data-g="大型犬組">巨型雪納瑞</option></optgroup><option value="mix" data-g="">貴婦混種（Maltipoo／Cavoodle 等）</option><option value="other" data-g="">其他品種／混種</option></select>
+        <div class="school-badge" id="schoolBadge">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F4B860" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M10 21v-5a2 2 0 0 1 4 0v5"/></svg>
+          <div><div class="s1">所屬組別</div><div class="s2" id="schoolName"></div></div>
+        </div>
+        <div class="hint" id="otherHint" style="display:none;background:var(--pw-cream-soft);border-radius:var(--pw-r-sm);padding:10px 14px">混種或名單以外品種，將由導師按肩高評定組別，並於確認時通知你</div>
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">狗狗年齡 <span class="req">*</span></label>
+        <div class="seg seg4">
+          <input type="radio" name="age" id="age1" value="1 歲以下"><label for="age1">1 歲以下</label>
+          <input type="radio" name="age" id="age2" value="1–3 歲"><label for="age2">1 – 3 歲</label>
+          <input type="radio" name="age" id="age3" value="4–7 歲"><label for="age3">4 – 7 歲</label>
+          <input type="radio" name="age" id="age4" value="8 歲或以上"><label for="age4">8 歲或以上</label>
+        </div>
+      </div>
+      <div class="f-group">
+        <label class="f-label">已絕育 <span class="req">*</span></label>
+        <div class="seg seg2">
+          <input type="radio" name="neutered" id="n1" value="是"><label for="n1">是</label>
+          <input type="radio" name="neutered" id="n2" value="否"><label for="n2">否</label>
+        </div>
+      </div>
+
+      <!-- 學院模式：應考安排自選 -->
+      <div class="f-group academy-only">
+        <label class="f-label">應考安排 <span class="req">*</span></label>
+        <div class="seg seg2">
+          <input type="radio" name="arrangement" id="arr1" value="標準組" checked><label for="arr1">標準組<span class="sub">跟品種組別應考</span></label>
+          <input type="radio" name="arrangement" id="arr2" value="專注組"><label for="arr2">專注組<span class="sub">全程單獨應考・適合高敏感狗狗</span></label>
+        </div>
+        <div class="hint">不肯定選哪組？導師會與你一起決定，賽前亦可調整</div>
+      </div>
+
+      <!-- 健康狀況（自行填寫） -->
+      <div class="f-group">
+        <label class="f-label" for="health">狗狗健康狀況</label>
+        <textarea id="health" placeholder="如有需注意的狀況（關節、心臟、癲癇、長期藥物等），請在此填寫；沒有可留空"></textarea>
+      </div>
+
+      <!-- 安全評估 -->
+      <div class="safe-box">
+        <div><div class="st">安全評估（約 30 秒完成）</div>
+        <div class="sh">報名後導師會以 WhatsApp 預先聯絡，了解狗狗性格後安排最合適的應考組別或方式</div></div>
+        <div>
+          <div class="safe-q">狗狗面對其他狗的一般反應 <span class="req">*</span></div>
+          <div class="seg seg4" style="margin-top:7px">
+            <input type="radio" name="dogReaction" id="dr1" value="主動友善"><label for="dr1">主動友善</label>
+            <input type="radio" name="dogReaction" id="dr2" value="慢熱觀察"><label for="dr2">慢熱觀察</label>
+            <input type="radio" name="dogReaction" id="dr3" value="緊張迴避"><label for="dr3">緊張迴避</label>
+            <input type="radio" name="dogReaction" id="dr4" value="曾有衝突"><label for="dr4">曾有衝突</label>
+          </div>
+        </div>
+        <div>
+          <div class="safe-q">面對陌生人 <span class="req">*</span></div>
+          <div class="seg seg2" style="margin-top:7px">
+            <input type="radio" name="stranger" id="st1" value="友善接受接觸"><label for="st1">友善接受接觸</label>
+            <input type="radio" name="stranger" id="st2" value="需要時間熟習"><label for="st2">需要時間熟習</label>
+          </div>
+        </div>
+        <div>
+          <div class="safe-q">食物或玩具在旁時 <span class="req">*</span></div>
+          <div class="seg seg2" style="margin-top:7px">
+            <input type="radio" name="guarding" id="gd1" value="沒有特別反應"><label for="gd1">沒有特別反應</label>
+            <input type="radio" name="guarding" id="gd2" value="有護食或護物傾向"><label for="gd2">有護食或護物傾向</label>
+          </div>
+        </div>
+        <div>
+          <div class="safe-q">食物敏感 <span class="req">*</span></div>
+          <div class="safe-note" style="margin:4px 0 7px">賽事零食以單一蛋白質鴨肉凍乾為主。如選「有或不確定」：賽日請自備狗狗慣常零食，報到時貼上狗狗名字交收，全部關卡改用自備零食</div>
+          <div class="seg seg2">
+            <input type="radio" name="foodAllergy" id="fa1" value="沒有敏感紀錄"><label for="fa1">沒有敏感紀錄</label>
+            <input type="radio" name="foodAllergy" id="fa2" value="有或不確定"><label for="fa2">有或不確定</label>
+          </div>
+        </div>
+        <div>
+          <div class="safe-q">狗狗曾否有咬傷人或狗的紀錄 <span class="req">*</span></div>
+          <div class="seg seg2" style="margin-top:7px">
+            <input type="radio" name="attackHistory" id="ah1" value="沒有"><label for="ah1">沒有</label>
+            <input type="radio" name="attackHistory" id="ah2" value="曾有紀錄"><label for="ah2">曾有紀錄</label>
+          </div>
+        </div>
+        <div class="safe-note">未絕育的女生：如賽日前後一週遇上發情期，請聯絡我們安排改期</div>
+      </div>
+
+      <div class="f-group">
+        <label class="checkline"><input type="checkbox" id="mediaConsent"><span>本人同意活動當日的攝影及錄影片段，可用於 Pawradise 宣傳用途（狗狗上鏡授權）<span class="req"> *</span></span></label>
+        <label class="checkline"><input type="checkbox" id="termsConsent"><span>本人已閱讀並同意活動細則及風險免責聲明<span class="req"> *</span></span></label>
+      </div>
+
+      <div class="warn-box">📌 報名後請以 WhatsApp 補交狗狗有效狗牌及疫苗針卡照片。本活動不接受《危險狗隻規例》所列犬種報名。</div>
+      <div class="err-box" id="errBox"></div>
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">提交報名</button>
+      <div class="hint" style="text-align:center;margin-top:10px">提交後會顯示付款指示；付款確認後你會收到報名成功電郵及考生專屬頁連結</div>
+    </form>
+  </div>
+</section>
+</div><!-- /mainView -->
+
+<!-- ======================= 提交後：付款頁 ======================= -->
+<div id="paidView">
+  <div class="pv-hero">
+    <div class="wrap">
+      <div class="pv-circle" id="pvIcon"></div>
+      <div class="pv-h1" id="pvTitle">報名申請已提交</div>
+      <div class="pv-sub" id="pvSub"></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="pv-card">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:900;font-size:.82rem;color:var(--pw-ink)">申請摘要</span>
+        <span class="pv-tag" id="pvStatusTag">待付款確認</span>
+      </div>
+      <div class="pv-row"><span class="k">考生</span><span class="v" id="pvDog"></span></div>
+      <div class="pv-row"><span class="k">場次</span><span class="v" id="pvSession"></span></div>
+      <div class="pv-row"><span class="k">報名編號</span><span class="v" id="pvRegNo"></span></div>
+      <div class="pv-amount"><span style="font-weight:800;font-size:.82rem;color:var(--pw-ink)">應付金額</span><span class="price-now" id="pvAmount"></span></div>
+    </div>
+
+    <div class="pv-card" id="pvPaySteps">
+      <span style="font-family:var(--disp);font-weight:600;font-size:1.05rem;color:var(--pw-ink)">三步完成確認</span>
+      <div class="step"><div class="no">1</div><div style="flex:1">
+        <div class="t">以 FPS 或銀行轉帳付款</div>
+        <div class="pay-info">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--pw-ink-mute)">FPS</span><span id="pvFps"></span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--pw-ink-mute)">ATM</span><span id="pvAtm"></span></div>
+        </div>
+      </div></div>
+      <div class="step"><div class="no">2</div><div style="flex:1">
+        <div class="t">WhatsApp 傳送付款截圖＋有效狗牌及針卡照片（請註明狗狗名字）</div>
+        <a class="wa-btn" id="pvWa" href="https://wa.me/85294596420" target="_blank" rel="noopener">WhatsApp 傳送截圖</a>
+      </div></div>
+      <div class="step"><div class="no">3</div><div>
+        <div class="t">核對付款後，你會收到報名成功確認電郵</div>
+        <div class="d">考生專屬頁連結會隨確認電郵一併發出；導師亦會以 WhatsApp 預先聯絡，了解狗狗性格</div>
+      </div></div>
+    </div>
+
+    <div class="pv-card" style="background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);box-shadow:none">
+      <span style="font-weight:900;font-size:.82rem;color:var(--pw-ink)">考生專屬頁</span>
+      <div style="font-size:.78rem;font-weight:600;color:var(--pw-ink-mute);line-height:1.65;margin-top:5px">付款確認後，你會收到專屬連結——報名狀態、活動通知、賽後成績及電子證書都在那裡。連結只屬於你，請妥善保存。</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>Pawradise 狗狗幼稚園 · 狗狗呈分試 2026</div>
+  <div style="margin-top:6px">查詢及補交針卡：<a href="https://wa.me/85294596420" target="_blank" rel="noopener">WhatsApp 9459 6420</a></div>
+</footer>
+
+<script>
+// ====== 部署設定（deploy 時填）======
+var API_URL = 'https://script.google.com/macros/s/AKfycbwVzJhnMvs2o0aTjGx8jzSNyATIiBfkPjus2VN6beyw9clpUhjsQrK6PYqJX4CH7n3m/exec';   // grading-backend Web App URL（/exec 結尾）；空字串＝報名未開放
+var IS_ACADEMY = new URLSearchParams(location.search).get('mode') === 'academy';
+
+if (IS_ACADEMY) document.body.classList.add('academy');
+document.getElementById('priceNow').textContent = IS_ACADEMY ? '$199' : '$299';
+document.getElementById('priceOld').textContent = IS_ACADEMY ? '原價 $299' : '原價 $499';
+document.getElementById('priceTag').textContent = IS_ACADEMY ? '學院學生專屬優惠' : '首場優惠';
+
+// 品種 → 所屬組別
+document.getElementById('breed').addEventListener('change', function(){
+  var opt = this.options[this.selectedIndex];
+  var badge = document.getElementById('schoolBadge');
+  var other = document.getElementById('otherHint');
+  badge.classList.remove('on'); other.style.display = 'none';
+  if (!this.value) return;
+  if (this.value === 'other' || this.value === 'mix') { other.style.display = 'block'; return; }
+  document.getElementById('schoolName').textContent = opt.text + '學校 · ' + opt.dataset.g;
+  badge.classList.add('on');
+});
+
+// 名額顯示
+function loadQuota(){
+  if (!API_URL) { document.getElementById('quotaLine').textContent = ''; return; }
+  fetch(API_URL + '?action=quota').then(function(r){ return r.json(); }).then(function(q){
+    if (!q.ok) return;
+    var left = IS_ACADEMY ? q.academyLeft : q.publicLeft;
+    var open = q.open && (IS_ACADEMY || q.publicOpen);
+    var line = document.getElementById('quotaLine');
+    if (!open) { line.textContent = '報名即將開放，敬請留意'; document.getElementById('submitBtn').disabled = true; return; }
+    line.textContent = left > 0 ? ('剩餘名額：' + left + ' 位') : '名額已滿——仍可登記候補';
+  }).catch(function(){});
+}
+loadQuota();
+
+function radioVal(name){
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : '';
+}
+
+function showErr(msg){
+  var box = document.getElementById('errBox');
+  box.textContent = msg; box.style.display = 'block';
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function submitForm(){
+  var box = document.getElementById('errBox'); box.style.display = 'none';
+  var breedSel = document.getElementById('breed');
+  var breedOpt = breedSel.options[breedSel.selectedIndex];
+  var p = {
+    action: 'register',
+    mode: IS_ACADEMY ? 'academy' : 'public',
+    parentName: document.getElementById('parentName').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    dogName: document.getElementById('dogName').value.trim(),
+    breed: (breedSel.value === 'other' || breedSel.value === 'mix') ? breedOpt.text : breedSel.value,
+    group: (breedSel.value === 'other' || breedSel.value === 'mix') ? '導師評定' : (breedOpt ? (breedOpt.dataset.g || '') : ''),
+    age: radioVal('age'),
+    neutered: radioVal('neutered'),
+    arrangement: IS_ACADEMY ? (radioVal('arrangement') || '標準組') : '導師安排',
+    health: document.getElementById('health').value.trim(),
+    dogReaction: radioVal('dogReaction'),
+    stranger: radioVal('stranger'),
+    guarding: radioVal('guarding'),
+    foodAllergy: radioVal('foodAllergy'),
+    attackHistory: radioVal('attackHistory'),
+    mediaConsent: document.getElementById('mediaConsent').checked,
+    termsConsent: document.getElementById('termsConsent').checked
+  };
+  if (!p.parentName || !p.phone || !p.email || !p.dogName || !breedSel.value) { showErr('請填齊家長姓名、電話、電郵、狗狗名字及品種'); return; }
+  if (!p.age || !p.neutered) { showErr('請選擇狗狗年齡及絕育狀況'); return; }
+  if (!p.dogReaction || !p.stranger || !p.guarding || !p.foodAllergy || !p.attackHistory) { showErr('請完成安全評估每一項'); return; }
+  if (!p.mediaConsent || !p.termsConsent) { showErr('請剔選上鏡授權及活動細則同意'); return; }
+  if (!API_URL) { showErr('報名系統即將開放，請稍後再試或 WhatsApp 我們'); return; }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = '提交中…';
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(p)
+  }).then(function(r){ return r.json(); }).then(function(res){
+    btn.disabled = false; btn.textContent = '提交報名';
+    if (!res.ok) { showErr(res.message || '提交失敗，請 WhatsApp 我們完成報名'); return; }
+    renderPaidView(res);
+  }).catch(function(){
+    btn.disabled = false; btn.textContent = '提交報名';
+    showErr('網絡出錯，請再試一次或 WhatsApp 我們');
+  });
+}
+
+function renderPaidView(res){
+  var isWait = res.status === '候補';
+  document.getElementById('pvIcon').innerHTML = isWait
+    ? '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4A7BAF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12h8"></path></svg>'
+    : '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#A16207" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>';
+  document.getElementById('pvTitle').textContent = isWait ? '候補登記已收到' : '報名申請已提交';
+  document.getElementById('pvSub').textContent = isWait
+    ? (res.dogName + ' 已列入候補名單（第 ' + res.waitPosition + ' 位）——有考位補上時我們會通知你，屆時才需要付款')
+    : ('完成付款後，' + res.dogName + ' 的考位方為正式確認');
+  document.getElementById('pvStatusTag').textContent = isWait ? '候補中' : '待付款確認';
+  document.getElementById('pvDog').textContent = res.dogName + '（' + res.group + '）';
+  document.getElementById('pvSession').textContent = res.sessionLabel + '・10.24（六）';
+  document.getElementById('pvRegNo').textContent = res.regNo;
+  document.getElementById('pvAmount').textContent = '$' + res.amount;
+  document.getElementById('pvFps').textContent = res.fps;
+  document.getElementById('pvAtm').textContent = res.atm;
+  document.getElementById('pvPaySteps').style.display = isWait ? 'none' : 'block';
+  document.body.classList.add('submitted');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
