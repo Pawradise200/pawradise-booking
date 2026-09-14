@@ -44,6 +44,7 @@ img{max-width:100%}
 .fl{position:absolute;z-index:1;opacity:.5;pointer-events:none;animation:bob 4s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-9px) rotate(var(--r,0deg))}}
 .mascot{position:absolute;right:-6px;bottom:36px;z-index:1}
+@media(max-width:560px){.mascot{width:98px;height:98px;right:-12px;bottom:50px}.hero .sub{padding-right:78px}}
 
 /* 學院橫幅 */
 .aca-banner{display:none;margin-top:-46px;position:relative;z-index:3;align-items:center;gap:13px;background:linear-gradient(135deg,var(--pw-navy-deep),var(--pw-navy));color:#fff;border-radius:var(--pw-r-lg);padding:16px 18px;box-shadow:var(--pw-shadow-pop)}
@@ -197,13 +198,6 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
   </div>
 </header>
 
-<!-- 學院專屬橫幅（?mode=academy 先顯示） -->
-<div class="wrap">
-  <div class="aca-banner">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F4B860" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9.5 12 5 2 9.5l10 4.5 10-4.5z"/><path d="M6 11.8V17c0 1 2.7 3 6 3s6-2 6-3v-5.2"/></svg>
-    <div><div class="t1">學院學生專屬報名</div><div class="t2">已為你配對上晝學院場・學院學生優惠</div></div>
-  </div>
-</div>
 
 <!-- ======================= 一起返學 ======================= -->
 <section>
@@ -360,7 +354,7 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
         <div class="hint" id="otherHint" style="display:none;background:var(--pw-cream-soft);border-radius:var(--pw-r-sm);padding:10px 14px">混種或名單以外品種，將由導師按肩高評定組別，並於確認時通知你</div>
       </div>
 
-      <div class="f-group">
+      <div class="f-group public-only">
         <label class="f-label">狗狗年齡 <span class="req">*</span></label>
         <div class="seg seg4">
           <input type="radio" name="age" id="age1" value="1 歲以下"><label for="age1">1 歲以下</label>
@@ -369,7 +363,7 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
           <input type="radio" name="age" id="age4" value="8 歲或以上"><label for="age4">8 歲或以上</label>
         </div>
       </div>
-      <div class="f-group">
+      <div class="f-group public-only">
         <label class="f-label">已絕育 <span class="req">*</span></label>
         <div class="seg seg2">
           <input type="radio" name="neutered" id="n1" value="是"><label for="n1">是</label>
@@ -388,13 +382,13 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
       </div>
 
       <!-- 健康狀況（自行填寫） -->
-      <div class="f-group">
+      <div class="f-group public-only">
         <label class="f-label" for="health">狗狗健康狀況</label>
         <textarea id="health" placeholder="如有需注意的狀況（關節、心臟、癲癇、長期藥物等），請在此填寫；沒有可留空"></textarea>
       </div>
 
       <!-- 安全評估 -->
-      <div class="safe-box">
+      <div class="safe-box public-only">
         <div><div class="st">安全評估（約 30 秒完成）</div>
         <div class="sh">報名後導師會以 WhatsApp 預先聯絡，了解狗狗性格後安排最合適的應考組別或方式</div></div>
         <div>
@@ -577,8 +571,10 @@ function submitForm(){
     termsConsent: document.getElementById('termsConsent').checked
   };
   if (!p.parentName || !p.phone || !p.email || !p.dogName || !breedSel.value) { showErr('請填齊家長姓名、電話、電郵、狗狗名字及品種'); return; }
-  if (!p.age || !p.neutered) { showErr('請選擇狗狗年齡及絕育狀況'); return; }
-  if (!p.dogReaction || !p.stranger || !p.guarding || !p.foodAllergy || !p.attackHistory) { showErr('請完成安全評估每一項'); return; }
+  if (!IS_ACADEMY) {
+    if (!p.age || !p.neutered) { showErr('請選擇狗狗年齡及絕育狀況'); return; }
+    if (!p.dogReaction || !p.stranger || !p.guarding || !p.foodAllergy || !p.attackHistory) { showErr('請完成安全評估每一項'); return; }
+  }
   if (!p.mediaConsent || !p.termsConsent) { showErr('請剔選上鏡授權及活動細則同意'); return; }
   if (!API_URL) { showErr('報名系統即將開放，請稍後再試或 WhatsApp 我們'); return; }
 
