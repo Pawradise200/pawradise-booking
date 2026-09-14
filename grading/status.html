@@ -80,7 +80,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
   <div class="wrap" style="padding-bottom:0">
     <div class="eyebrow">狗狗呈分試 2026 · 同學專屬頁</div>
     <h1 id="pageTitle">同學專屬頁 🎒</h1>
-    <div class="sub" id="pageSub">此連結只屬於你，請妥善保存</div>
+    <div class="sub" id="pageSub"></div>
   </div>
 </header>
 
@@ -203,7 +203,7 @@ function render(d){
   if (!d.ok) { el('notFound').style.display = 'block'; return; }
 
   el('pageTitle').textContent = d.dogName + ' 的同學頁 🎒';
-  el('pageSub').textContent = '報名編號 ' + d.regNo + ' · 此連結只屬於你，請妥善保存';
+  el('pageSub').textContent = '報名編號 ' + d.regNo;
   el('dogName').textContent = d.dogName;
   el('dogMeta').textContent = d.breed;
   el('schoolName').textContent = (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
