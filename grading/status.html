@@ -51,6 +51,41 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .note-list{font-size:.78rem;font-weight:600;color:var(--pw-ink-soft);line-height:1.8}
 .loading,.notfound{text-align:center;padding:70px 20px;font-weight:800;color:var(--pw-ink-mute)}
 /* 成績區 */
+.report{background:#FFFDF8;border:2.5px solid #E7C98F;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:5px;margin-top:16px}
+.report-in{border:1.5px solid #EDE0C8;border-radius:14px;padding:20px 18px 16px;position:relative}
+.report-eb{font-family:var(--disp);font-weight:600;font-size:.62rem;color:#C98D2C;letter-spacing:.28em;text-align:center}
+.report-t{font-family:var(--disp);font-weight:700;font-size:1.25rem;color:var(--pw-ink);text-align:center;margin-top:2px;letter-spacing:.16em}
+.report-sub{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin-top:2px}
+.rrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1.5px dashed var(--pw-cream-deep)}
+.rrow:last-child{border-bottom:none}
+.rrow img{width:42px;height:42px;flex-shrink:0}
+.rrow .nm{font-weight:800;font-size:.82rem;color:var(--pw-ink)}
+.rrow .bar{height:7px;background:#F0E9DC;border-radius:var(--pill);overflow:hidden;margin-top:5px}
+.rrow .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pw-gold),var(--pw-gold-deep));border-radius:var(--pill)}
+.rrow .rt{text-align:right;flex-shrink:0}
+.rrow .rt b{font-family:var(--disp);font-weight:700;font-size:1.3rem;color:var(--pw-gold-deep)}
+.rrow .rt s{text-decoration:none;font-size:.62rem;font-weight:800;color:var(--pw-ink-faint)}
+.rrow .rt em{display:block;font-style:normal;font-size:.56rem;font-weight:700;color:var(--pw-sniff)}
+.report-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:12px}
+.report-foot .cm{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);line-height:1.7}
+.seal{position:relative;width:70px;height:76px;transform:rotate(-8deg);flex-shrink:0}
+.seal .ring{width:66px;height:66px;border-radius:50%;border:2.5px solid #C98D2C;box-shadow:0 0 0 1.5px #fff inset,0 0 0 4px rgba(201,141,44,.35);background:#FFFDF8;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.seal .ring img{width:50px;height:50px;object-fit:contain}
+.seal .bd{position:absolute;left:50%;bottom:0;transform:translateX(-50%);background:var(--pw-navy-deep);color:var(--pw-gold);font-size:.5rem;font-weight:900;letter-spacing:.18em;border-radius:var(--pill);padding:2px 10px;white-space:nowrap}
+.medal-card{position:relative;overflow:hidden;text-align:center;padding:22px 18px 18px}
+.medal-card .cf{position:absolute;pointer-events:none}
+.stat3{display:flex;gap:8px;margin-top:14px}
+.stat3 div{flex:1;background:var(--pw-cream);border-radius:14px;padding:10px 4px}
+.stat3 .k{font-size:.58rem;font-weight:800;color:var(--pw-ink-faint)}
+.stat3 .v{font-family:var(--disp);font-weight:700;font-size:1.2rem;color:var(--pw-ink);margin-top:2px}
+.stat3 .s{font-size:.54rem;font-weight:700;color:var(--pw-ink-mute)}
+.wall{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;margin-top:14px}
+.wt{display:flex;flex-direction:column;align-items:center;gap:7px}
+.wt img{width:86px;height:86px;filter:drop-shadow(0 4px 8px rgba(92,62,39,.22))}
+.wt .lk{width:86px;height:86px;display:flex;align-items:center;justify-content:center}
+.wt .lk i{width:74px;height:74px;border-radius:50%;background:#EFE8DA;border:2px dashed #CBBFA8;display:flex;align-items:center;justify-content:center}
+.wt .nm{font-size:.64rem;font-weight:800;color:var(--pw-ink);text-align:center;line-height:1.35}
+.wt.off .nm{color:var(--pw-ink-mute)}
 .grade-hero{text-align:center;padding:26px 20px}
 .grade-name{font-family:var(--disp);font-weight:700;font-size:1.7rem;color:var(--pw-ink);margin-top:12px}
 .grade-score{font-size:.85rem;font-weight:800;color:var(--pw-ink-mute)}
@@ -142,20 +177,37 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 
   <!-- 賽後成績 -->
   <div id="resultView">
-    <div class="card grade-hero">
+    <div class="report">
+      <div class="report-in">
+        <div class="report-eb">PAWRADISE</div>
+        <div class="report-t">成 績 表</div>
+        <div class="report-sub" id="reportSub"></div>
+        <div style="margin-top:8px" id="reportRows"></div>
+        <div class="report-foot">
+          <div class="cm" id="reportComment"></div>
+          <div class="seal">
+            <div class="ring"><img src="../assets/pawradise-crest.png" alt="Pawradise"></div>
+            <div class="bd">2026 認證</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card medal-card" id="medalCard">
       <div id="medalIcon"></div>
       <div class="grade-name" id="gradeName"></div>
       <div class="grade-score" id="gradeScore"></div>
+      <div class="stat3">
+        <div><div class="k">總分</div><div class="v" id="stTotal"></div><div class="s">三關合計</div></div>
+        <div><div class="k">技能徽章</div><div class="v" id="stBadge"></div><div class="s" id="stBadgeSub"></div></div>
+        <div><div class="k">參加場次</div><div class="v" id="stSess" style="font-size:.82rem;line-height:1.5"></div><div class="s">2026 首屆</div></div>
+      </div>
     </div>
+
     <div class="card">
-      <h2>三關遊戲成績</h2>
-      <div class="score-row"><div class="head"><span>定力擂台大風吹</span><span class="pts" id="s1"></span></div><div class="score-bar"><div class="f" id="b1"></div></div></div>
-      <div class="score-row"><div class="head"><span>穿越誘惑使命必達</span><span class="pts" id="s2"></span></div><div class="score-bar"><div class="f" id="b2"></div></div></div>
-      <div class="score-row"><div class="head"><span>尋寶奇兵</span><span class="pts" id="s3"></span></div><div class="score-bar"><div class="f" id="b3"></div></div></div>
-    </div>
-    <div class="card">
-      <h2>六格技能榜</h2>
-      <div class="skills" id="skillGrid"></div>
+      <h2 style="text-align:center">技能徽章牆</h2>
+      <div style="text-align:center;font-size:.64rem;font-weight:700;color:var(--pw-ink-faint);margin-top:-8px" id="wallSub"></div>
+      <div class="wall" id="skillGrid"></div>
     </div>
     <div class="cert">
       <div style="font-size:1.8rem">🎓</div>
@@ -258,6 +310,37 @@ function tickCountdown(){
   el('cd-m').textContent = ('0' + Math.floor(diff % 3600000 / 60000)).slice(-2);
 }
 
+
+function escapeHtml(t){
+  return String(t).replace(/[&<>"]/g, function(c){
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+  });
+}
+
+// 彩帶：等第越高越熱鬧（優才生最密）
+function paintConfetti(grade){
+  var n = grade.indexOf('優才') === 0 ? 26 : (grade.indexOf('高材') === 0 ? 14 : 6);
+  var cols = ['#F4B860', '#F4A6B8', '#7FB2E5', '#A8C686', '#FFD98A'];
+  var card = el('medalCard'), html = '';
+  for (var i = 0; i < n; i++) {
+    var left = i % 2 === 0;
+    var x = 6 + ((i * 13) % 34);                 // 貼兩邊，唔壓中間啲字
+    var y = 12 + ((i * 37) % 300);
+    var c = cols[i % cols.length];
+    var rot = ((i * 47) % 70) - 35;
+    var sz = 7 + (i % 4);
+    var op = 0.75 - (i % 4) * 0.06;
+    var shape = (i % 3 === 0)
+      ? '<rect x="7" y="1" width="10" height="22" rx="3"></rect>'
+      : (i % 3 === 1 ? '<circle cx="12" cy="12" r="10"></circle>'
+                     : '<path d="M12 2l2.4 6.9H21l-5.4 4.2 2 7L12 15.8 6.4 20l2-7L3 8.9h6.6z"></path>');
+    html += '<svg class="cf" width="' + sz + '" height="' + sz + '" viewBox="0 0 24 24" fill="' + c +
+      '" style="top:' + y + 'px;' + (left ? 'left:' : 'right:') + x + 'px;opacity:' + op +
+      ';transform:rotate(' + rot + 'deg)">' + shape + '</svg>';
+  }
+  card.insertAdjacentHTML('afterbegin', html);
+}
+
 function medalSvg(grade){
   var c = grade === '模範生' ? ['#F0B94E', '#C98D2C'] :
           grade === '高材生' ? ['#C7CDD6', '#98A2B0'] :
@@ -271,26 +354,52 @@ function renderResult(d){
   el('resultView').style.display = 'block';
   el('medalIcon').innerHTML = medalSvg(r.grade);
   el('gradeName').textContent = r.grade;
-  el('gradeScore').textContent = '總分 ' + r.total + ' / 21' + (r.medal ? '・' + r.medal : '');
-  var scores = [
-    [r.g1 + (r.bonus[0] ? 1 : 0) + (r.bonus[1] ? 1 : 0), r.g1],
-    [r.g2 + (r.bonus[2] ? 1 : 0) + (r.bonus[3] ? 1 : 0), r.g2],
-    [r.g3 + (r.bonus[4] ? 1 : 0) + (r.bonus[5] ? 1 : 0), r.g3]
+  el('gradeScore').textContent = r.medal || '';
+  el('reportSub').textContent = '狗狗呈分試 2026 · ' + (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
+
+  var GAMES = [
+    { nm: '定力擂台大風吹', img: 'gt-level-1.png', base: r.g1, bon: [0, 1] },
+    { nm: '穿越誘惑使命必達', img: 'gt-level-2.png', base: r.g2, bon: [2, 3] },
+    { nm: '尋寶奇兵', img: 'gt-level-3.png', base: r.g3, bon: [4, 5] }
   ];
-  ['1', '2', '3'].forEach(function(n, i){
-    el('s' + n).textContent = scores[i][0] + ' / 7';
-    el('b' + n).style.width = Math.round(scores[i][0] / 7 * 100) + '%';
+  var rows = '';
+  GAMES.forEach(function(g){
+    var add = 0, notes = [];
+    g.bon.forEach(function(bi){ if (r.bonus[bi]) { add++; notes.push(SKILLS[bi] + ' +1'); } });
+    var pts = g.base + add;
+    rows += '<div class="rrow"><img src="../assets/' + g.img + '" alt="">' +
+      '<div style="flex:1"><div class="nm">' + g.nm + '</div>' +
+      '<div class="bar"><i style="width:' + Math.round(pts / 7 * 100) + '%"></i></div></div>' +
+      '<div class="rt"><b>' + pts + '</b><s> / 7</s>' +
+      (notes.length ? '<em>' + notes.join('・') + '</em>' : '') + '</div></div>';
   });
+  el('reportRows').innerHTML = rows;
+  el('reportComment').innerHTML = r.comment
+    ? '導師評語：<br>' + escapeHtml(r.comment)
+    : '導師評語將於下一堂親自交付。';
+
+  var unlocked = r.bonus.filter(Boolean).length;
+  el('stTotal').innerHTML = r.total + '<span style="font-size:.7rem;color:var(--pw-ink-faint)"> / 21</span>';
+  el('stBadge').textContent = unlocked;
+  el('stBadgeSub').textContent = unlocked === 6 ? '全部解鎖' : '共 6 枚';
+  el('stSess').textContent = d.sessionLabel || '';
+  paintConfetti(r.grade);
+
+  el('wallSub').textContent = '已解鎖 ' + unlocked + ' / 6 —— 每一個徽章都是可以在狗狗幼稚園儲到的能力';
   var grid = el('skillGrid');
   grid.innerHTML = '';
-  SKILLS.forEach(function(name, i){
+  // 米／啡／黑三種狗色隔住排，睇落更豐富
+  [0, 1, 4, 2, 3, 5].forEach(function(i){
     var on = r.bonus[i];
     var div = document.createElement('div');
-    div.className = 'skill ' + (on ? 'on' : 'off');
-    div.innerHTML = '<div class="st">' + (on ? '✅ 已解鎖' : '🔒 待解鎖') + '</div>' + name +
-      (on ? '' : '<div style="font-size:.6rem;margin-top:3px;color:#4A7BAF">→ ' + COURSES[i] + '可解鎖</div>');
+    div.className = 'wt' + (on ? '' : ' off');
+    div.innerHTML = (on
+      ? '<img src="../assets/gt-badge-' + (i + 1) + '.png" alt="">'
+      : '<div class="lk"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A8987E" stroke-width="2.2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></i></div>')
+      + '<div class="nm">' + SKILLS[i] + '</div>';
     grid.appendChild(div);
   });
+
   el('certName').textContent = d.dogName;
   el('certGroup').textContent = (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
   el('certGrade').textContent = r.grade;
