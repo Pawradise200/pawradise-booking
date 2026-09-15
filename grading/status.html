@@ -73,6 +73,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .report-eb{font-family:var(--disp);font-weight:600;font-size:.62rem;color:#C98D2C;letter-spacing:.28em;text-align:center}
 .report-t{font-family:var(--disp);font-weight:700;font-size:1.25rem;color:var(--pw-ink);text-align:center;margin-top:2px;letter-spacing:.16em}
 .report-sub{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin-top:2px}
+.ue-chip{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:#EDF3E2;color:var(--pw-sniff);border:1.5px solid #C6D9A8;font-size:.64rem;font-weight:900;border-radius:var(--pill);padding:5px 14px;letter-spacing:.04em}
 .rrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1.5px dashed var(--pw-cream-deep)}
 .rrow:last-child{border-bottom:none}
 .rrow img{width:52px;height:52px;flex-shrink:0}
@@ -234,6 +235,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
         <div class="report-eb">PAWRADISE</div>
         <div class="report-t">成 績 表</div>
         <div class="report-sub" id="reportSub"></div>
+        <div style="text-align:center"><span class="ue-chip" id="ueChip" style="display:none">🧭 Ultimate Explorer</span></div>
         <div style="margin-top:8px" id="reportRows"></div>
         <div class="report-foot">
           <div class="cm" id="reportComment"></div>
@@ -564,6 +566,7 @@ function renderResult(d){
   el('medalIcon').innerHTML = medalSvg(r.grade);
   el('gradeName').textContent = r.grade;
   el('gradeScore').textContent = r.medal || '';
+  if (d.ultimateExplorer) el('ueChip').style.display = 'inline-flex';
   el('reportSub').textContent = '狗狗呈分試 2026 · ' + (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
 
   var GAMES = [
