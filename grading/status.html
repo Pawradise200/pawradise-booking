@@ -51,10 +51,21 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .note-list{font-size:.78rem;font-weight:600;color:var(--pw-ink-soft);line-height:1.8}
 .how{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1.5px dashed var(--pw-cream-deep)}
 .how:last-child{border-bottom:none}
-.how img{width:48px;height:48px;flex-shrink:0;margin-top:2px}
+.how img{width:70px;height:70px;flex-shrink:0;margin-top:2px}
 .how .nm{font-weight:900;font-size:.8rem;color:var(--pw-ink)}
 .how .tx{font-size:.75rem;font-weight:600;color:var(--pw-ink-soft);line-height:1.7;margin-top:4px}
 .how .pr{font-size:.68rem;font-weight:800;color:var(--pw-sniff);margin-top:5px}
+.crop-mask{display:none;position:fixed;inset:0;background:rgba(31,53,82,.72);z-index:50;align-items:center;justify-content:center;padding:20px}
+.crop-box{background:var(--pw-paper);border-radius:var(--r-xl);padding:20px;width:100%;max-width:330px;box-shadow:var(--pop)}
+.crop-box h3{font-weight:900;font-size:.95rem;color:var(--pw-ink);text-align:center}
+.crop-box .tip{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin-top:3px}
+.crop-view{position:relative;width:260px;height:260px;margin:14px auto 0;border-radius:50%;overflow:hidden;background:var(--pw-cream-deep);touch-action:none;cursor:grab;box-shadow:inset 0 0 0 3px var(--pw-gold)}
+.crop-view img{position:absolute;transform-origin:0 0;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.crop-zoom{width:100%;margin-top:14px;accent-color:var(--pw-gold-deep)}
+.crop-btns{display:flex;gap:10px;margin-top:6px}
+.crop-btns button{flex:1;height:44px;border:none;border-radius:var(--pill);font-family:inherit;font-weight:900;font-size:.85rem;cursor:pointer}
+.btn-ok{background:var(--pw-gold);color:var(--pw-navy-deep)}
+.btn-no{background:var(--pw-cream);color:var(--pw-ink-mute)}
 .loading,.notfound{text-align:center;padding:70px 20px;font-weight:800;color:var(--pw-ink-mute)}
 /* 成績區 */
 .report{background:#FFFDF8;border:2.5px solid #E7C98F;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:5px;margin-top:16px}
@@ -64,7 +75,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .report-sub{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin-top:2px}
 .rrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1.5px dashed var(--pw-cream-deep)}
 .rrow:last-child{border-bottom:none}
-.rrow img{width:42px;height:42px;flex-shrink:0}
+.rrow img{width:52px;height:52px;flex-shrink:0}
 .rrow .mid{flex:1;min-width:0}
 .rrow .nm{font-weight:800;font-size:.8rem;color:var(--pw-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rrow .bar{height:7px;background:#F0E9DC;border-radius:var(--pill);overflow:hidden;margin-top:5px}
@@ -183,22 +194,22 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 
     <div class="card">
       <h2 style="margin-bottom:2px">三關玩法・出發前先看一次</h2>
-      <div style="font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);margin-bottom:8px">當日每關開始前司儀會再簡短講解，來到只管放鬆一起玩</div>
+      <div style="font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);margin-bottom:8px">三關不分先後，當日按現場安排輪流進行；每關開始前司儀都會再簡短講解</div>
       <div class="how">
         <img src="../assets/gt-level-1.png" alt="">
-        <div><div class="nm">第一關・定力擂台大風吹</div>
+        <div><div class="nm">定力擂台大風吹</div>
         <div class="tx">開始前由家長帶狗狗到自己的小墊坐好，然後回到加油席。干擾會一回合比一回合升級——玩具滾過、零食出現、腳步經過。四腳離墊就完成這一關，坐得越久分數越高。</div>
         <div class="pr">家長角色：坐在加油席安靜打氣，不用發任何口令。</div></div>
       </div>
       <div class="how">
         <img src="../assets/gt-level-2.png" alt="">
-        <div><div class="nm">第二關・穿越誘惑使命必達</div>
+        <div><div class="nm">穿越誘惑使命必達</div>
         <div class="tx">狗狗從起點出發，穿過放滿零食與玩具的跑道，四腳跳入終點呼拉圈就完成任務。中途分了心不要緊，回到路上繼續就可以。</div>
         <div class="pr">家長角色：站在終點呼喚狗狗名字——只可以叫名字，不用手勢和零食。</div></div>
       </div>
       <div class="how">
         <img src="../assets/gt-level-3.png" alt="">
-        <div><div class="nm">第三關・尋寶奇兵</div>
+        <div><div class="nm">尋寶奇兵</div>
         <div class="tx">場內收藏了三份寶藏，限時兩分鐘，狗狗單憑鼻子逐一尋回。全程不用提示，自己找到會有加分。</div>
         <div class="pr">家長角色：在起點旁等候，把舞台交給狗狗自己發揮。</div></div>
       </div>
@@ -268,6 +279,19 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
     <div class="save-hint">長按或截圖即可儲存分享你的電子證書</div>
     <a class="cta" id="photoBtn" href="#" target="_blank" rel="noopener" style="display:none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3552" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.6-2.4h4.8L16 6"/></svg>查看活動相片</a>
     <div class="card" id="followUp"></div>
+  </div>
+</div>
+
+<div class="crop-mask" id="cropMask">
+  <div class="crop-box">
+    <h3>調整頭像</h3>
+    <div class="tip">拖動相片移位，下面拉桿調整大小</div>
+    <div class="crop-view" id="cropView"><img id="cropImg" alt=""></div>
+    <input class="crop-zoom" id="cropZoom" type="range" min="100" max="300" value="100">
+    <div class="crop-btns">
+      <button class="btn-no" onclick="closeCrop()">取消</button>
+      <button class="btn-ok" id="cropOk" onclick="confirmCrop()">確定</button>
+    </div>
   </div>
 </div>
 
@@ -357,26 +381,112 @@ function render(d){
 }
 
 
+var CROP = { img: null, V: 260, base: 1, zoom: 1, x: 0, y: 0, drag: null };
+
 function uploadAvatar(ev){
   var f = ev.target.files && ev.target.files[0];
+  ev.target.value = '';
   if (!f) return;
   var img = new Image();
-  img.onload = function(){
-    var size = 256, c = document.createElement('canvas');
-    c.width = size; c.height = size;
-    var ctx = c.getContext('2d');
-    var s = Math.min(img.width, img.height);
-    ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
-    var dataUrl = c.toDataURL('image/jpeg', 0.82);
-    fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'avatar', t: token, image: dataUrl }) })
-      .then(function(r){ return r.json(); })
-      .then(function(res){
-        if (res.ok) { var av = el('dogAva'); av.textContent = ''; av.style.backgroundImage = 'url(' + dataUrl + ')'; }
-        else { alert(res.message || '頭像功能即將開放，請遲啲再試'); }
-      }).catch(function(){ alert('網絡出錯，請再試一次'); });
-  };
+  img.onload = function(){ openCrop(img); };
+  img.onerror = function(){ alert('讀取不到這張相片，請換一張再試。'); };
   img.src = URL.createObjectURL(f);
+}
+
+function openCrop(img){
+  CROP.img = img;
+  CROP.base = Math.max(CROP.V / img.width, CROP.V / img.height);
+  CROP.zoom = 1;
+  var ci = el('cropImg');
+  ci.src = img.src;
+  ci.style.width = img.width + 'px';
+  ci.style.height = img.height + 'px';
+  // 置中
+  CROP.x = (CROP.V - img.width * CROP.base) / 2;
+  CROP.y = (CROP.V - img.height * CROP.base) / 2;
+  el('cropZoom').value = 100;
+  applyCrop();
+  el('cropMask').style.display = 'flex';
+  bindCropDrag();
+}
+
+function scaleNow(){ return CROP.base * CROP.zoom; }
+
+function clampCrop(){
+  var sc = scaleNow();
+  var w = CROP.img.width * sc, h = CROP.img.height * sc;
+  CROP.x = Math.min(0, Math.max(CROP.V - w, CROP.x));
+  CROP.y = Math.min(0, Math.max(CROP.V - h, CROP.y));
+}
+
+function applyCrop(){
+  clampCrop();
+  el('cropImg').style.transform = 'translate(' + CROP.x + 'px,' + CROP.y + 'px) scale(' + scaleNow() + ')';
+}
+
+function bindCropDrag(){
+  var view = el('cropView');
+  if (view.dataset.bound) return;
+  view.dataset.bound = '1';
+  function pt(e){ var t = e.touches ? e.touches[0] : e; return { x: t.clientX, y: t.clientY }; }
+  function down(e){ CROP.drag = pt(e); CROP.dx = CROP.x; CROP.dy = CROP.y; }
+  function move(e){
+    if (!CROP.drag) return;
+    e.preventDefault();
+    var q = pt(e);
+    CROP.x = CROP.dx + (q.x - CROP.drag.x);
+    CROP.y = CROP.dy + (q.y - CROP.drag.y);
+    applyCrop();
+  }
+  function up(){ CROP.drag = null; }
+  view.addEventListener('mousedown', down);
+  view.addEventListener('touchstart', down, { passive: true });
+  window.addEventListener('mousemove', move);
+  window.addEventListener('touchmove', move, { passive: false });
+  window.addEventListener('mouseup', up);
+  window.addEventListener('touchend', up);
+  el('cropZoom').addEventListener('input', function(){
+    var prev = scaleNow();
+    CROP.zoom = parseInt(this.value, 10) / 100;
+    var next = scaleNow();
+    // 以中心為基準縮放，唔會跳位
+    CROP.x = CROP.V / 2 - (CROP.V / 2 - CROP.x) * (next / prev);
+    CROP.y = CROP.V / 2 - (CROP.V / 2 - CROP.y) * (next / prev);
+    applyCrop();
+  });
+}
+
+function closeCrop(){ el('cropMask').style.display = 'none'; CROP.img = null; }
+
+function confirmCrop(){
+  if (!CROP.img) return;
+  var sc = scaleNow(), size = 256;
+  var c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  var ctx = c.getContext('2d');
+  ctx.fillStyle = '#F5F0E8';
+  ctx.fillRect(0, 0, size, size);
+  ctx.drawImage(CROP.img, -CROP.x / sc, -CROP.y / sc, CROP.V / sc, CROP.V / sc, 0, 0, size, size);
+  var dataUrl = c.toDataURL('image/jpeg', 0.82);
+  var btn = el('cropOk');
+  btn.disabled = true; btn.textContent = '上載中…';
+  fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'avatar', t: token, image: dataUrl }) })
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var res = null;
+      try { res = JSON.parse(txt); } catch (e) { res = null; }
+      btn.disabled = false; btn.textContent = '確定';
+      // 轉址失敗時後台其實多數已經存咗——照顯示新頭像，唔好嚇家長
+      var av = el('dogAva');
+      av.textContent = ''; av.style.backgroundImage = 'url(' + dataUrl + ')';
+      closeCrop();
+      if (res && res.ok === false && res.message) alert(res.message);
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = '確定';
+      alert('網絡連線異常，頭像可能未儲存，請稍後再試一次。');
+    });
 }
 
 function tickCountdown(){
