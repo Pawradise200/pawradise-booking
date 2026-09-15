@@ -130,6 +130,9 @@ textarea{min-height:64px;resize:vertical}
 .price-now{font-family:var(--disp);font-weight:700;font-size:1.3rem;color:var(--pw-gold-deep)}
 .price-tag{display:inline-block;font-size:.62rem;font-weight:800;color:var(--pw-success);background:var(--pw-success-bg);border-radius:var(--pw-r-pill);padding:2px 9px}
 .quota-line{font-size:.72rem;font-weight:800;color:var(--pw-gold-deep);margin-top:8px}
+.quota-chip{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font-size:.72rem;font-weight:900;border-radius:var(--pw-r-pill);padding:5px 13px;background:#DCFCE7;color:#15803D}
+.quota-chip.low{background:#FEF9C3;color:#A16207}
+.quota-chip.full{background:#FEE2E2;color:#B91C1C}
 .safe-box{display:flex;flex-direction:column;gap:14px;background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-lg);padding:16px;margin-top:18px}
 .safe-box .st{font-weight:900;font-size:.82rem;color:var(--pw-ink)}
 .safe-box .sh{font-size:.7rem;font-weight:600;color:var(--pw-ink-faint)}
@@ -327,6 +330,7 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
           <div class="p1 public-only">下晝公眾場・10.24（六）・14:30–15:00 報到</div>
           <div class="p1s academy-only">每位狗狗同學・含頒獎典禮及等第大合照・報告將於恆常課堂講解</div>
           <div class="p1s public-only">每位狗狗同學・含頒獎典禮及新同學見面禮</div>
+          <div class="quota-chip" id="quotaInline" style="display:none"></div>
         </div>
         <div class="price-col">
           <span class="price-old" id="priceOld">原價 $499</span>
@@ -564,8 +568,21 @@ function loadQuota(){
     var left = IS_ACADEMY ? q.academyLeft : q.publicLeft;
     var open = q.open && (IS_ACADEMY || q.publicOpen);
     var line = document.getElementById('quotaLine');
-    if (!open) { line.textContent = '報名即將開放，敬請留意'; document.getElementById('submitBtn').disabled = true; return; }
+    if (!open) {
+      line.textContent = '報名即將開放，敬請留意';
+      var c0 = document.getElementById('quotaInline');
+      if (c0) { c0.style.display = 'inline-flex'; c0.className = 'quota-chip low'; c0.textContent = '報名即將開放'; }
+      document.getElementById('submitBtn').disabled = true; return;
+    }
     line.textContent = left > 0 ? ('剩餘名額：' + left + ' 位') : '名額已滿——仍可登記候補';
+    var chip = document.getElementById('quotaInline');
+    if (chip) {
+      chip.style.display = 'inline-flex';
+      chip.className = 'quota-chip' + (left <= 0 ? ' full' : (left <= 5 ? ' low' : ''));
+      chip.textContent = left > 0
+        ? ('尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : ''))
+        : '名額已滿・仍可登記候補';
+    }
   }).catch(function(){});
 }
 loadQuota();
