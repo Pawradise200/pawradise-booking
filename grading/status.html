@@ -266,15 +266,43 @@ if (!token || !API_URL) {
   el('loading').style.display = 'none';
   el('notFound').style.display = 'block';
 } else {
-  fetch(API_URL + '?t=' + encodeURIComponent(token))
-    .then(function(r){ return r.json(); })
-    .then(render)
-    .catch(function(){ el('loading').style.display = 'none'; el('notFound').style.display = 'block'; });
+  loadStatus(0);
+}
+
+// Google 轉址偶爾會失敗並回傳 HTML／空白（唔係「搵唔到」）——要重試，
+// 唔可以一次失敗就話家長條連結無效。
+function loadStatus(tries){
+  fetch(API_URL + '?t=' + encodeURIComponent(token) + '&_=' + tries + '-' + (performance.now() | 0))
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var d = null;
+      try { d = JSON.parse(txt); } catch (e) { d = null; }
+      if (d && d.ok) { render(d); return; }
+      if (d && d.ok === false && d.error === 'not_found') { showNotFound(); return; }
+      retryLoad(tries);
+    })
+    .catch(function(){ retryLoad(tries); });
+}
+
+function retryLoad(tries){
+  if (tries < 3) {
+    el('loading').textContent = '載入中⋯⋯（重試第 ' + (tries + 1) + ' 次）';
+    setTimeout(function(){ loadStatus(tries + 1); }, 1500 + tries * 1500);
+    return;
+  }
+  el('loading').style.display = 'none';
+  el('notFound').innerHTML = '暫時載入不到你的同學頁。<br>請稍後重新整理此頁，或 WhatsApp 9459 6420 與我們聯絡。';
+  el('notFound').style.display = 'block';
+}
+
+function showNotFound(){
+  el('loading').style.display = 'none';
+  el('notFound').style.display = 'block';
 }
 
 function render(d){
   el('loading').style.display = 'none';
-  if (!d.ok) { el('notFound').style.display = 'block'; return; }
+  if (!d.ok) { showNotFound(); return; }
 
   el('pageTitle').textContent = d.dogName + ' 的同學頁 🎒';
   el('pageSub').textContent = '報名編號 ' + d.regNo;
