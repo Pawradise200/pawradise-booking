@@ -2152,14 +2152,39 @@ if (_demo) {
     } else { el.textContent = '名額已滿・可登記候補'; style = 'background:#FEE2E2;color:#B91C1C'; }
     el.setAttribute('style', el.getAttribute('style').replace('display:none', 'display:inline-block') + ';' + style);
   }
-  function load(tries){
-  fetch(API + '?action=quota&_=' + tries + '-' + (performance.now() | 0)).then(function(r){ return r.text(); }).then(function(t){
-    var q = null; try { q = JSON.parse(t); } catch (e) { q = null; }
-    if (!q || !q.ok) { if (tries < 8) setTimeout(function(){ load(tries + 1); }, 900 + tries * 400); else useCache(); return; }
-    paint(q);
-  }).catch(function(){ if (tries < 8) setTimeout(function(){ load(tries + 1); }, 900 + tries * 400); else useCache(); });
+  // 名額查詢：同時發多個請求（Google 轉址失敗率高，齊頭賽跑最快攞到結果）
+  function raceQuota(url, onOk, onFail){
+    var done = false, round = 0;
+    function burst(){
+      round++;
+      var n = 5;
+      for (var i = 0; i < n; i++) {
+        (function(k){
+          fetch(url + '&_=' + round + '-' + k + '-' + (performance.now() | 0))
+            .then(function(r){ return r.text(); })
+            .then(function(t){
+              if (done) return;
+              var q = null;
+              try { q = JSON.parse(t); } catch (e) { return; }
+              if (q && q.ok) { done = true; onOk(q); }
+            })
+            .catch(function(){});
+        })(i);
+      }
+      if (round < 4) setTimeout(function(){ if (!done) burst(); }, 2500);
+      else setTimeout(function(){ if (!done) onFail(); }, 2500);
+    }
+    burst();
   }
-  load(0);
+  var el0 = document.getElementById('gtQuota');
+  if (el0) { el0.setAttribute('style', el0.getAttribute('style').replace('display:none','display:inline-block') + ';background:#FEF9C3;color:#A16207'); el0.textContent = '名額查詢中⋯⋯'; }
+  raceQuota(API + '?action=quota', paint, function(){
+    var c = null;
+    try { c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null'); } catch (e) {}
+    if (c && c.ok) { paint(c); return; }
+    var el = document.getElementById('gtQuota');
+    if (el) el.textContent = '名額請向我們查詢';
+  });
 })();
 </script>
 </body>

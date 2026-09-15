@@ -561,31 +561,51 @@ document.getElementById('breed').addEventListener('change', function(){
 });
 
 // 名額顯示
-function loadQuota(tries){
-  tries = tries || 0;
+// 名額查詢：同時發多個請求（Google 轉址失敗率高，齊頭賽跑最快攞到結果）
+function raceQuota(url, onOk, onFail){
+  var done = false, round = 0;
+  function burst(){
+    round++;
+    var n = 5;
+    for (var i = 0; i < n; i++) {
+      (function(k){
+        fetch(url + '&_=' + round + '-' + k + '-' + (performance.now() | 0))
+          .then(function(r){ return r.text(); })
+          .then(function(t){
+            if (done) return;
+            var q = null;
+            try { q = JSON.parse(t); } catch (e) { return; }
+            if (q && q.ok) { done = true; onOk(q); }
+          })
+          .catch(function(){});
+      })(i);
+    }
+    if (round < 4) setTimeout(function(){ if (!done) burst(); }, 2500);
+    else setTimeout(function(){ if (!done) onFail(); }, 2500);
+  }
+  burst();
+}
+
+function loadQuota(){
   if (!API_URL) { document.getElementById('quotaLine').textContent = ''; return; }
-  // Google 轉址偶爾回傳 HTML，唔可以一次失敗就當冇名額——最多重試 3 次
-  fetch(API_URL + '?action=quota&_=' + tries + '-' + (performance.now() | 0))
-    .then(function(r){ return r.text(); })
-    .then(function(txt){
-      var q = null;
-      try { q = JSON.parse(txt); } catch (e) { q = null; }
-      if (!q || !q.ok) {
-        if (tries < 8) setTimeout(function(){ loadQuota(tries + 1); }, 900 + tries * 400); else useCachedQuota();
-        return;
-      }
-      try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {}
-      paintQuota(q);
-    })
-    .catch(function(){ if (tries < 8) setTimeout(function(){ loadQuota(tries + 1); }, 900 + tries * 400); else useCachedQuota(); });
+  var line = document.getElementById('quotaLine');
+  var chip = document.getElementById('quotaInline');
+  line.textContent = '名額查詢中⋯⋯';
+  if (chip) { chip.style.display = 'inline-flex'; chip.className = 'quota-chip low'; chip.textContent = '名額查詢中⋯⋯'; }
+  raceQuota(API_URL + '?action=quota',
+    function(q){ try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {} paintQuota(q); },
+    function(){ useCachedQuota(); });
 }
 
 function useCachedQuota(){
-  // 連續失敗時用上次成功嘅數字，好過完全唔顯示
-  try {
-    var c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null');
-    if (c && c.ok) paintQuota(c);
-  } catch (e) {}
+  // 全部失敗：有上次成功嘅數字就用返，冇就唔好留住「查詢中」誤導家長
+  var c = null;
+  try { c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null'); } catch (e) {}
+  if (c && c.ok) { paintQuota(c); return; }
+  var line = document.getElementById('quotaLine');
+  var chip = document.getElementById('quotaInline');
+  if (line) line.textContent = '';
+  if (chip) { chip.className = 'quota-chip low'; chip.textContent = '名額請向我們查詢'; }
 }
 
 function paintQuota(q){
