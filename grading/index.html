@@ -432,35 +432,51 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
         <label class="checkline"><input type="checkbox" id="mediaConsent"><span>本人同意活動當日的攝影及錄影片段，可用於 Pawradise 宣傳用途（狗狗上鏡授權）<span class="req"> *</span></span></label>
         <div class="terms-box">
           <div class="terms-head" onclick="toggleTerms()">
-            <span>📋 活動細則</span>
+            <span>📋 活動細則及條款</span>
             <span class="tg" id="termsToggle">展開閱讀 ▾</span>
           </div>
           <div class="terms-body" id="termsBody">
-            <h4>報到與時間</h4>
+            <h4>一、報到與時間</h4>
             ・請於指定報到時間內完成報到，不設提早入場。<br>
             ・遲到而未能參與已開始的關卡，恕不另行安排補玩。
-            <h4>當日安排</h4>
+            <h4>二、家長責任及風險承擔</h4>
+            ・家長須於活動全程看管及控制自己的狗狗，不得將狗狗交予非本校工作人員照顧，亦不得擅自離開場地。<br>
+            ・狗隻群體活動本身存在追逐、碰撞、爭執、受驚、走失或受傷的固有風險。報名即表示家長已理解並自願承擔上述風險。<br>
+            ・如狗狗因自身健康狀況、行為反應，或家長看管不足而受傷、患病或走失，本校不承擔賠償責任。<br>
+            ・如狗狗對他人、其他狗隻或場地財物造成傷害或損毀，須由其家長承擔全部責任及賠償。<br>
+            ・如狗狗於活動期間需要緊急獸醫治療而未能即時聯絡家長，本校可代為安排送診，有關費用由家長承擔。
+            <h4>三、費用與退款</h4>
+            ・報名費用一經繳付，恕不退還，亦不可轉讓予他人。<br>
+            ・如活動因天氣或本校安排而改期，已繳費用可轉至改期後的場次；家長如未能出席改期場次，費用不予退還。<br>
+            ・如狗狗因不符合入場資格而未能參加，已繳費用不予退還。
+            <h4>四、當日安排</h4>
             ・全程請為狗狗使用拖繩，遊戲進行時由導師接手。<br>
             ・觀賞其他同學進行遊戲時，請保持安靜，避免影響場上狗狗。<br>
-            ・導師有權按狗狗當日狀態調整參加安排，或在狗狗出現壓力反應時暫停其參與。
-            <h4>健康與資格</h4>
+            ・導師有權按狗狗當日狀態調整參加安排，或在狗狗出現壓力反應時暫停其參與。<br>
+            ・請即時清理狗狗的排泄物。<br>
+            ・請勿餵飼其他同學的狗狗，部分狗狗有食物敏感。<br>
+            ・如有同行小朋友，須由成人全程照顧，不可自行接觸其他狗狗。<br>
+            ・本校保留調整活動流程、賽制及時間表的權利；如有爭議，本校保留最終決定權。
+            <h4>五、健康與入場資格</h4>
             ・報名後請以 WhatsApp 補交狗狗有效狗牌及疫苗針卡照片，未補交者不可入場。<br>
             ・本活動不接受《危險狗隻規例》所列犬種報名。<br>
             ・狗狗當日身體不適，請聯絡我們安排改期。<br>
-            ・未絕育的女生如賽日前後一週遇上發情期，請聯絡我們安排改期。
-            <h4>天氣</h4>
-            ・如當日上午懸掛八號風球或黑色暴雨警告，活動將改期並另行通知。
-            <h4>相片及影片</h4>
-            ・活動當日的相片及影片可能用於 Pawradise 宣傳用途，詳見上鏡授權一項。
+            ・未絕育的女生如賽日前後一週遇上發情期，請聯絡我們安排改期。<br>
+            ・本校有權拒絕健康狀況異常、出現攻擊行為或未能提供有效證明文件的狗狗入場。
+            <h4>六、天氣</h4>
+            ・如當日上午懸掛八號或以上熱帶氣旋警告信號、黑色暴雨警告信號，活動將改期並另行通知。
+            <h4>七、相片、影片及個人資料</h4>
+            ・活動當日的相片及影片可能用於 Pawradise 宣傳用途，詳見上鏡授權一項。<br>
+            ・家長提供的個人資料只用於本活動的報名、聯絡及活動後跟進，不會提供予第三方。
           </div>
         </div>
-        <label class="checkline"><input type="checkbox" id="termsConsent" disabled><span>本人已閱讀並同意上述活動細則<span class="req"> *</span></span></label>
+        <label class="checkline"><input type="checkbox" id="termsConsent" disabled><span>本人已閱讀並同意上述活動細則及條款<span class="req"> *</span></span></label>
         <div class="lock-hint" id="termsLockHint">請先展開閱讀活動細則</div>
       </div>
 
       <div class="warn-box">📌 報名後請以 WhatsApp 補交狗狗有效狗牌及疫苗針卡照片。本活動不接受《危險狗隻規例》所列犬種報名。</div>
       <div class="err-box" id="errBox"></div>
-      <div class="proc-box" id="procBox"><div class="spin"></div><div id="procText">報名處理中，請稍候⋯⋯（約需 5–15 秒）<br>請唔好重複撳，亦唔好關閉此頁</div></div>
+      <div class="proc-box" id="procBox"><div class="spin"></div><div id="procText">正在處理報名，約需 5–15 秒。<br>請勿重複提交或關閉此頁。</div></div>
       <button class="submit-btn" id="submitBtn" onclick="submitForm()">提交報名</button>
       <div class="hint" style="text-align:center;margin-top:10px">提交後會顯示付款指示；付款確認後你會收到報名成功電郵及同學專屬頁連結</div>
     </form>
@@ -592,13 +608,13 @@ function submitForm(){
     mediaConsent: document.getElementById('mediaConsent').checked,
     termsConsent: document.getElementById('termsConsent').checked
   };
-  if (!p.parentName || !p.phone || !p.email || !p.dogName || !breedSel.value) { showErr('請填齊家長姓名、電話、電郵、狗狗名字及品種'); return; }
+  if (!p.parentName || !p.phone || !p.email || !p.dogName || !breedSel.value) { showErr('請填寫家長姓名、電話、電郵、狗狗名字及品種。'); return; }
   if (!IS_ACADEMY) {
-    if (!p.age || !p.neutered) { showErr('請選擇狗狗年齡及絕育狀況'); return; }
-    if (!p.dogReaction || !p.stranger || !p.guarding || !p.foodAllergy || !p.attackHistory) { showErr('請完成安全評估每一項'); return; }
+    if (!p.age || !p.neutered) { showErr('請選擇狗狗年齡及絕育狀況。'); return; }
+    if (!p.dogReaction || !p.stranger || !p.guarding || !p.foodAllergy || !p.attackHistory) { showErr('請完成安全評估的每一項。'); return; }
   }
-  if (!p.mediaConsent || !p.termsConsent) { showErr('請剔選上鏡授權及活動細則同意'); return; }
-  if (!API_URL) { showErr('報名系統即將開放，請稍後再試或 WhatsApp 我們'); return; }
+  if (!p.mediaConsent || !p.termsConsent) { showErr('請確認上鏡授權及活動細則。'); return; }
+  if (!API_URL) { showErr('報名系統即將開放，請稍後再試，或 WhatsApp 9459 6420 聯絡我們。'); return; }
 
   startProcessing();
   fetch(API_URL, {
@@ -622,7 +638,7 @@ function submitForm(){
 
 // 提交後查證：後台真係收到就照出付款畫面，避免家長重複報名
 function verifyAfterSubmit(p, tries){
-  setProcText('報名已送出，正在確認結果⋯⋯請稍候，唔好重複提交');
+  setProcText('報名已送出，正在確認結果，請稍候。<br>請勿重複提交。');
   var url = API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&dog=' + encodeURIComponent(p.dogName);
   setTimeout(function(){
     fetch(url).then(function(r){ return r.text(); }).then(function(txt){
@@ -637,7 +653,7 @@ function verifyAfterSubmit(p, tries){
 function retryOrFail(p, tries){
   if (tries < 2) { verifyAfterSubmit(p, tries + 1); return; }
   stopProcessing(true);
-  showErr('未能確認報名結果，請唔好重複提交——請 WhatsApp 我們 9459 6420 核對，我們會即時跟進');
+  showErr('未能即時確認報名結果。請勿重複提交，請 WhatsApp 9459 6420 與我們核對，我們會立即跟進。');
 }
 
 function startProcessing(){

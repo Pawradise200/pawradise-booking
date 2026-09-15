@@ -88,6 +88,17 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .wt .lk i{width:74px;height:74px;border-radius:50%;background:#EFE8DA;border:2px dashed #CBBFA8;display:flex;align-items:center;justify-content:center}
 .wt .nm{font-size:.64rem;font-weight:800;color:var(--pw-ink);text-align:center;line-height:1.35}
 .wt.off .nm{color:var(--pw-ink-mute)}
+.board{margin-top:16px}
+.board .bh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.board .bt{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--pw-ink)}
+.board .bn2{font-size:.56rem;font-weight:800;color:var(--pw-ink-faint);text-align:right;line-height:1.4}
+.brow{display:flex;align-items:center;gap:10px;font-size:.75rem;font-weight:800;color:var(--pw-ink);border-radius:10px;padding:6px 8px;border:1.5px solid transparent}
+.brow.me{background:#FFF6E4;border:1.5px dashed var(--pw-gold)}
+.brow .rk{width:24px;flex-shrink:0}
+.brow .bd2{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .vl{color:var(--pw-gold-deep);flex-shrink:0}
+.board .rows{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.board .soon{margin-top:10px;background:var(--pw-cream-soft);border:1.5px dashed var(--pw-cream-deep);border-radius:12px;padding:16px;text-align:center;font-size:.72rem;font-weight:700;color:var(--pw-ink-mute);line-height:1.7}
 .grade-hero{text-align:center;padding:26px 20px}
 .grade-name{font-family:var(--disp);font-weight:700;font-size:1.7rem;color:var(--pw-ink);margin-top:12px}
 .grade-score{font-size:.85rem;font-weight:800;color:var(--pw-ink-mute)}
@@ -123,7 +134,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 
 <div class="wrap">
   <div class="loading" id="loading">載入中⋯⋯</div>
-  <div class="notfound" id="notFound">搵唔到呢個同學頁——請確認連結完整，或 WhatsApp 我們查詢（9459 6420）</div>
+  <div class="notfound" id="notFound">找不到此同學頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
 
   <!-- 已確認（賽前） -->
   <div id="confirmedView">
@@ -210,6 +221,14 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
       <h2 style="text-align:center">技能徽章牆</h2>
       <div style="text-align:center;font-size:.64rem;font-weight:700;color:var(--pw-ink-faint);margin-top:-8px" id="wallSub"></div>
       <div class="wall" id="skillGrid"></div>
+    </div>
+    <div class="card board" id="boardTotals">
+      <div class="bh"><div class="bt">犬種積分榜</div><div class="bn2">總分累積<br>通往犬種隊際盃</div></div>
+      <div id="btRows"></div>
+    </div>
+    <div class="card board" id="boardAvg">
+      <div class="bh"><div class="bt">平均實力榜</div><div class="bn2">每位同學平均分<br>罕見品種一樣有舞台</div></div>
+      <div id="baRows"></div>
     </div>
     <div class="cert">
       <div style="font-size:1.8rem">🎓</div>
@@ -313,6 +332,28 @@ function tickCountdown(){
 }
 
 
+function renderBoards(d){
+  var b = d.boards || { published: false, totals: [], avg: [] };
+  var MEDALS = ['🥇', '🥈', '🥉'];
+  function paint(target, list, suffix){
+    if (!b.published || !list.length) {
+      el(target).innerHTML = '<div class="soon">首屆賽事尚未舉行，成績公佈後這裡會列出各犬種的排名。<br>' +
+        (d.breed ? d.breed + ' 的分數，就由 ' + d.dogName + ' 開始累積。' : '') + '</div>';
+      return;
+    }
+    var html = '<div class="rows">';
+    list.forEach(function(row, i){
+      var me = row.breed === d.breed;
+      html += '<div class="brow' + (me ? ' me' : '') + '"><span class="rk">' + (MEDALS[i] || (i + 1)) + '</span>' +
+        '<span class="bd2">' + escapeHtml(row.breed) + (me ? '（' + escapeHtml(d.dogName) + ' 在此）' : '') + '</span>' +
+        '<span class="vl">' + row.value + suffix + '</span></div>';
+    });
+    el(target).innerHTML = html + '</div>';
+  }
+  paint('btRows', b.totals, ' 分');
+  paint('baRows', b.avg, ' 分');
+}
+
 function escapeHtml(t){
   return String(t).replace(/[&<>"]/g, function(c){
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -387,6 +428,7 @@ function renderResult(d){
   el('stSess').textContent = String(d.sessionLabel || '').replace('上晝', '').replace('下晝', '');
   paintConfetti(r.grade);
 
+  renderBoards(d);
   el('wallSub').textContent = '已解鎖 ' + unlocked + ' / 6 —— 每一個徽章都是可以在狗狗幼稚園儲到的能力';
   var grid = el('skillGrid');
   grid.innerHTML = '';
