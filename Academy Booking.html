@@ -2156,17 +2156,7 @@ if (_demo) {
   fetch(API + '?action=quota&_=' + tries + '-' + (performance.now() | 0)).then(function(r){ return r.text(); }).then(function(t){
     var q = null; try { q = JSON.parse(t); } catch (e) { q = null; }
     if (!q || !q.ok) { if (tries < 8) setTimeout(function(){ load(tries + 1); }, 900 + tries * 400); else useCache(); return; }
-    try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {}
-    var el = document.getElementById('gtQuota');
-    if (!el) return;
-    var left = q.academyLeft;
-    var style;
-    if (!q.open) { el.textContent = '報名即將開放'; style = 'background:#FEF9C3;color:#A16207'; }
-    else if (left > 0) {
-      el.textContent = '尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : '');
-      style = left <= 5 ? 'background:#FEF9C3;color:#A16207' : 'background:#DCFCE7;color:#15803D';
-    } else { el.textContent = '名額已滿・可登記候補'; style = 'background:#FEE2E2;color:#B91C1C'; }
-    el.setAttribute('style', el.getAttribute('style').replace('display:none', 'display:inline-block') + ';' + style);
+    paint(q);
   }).catch(function(){ if (tries < 8) setTimeout(function(){ load(tries + 1); }, 900 + tries * 400); else useCache(); });
   }
   load(0);
