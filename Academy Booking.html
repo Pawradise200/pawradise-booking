@@ -2137,10 +2137,26 @@ if (_demo) {
 // 呈分試名額（活動完結後連同上面入口一併移除）
 (function(){
   var API = 'https://script.google.com/macros/s/AKfycbwVzJhnMvs2o0aTjGx8jzSNyATIiBfkPjus2VN6beyw9clpUhjsQrK6PYqJX4CH7n3m/exec';
+  function useCache(){
+    try { var c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null'); if (c && c.ok) paint(c); } catch (e) {}
+  }
+  function paint(q){
+    try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {}
+    var el = document.getElementById('gtQuota');
+    if (!el) return;
+    var left = q.academyLeft, style;
+    if (!q.open) { el.textContent = '報名即將開放'; style = 'background:#FEF9C3;color:#A16207'; }
+    else if (left > 0) {
+      el.textContent = '尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : '');
+      style = left <= 5 ? 'background:#FEF9C3;color:#A16207' : 'background:#DCFCE7;color:#15803D';
+    } else { el.textContent = '名額已滿・可登記候補'; style = 'background:#FEE2E2;color:#B91C1C'; }
+    el.setAttribute('style', el.getAttribute('style').replace('display:none', 'display:inline-block') + ';' + style);
+  }
   function load(tries){
   fetch(API + '?action=quota&_=' + tries + '-' + (performance.now() | 0)).then(function(r){ return r.text(); }).then(function(t){
     var q = null; try { q = JSON.parse(t); } catch (e) { q = null; }
-    if (!q || !q.ok) { if (tries < 3) setTimeout(function(){ load(tries + 1); }, 1200 + tries * 1200); return; }
+    if (!q || !q.ok) { if (tries < 8) setTimeout(function(){ load(tries + 1); }, 900 + tries * 400); else useCache(); return; }
+    try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {}
     var el = document.getElementById('gtQuota');
     if (!el) return;
     var left = q.academyLeft;
@@ -2151,7 +2167,7 @@ if (_demo) {
       style = left <= 5 ? 'background:#FEF9C3;color:#A16207' : 'background:#DCFCE7;color:#15803D';
     } else { el.textContent = '名額已滿・可登記候補'; style = 'background:#FEE2E2;color:#B91C1C'; }
     el.setAttribute('style', el.getAttribute('style').replace('display:none', 'display:inline-block') + ';' + style);
-  }).catch(function(){ if (tries < 3) setTimeout(function(){ load(tries + 1); }, 1200 + tries * 1200); });
+  }).catch(function(){ if (tries < 8) setTimeout(function(){ load(tries + 1); }, 900 + tries * 400); else useCache(); });
   }
   load(0);
 })();

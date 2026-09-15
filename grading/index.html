@@ -571,12 +571,21 @@ function loadQuota(tries){
       var q = null;
       try { q = JSON.parse(txt); } catch (e) { q = null; }
       if (!q || !q.ok) {
-        if (tries < 3) setTimeout(function(){ loadQuota(tries + 1); }, 1200 + tries * 1200);
+        if (tries < 8) setTimeout(function(){ loadQuota(tries + 1); }, 900 + tries * 400); else useCachedQuota();
         return;
       }
+      try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {}
       paintQuota(q);
     })
-    .catch(function(){ if (tries < 3) setTimeout(function(){ loadQuota(tries + 1); }, 1200 + tries * 1200); });
+    .catch(function(){ if (tries < 8) setTimeout(function(){ loadQuota(tries + 1); }, 900 + tries * 400); else useCachedQuota(); });
+}
+
+function useCachedQuota(){
+  // 連續失敗時用上次成功嘅數字，好過完全唔顯示
+  try {
+    var c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null');
+    if (c && c.ok) paintQuota(c);
+  } catch (e) {}
 }
 
 function paintQuota(q){
