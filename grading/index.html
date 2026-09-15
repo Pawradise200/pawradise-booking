@@ -561,9 +561,26 @@ document.getElementById('breed').addEventListener('change', function(){
 });
 
 // 名額顯示
-function loadQuota(){
+function loadQuota(tries){
+  tries = tries || 0;
   if (!API_URL) { document.getElementById('quotaLine').textContent = ''; return; }
-  fetch(API_URL + '?action=quota').then(function(r){ return r.json(); }).then(function(q){
+  // Google 轉址偶爾回傳 HTML，唔可以一次失敗就當冇名額——最多重試 3 次
+  fetch(API_URL + '?action=quota&_=' + tries + '-' + (performance.now() | 0))
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var q = null;
+      try { q = JSON.parse(txt); } catch (e) { q = null; }
+      if (!q || !q.ok) {
+        if (tries < 3) setTimeout(function(){ loadQuota(tries + 1); }, 1200 + tries * 1200);
+        return;
+      }
+      paintQuota(q);
+    })
+    .catch(function(){ if (tries < 3) setTimeout(function(){ loadQuota(tries + 1); }, 1200 + tries * 1200); });
+}
+
+function paintQuota(q){
+  {
     if (!q.ok) return;
     var left = IS_ACADEMY ? q.academyLeft : q.publicLeft;
     var open = q.open && (IS_ACADEMY || q.publicOpen);
@@ -583,7 +600,7 @@ function loadQuota(){
         ? ('尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : ''))
         : '名額已滿・仍可登記候補';
     }
-  }).catch(function(){});
+  }
 }
 loadQuota();
 
