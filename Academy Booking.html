@@ -454,7 +454,7 @@
       <div style="font-family:var(--pw-font-display);font-weight:700;font-size:1.05rem;color:var(--pw-gold-deep);">狗狗呈分試 2026 <span style="font-size:10px;font-weight:900;background:var(--pw-heart);color:#fff;border-radius:999px;padding:2px 8px;vertical-align:2px;white-space:nowrap;display:inline-block;">10.24</span></div>
       <div style="font-size:11px;font-weight:800;color:var(--pw-ink-soft);letter-spacing:.05em;margin-top:1px;">狗狗幼稚園學生限場</div>
       <div style="font-size:12.5px;font-weight:700;color:var(--pw-ink-soft);margin-top:4px;">三關遊戲，找出牠的隱藏實力——家長跟毛孩一起參與校園體驗的大日子。</div>
-      <span style="display:inline-block;margin-top:10px;background:var(--pw-navy);color:#fff;font-family:var(--pw-font-sans);font-weight:900;font-size:13px;border-radius:var(--pw-r-pill);padding:9px 22px;box-shadow:var(--pw-shadow-card);">立即報名 →</span>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;"><span style="display:inline-block;background:var(--pw-navy);color:#fff;font-family:var(--pw-font-sans);font-weight:900;font-size:13px;border-radius:var(--pw-r-pill);padding:9px 22px;box-shadow:var(--pw-shadow-card);">立即報名 →</span><span id="gtQuota" style="display:none;font-weight:900;font-size:12px;border-radius:999px;padding:6px 13px;"></span></div>
     </div>
   </a>
 
@@ -2132,6 +2132,26 @@ if (_demo) {
 ['dogGender','dogNeutered','dogHealthSel'].forEach(id => {
   document.getElementById(id)?.addEventListener('change', e => e.target.classList.remove('prefilled'));
 });
+</script>
+<script>
+// 呈分試名額（活動完結後連同上面入口一併移除）
+(function(){
+  var API = 'https://script.google.com/macros/s/AKfycbwVzJhnMvs2o0aTjGx8jzSNyATIiBfkPjus2VN6beyw9clpUhjsQrK6PYqJX4CH7n3m/exec';
+  fetch(API + '?action=quota').then(function(r){ return r.text(); }).then(function(t){
+    var q = null; try { q = JSON.parse(t); } catch (e) { return; }
+    if (!q || !q.ok) return;
+    var el = document.getElementById('gtQuota');
+    if (!el) return;
+    var left = q.academyLeft;
+    var style;
+    if (!q.open) { el.textContent = '報名即將開放'; style = 'background:#FEF9C3;color:#A16207'; }
+    else if (left > 0) {
+      el.textContent = '尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : '');
+      style = left <= 5 ? 'background:#FEF9C3;color:#A16207' : 'background:#DCFCE7;color:#15803D';
+    } else { el.textContent = '名額已滿・可登記候補'; style = 'background:#FEE2E2;color:#B91C1C'; }
+    el.setAttribute('style', el.getAttribute('style').replace('display:none', 'display:inline-block') + ';' + style);
+  }).catch(function(){});
+})();
 </script>
 </body>
 </html>
