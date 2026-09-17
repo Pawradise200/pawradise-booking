@@ -603,13 +603,19 @@ function tickCountdown(){
 }
 
 
+// 中英對照：品種／組別／等級（目標全港性甚至海外，卡上一律雙語）
+var BREED_EN = {"貴婦（玩具／迷你）": "Poodle (Toy / Miniature)", "松鼠狗": "Pomeranian", "芝娃娃": "Chihuahua", "約瑟爹利": "Yorkshire Terrier", "西施": "Shih Tzu", "馬爾濟斯": "Maltese", "比熊": "Bichon Frise", "八哥": "Pug", "臘腸": "Dachshund", "迷你史立莎": "Miniature Schnauzer", "西高地": "West Highland White Terrier", "北京狗": "Pekingese", "蝴蝶犬": "Papillon", "日本銀狐": "Japanese Spitz", "積羅素爹利": "Jack Russell Terrier", "迷你賓沙": "Miniature Pinscher", "意大利靈緹": "Italian Greyhound", "騎士查理王": "Cavalier King Charles Spaniel", "柴犬": "Shiba Inu", "哥基": "Welsh Corgi", "法國鬥牛犬": "French Bulldog", "比高": "Beagle", "貝靈頓": "Bedlington Terrier", "喜樂蒂": "Shetland Sheepdog", "沙皮": "Shar Pei", "英國老虎狗": "English Bulldog", "惠比特": "Whippet", "鬆獅": "Chow Chow", "英國史賓格": "English Springer Spaniel", "巴仙吉": "Basenji", "澳洲牧牛犬": "Australian Cattle Dog", "金毛尋回犬": "Golden Retriever", "拉布拉多": "Labrador Retriever", "哈士奇": "Siberian Husky", "西摩": "Samoyed", "德國牧羊犬": "German Shepherd", "邊境牧羊犬": "Border Collie", "澳洲牧羊犬": "Australian Shepherd", "秋田": "Akita Inu", "阿拉斯加": "Alaskan Malamute", "標準貴婦": "Standard Poodle", "唐狗": "Hong Kong Village Dog", "都柏文": "Dobermann", "洛威拿": "Rottweiler", "伯恩山": "Bernese Mountain Dog", "斑點狗": "Dalmatian", "威瑪": "Weimaraner", "大丹": "Great Dane", "大白熊": "Great Pyrenees", "聖伯納": "Saint Bernard", "紐芬蘭犬": "Newfoundland", "古代英國牧羊犬": "Old English Sheepdog", "蘇俄牧羊犬": "Borzoi", "拳師犬": "Boxer", "愛爾蘭雪達": "Irish Setter", "標準史立莎": "Standard Schnauzer", "巨型史立莎": "Giant Schnauzer", "貴婦混種（Maltipoo／Cavoodle 等）": "Poodle Mix (Maltipoo / Cavoodle)", "其他品種／混種": "Other / Mixed Breed"};
+var GROUP_EN = { '小型犬組': 'SMALL', '中型犬組': 'MEDIUM', '大型犬組': 'LARGE', '導師評定': 'TO BE ASSESSED' };
+var GRADE_EN = { '模範生': 'Distinction', '高材生': 'Merit', '好學生': 'Good', '潛力新星': 'Rising Star' };
+
 // ── 狗狗證：永久身分（DOG ID／晶片／歷屆紀錄）──────────────
 function renderDogId(d){
   if (!d.dogId) return;                      // 未分配編號就唔出卡
   el('dogIdWrap').style.display = 'block';
   document.body.classList.add('has-dogid');
   el('idcName').textContent = d.dogName;
-  el('idcEn').textContent = (d.breed && d.breed !== '其他／混種' ? d.breed + '・' : '') + (d.group || '');
+  var grpEn = GROUP_EN[d.group] ? '　' + GROUP_EN[d.group] : '';
+  el('idcEn').textContent = (d.breed && d.breed !== '其他／混種' ? d.breed + '・' : '') + (d.group || '') + grpEn;
   el('idcNo').textContent = d.dogId;
   el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '未提供 N/A';
   var ed = d.edition || { year: 2026, name: '第一屆' };
@@ -623,9 +629,13 @@ function renderDogId(d){
     ? rec.bestTotal + '<span style="font-size:.62rem;color:var(--pw-ink-faint)"> / ' + (rec.bestMax || 21) + '</span>'
     : '—';
   el('idcGrade').innerHTML = rec.bestGrade
-    ? escapeHtml(rec.bestGrade) + (rec.bestGradeYear ? '<span style="font-size:.6rem;color:var(--pw-ink-faint)">・' + rec.bestGradeYear + '</span>' : '')
+    ? escapeHtml(rec.bestGrade) +
+      '<span style="display:block;font-size:.5rem;font-weight:900;color:#A08A62;letter-spacing:.1em;margin-top:1px">' +
+      (GRADE_EN[rec.bestGrade] || '').toUpperCase() + (rec.bestGradeYear ? '・' + rec.bestGradeYear : '') + '</span>'
     : '—';
-  el('idcBreed').textContent = d.breed || '—';
+  el('idcBreed').innerHTML = d.breed
+    ? escapeHtml(d.breed) + (BREED_EN[d.breed] ? '<span style="font-size:.58rem;font-weight:800;color:#A08A62;letter-spacing:.06em">　' + BREED_EN[d.breed] + '</span>' : '')
+    : '—';
   el('idcMrz').textContent = String(d.dogId).replace('-', '') + '<<' +
     String(d.dogName).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<SINCE' + ed.year + '<<HKG';
   if (!d.chipOnFile) el('chipAdd').style.display = 'block';
@@ -759,7 +769,7 @@ function renderResult(d){
   var r = d.result;
   el('resultView').style.display = 'block';
   el('medalIcon').innerHTML = medalSvg(r.grade);
-  el('gradeName').textContent = r.grade;
+  el('gradeName').innerHTML = escapeHtml(r.grade) + (GRADE_EN[r.grade] ? '<span style="display:block;font-size:.6rem;font-weight:900;color:var(--pw-ink-faint);letter-spacing:.14em;margin-top:2px">' + GRADE_EN[r.grade].toUpperCase() + '</span>' : '');
   el('gradeScore').textContent = r.medal || '';
   if (d.ultimateExplorer) el('ueChip').style.display = 'inline-flex';
   el('reportSub').textContent = '狗狗呈分試 2026 · ' + (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
