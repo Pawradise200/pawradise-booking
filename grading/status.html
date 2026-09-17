@@ -174,7 +174,8 @@ body.has-dogid .status-card{margin-top:16px}
 .idc-rect{margin-top:12px;border-top:1.5px dashed rgba(201,141,44,.45);padding-top:9px;font-size:.52rem;font-weight:900;color:#A08A62;letter-spacing:.16em}
 .idc-rec{display:flex;margin-top:8px}
 .idc-rec .c{flex:1;text-align:center}
-.idc-rec .c .k{font-size:.53rem;font-weight:900;color:#A08A62;letter-spacing:.08em}
+.idc-rec .c .k{font-size:.53rem;font-weight:900;color:#A08A62;letter-spacing:.08em;line-height:1.5}
+.idc-rec .c .k span{display:block;font-size:.44rem;letter-spacing:.14em;opacity:.8}
 .idc-rec .c .v{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--pw-ink);margin-top:2px}
 .idc-mrz{margin-top:11px;padding:8px 10px;background:#F2EADA;border:1px solid #E6D8BC;border-radius:var(--r-sm);
   font-family:var(--disp);font-weight:700;font-size:.56rem;color:#8A7458;letter-spacing:.1em;word-break:break-all;line-height:1.6}
@@ -211,7 +212,7 @@ body.has-dogid .status-card{margin-top:16px}
           <div class="rt"><i>PAWRADISE</i><b>GRADING DAY</b><span id="idcIssued">發證 ISSUED 2026</span></div>
         </div>
         <div class="idc-body">
-          <div class="idc-avawrap"><div class="idc-ava" id="idcAva">🐶</div><div class="idc-avacap">PHOTO</div></div>
+          <div class="idc-avawrap"><div class="idc-ava" id="idcAva">🐶</div><div class="idc-avacap">相片　PHOTO</div></div>
           <div class="idc-f">
             <div class="idc-nm" id="idcName"></div>
             <div class="idc-en" id="idcEn"></div>
@@ -225,9 +226,9 @@ body.has-dogid .status-card{margin-top:16px}
         </div>
         <div class="idc-rect">歷屆紀錄　RECORD</div>
         <div class="idc-rec">
-          <div class="c"><div class="k">累積出賽</div><div class="v" id="idcEvents">–</div></div>
-          <div class="c"><div class="k">最佳總分</div><div class="v" id="idcBest">–</div></div>
-          <div class="c"><div class="k">最佳等級</div><div class="v" id="idcGrade">–</div></div>
+          <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">–</div></div>
+          <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">–</div></div>
+          <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">–</div></div>
         </div>
         <div class="idc-mrz" id="idcMrz"></div>
         <div class="chip-add" id="chipAdd" style="display:none">
@@ -610,9 +611,10 @@ function renderDogId(d){
   el('idcName').textContent = d.dogName;
   el('idcEn').textContent = (d.breed && d.breed !== '其他／混種' ? d.breed + '・' : '') + (d.group || '');
   el('idcNo').textContent = d.dogId;
-  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '未提供';
+  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '未提供 N/A';
   var ed = d.edition || { year: 2026, name: '第一屆' };
-  el('idcSince').textContent = ed.year + '・' + ed.name;
+  var edEn = ed.no === 1 ? '1st' : (ed.no === 2 ? '2nd' : (ed.no === 3 ? '3rd' : ed.no + 'th'));
+  el('idcSince').textContent = ed.year + '・' + ed.name + '  ' + edEn;
   el('idcIssued').textContent = '發證 ISSUED ' + ed.year;
   if (d.avatarUrl) { el('idcAva').textContent = ''; el('idcAva').style.backgroundImage = 'url(' + d.avatarUrl + ')'; }
   var rec = d.record || { events: 0, bestTotal: 0, bestMax: 21, bestGrade: '', bestGradeYear: 0 };
