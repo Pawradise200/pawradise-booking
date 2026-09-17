@@ -115,6 +115,9 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .brow .rk{width:24px;flex-shrink:0}
 .brow .bd2{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brow .vl{color:var(--pw-gold-deep);flex-shrink:0}
+.pb-line{margin-top:10px;font-size:.72rem;font-weight:800;color:var(--pw-ink-soft);line-height:1.7}
+.pb-line b{color:var(--pw-gold-deep)}
+.pb-foot{margin-top:10px;font-size:.62rem;font-weight:800;color:var(--pw-ink-faint);line-height:1.6}
 .board .rows{margin-top:10px;display:flex;flex-direction:column;gap:6px}
 .board .soon{margin-top:10px;background:var(--pw-cream-soft);border:1.5px dashed var(--pw-cream-deep);border-radius:12px;padding:16px;text-align:center;font-size:.72rem;font-weight:700;color:var(--pw-ink-mute);line-height:1.7}
 .grade-hero{text-align:center;padding:26px 20px}
@@ -149,7 +152,7 @@ body.has-dogid .status-card{margin-top:16px}
   background-image:repeating-linear-gradient(135deg,rgba(201,141,44,.055) 0 2px,transparent 2px 9px)}
 .idc-in{position:relative;padding:14px 16px 12px}
 .idc-hd{display:flex;align-items:flex-start;gap:9px;border-bottom:1.5px solid rgba(201,141,44,.3);padding-bottom:10px}
-.idc-hd img{width:34px}
+.idc-hd img{width:46px;margin-top:-2px}
 .idc-hd .t1{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--pw-ink);line-height:1.15}
 .idc-hd .t2{font-size:.53rem;font-weight:800;color:#A08A62;letter-spacing:.2em;margin-top:3px}
 .idc-hd .rt{margin-left:auto;text-align:right}
@@ -173,9 +176,6 @@ body.has-dogid .status-card{margin-top:16px}
 .idc-rec .c{flex:1;text-align:center}
 .idc-rec .c .k{font-size:.53rem;font-weight:900;color:#A08A62;letter-spacing:.08em}
 .idc-rec .c .v{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--pw-ink);margin-top:2px}
-.idc-stamp{position:absolute;right:14px;top:78px;width:74px;height:74px;border-radius:50%;
-  border:2px dashed rgba(192,78,60,.55);color:rgba(192,78,60,.8);display:flex;align-items:center;justify-content:center;
-  text-align:center;font-size:.5rem;font-weight:900;line-height:1.3;transform:rotate(-10deg);background:rgba(192,78,60,.05)}
 .idc-mrz{margin-top:11px;padding:8px 10px;background:#F2EADA;border:1px solid #E6D8BC;border-radius:var(--r-sm);
   font-family:var(--disp);font-weight:700;font-size:.56rem;color:#8A7458;letter-spacing:.1em;word-break:break-all;line-height:1.6}
 .chip-add{margin-top:9px;background:var(--pw-cream-soft);border:1.5px dashed #E0CFA8;border-radius:var(--r-md);padding:9px 11px}
@@ -216,7 +216,7 @@ body.has-dogid .status-card{margin-top:16px}
             <div class="idc-nm" id="idcName"></div>
             <div class="idc-en" id="idcEn"></div>
             <div style="margin-top:7px">
-              <div class="idc-row"><div class="k">DOG ID　永久編號</div><div class="v" id="idcNo"></div></div>
+              <div class="idc-row"><div class="k">DOG ID　編號</div><div class="v" id="idcNo"></div></div>
               <div class="idc-row"><div class="k">BREED　品種</div><div class="v" id="idcBreed"></div></div>
               <div class="idc-row"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip"></div></div>
               <div class="idc-row"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince"></div></div>
@@ -226,10 +226,9 @@ body.has-dogid .status-card{margin-top:16px}
         <div class="idc-rect">歷屆紀錄　RECORD</div>
         <div class="idc-rec">
           <div class="c"><div class="k">累積出賽</div><div class="v" id="idcEvents">–</div></div>
-          <div class="c"><div class="k">歷屆總分</div><div class="v" id="idcTotal">–</div></div>
-          <div class="c"><div class="k">最佳等第</div><div class="v" id="idcBest">–</div></div>
+          <div class="c"><div class="k">最佳總分</div><div class="v" id="idcBest">–</div></div>
+          <div class="c"><div class="k">最佳等級</div><div class="v" id="idcGrade">–</div></div>
         </div>
-        <div class="idc-stamp" id="idcStamp">首屆<br>會員</div>
         <div class="idc-mrz" id="idcMrz"></div>
         <div class="chip-add" id="chipAdd" style="display:none">
           <div class="t">補填晶片編號，可為狗狗建立永久參賽編號，日後每屆成績都會累積在同一位狗狗同學名下。</div>
@@ -273,6 +272,18 @@ body.has-dogid .status-card{margin-top:16px}
         <div class="c"><div class="n" id="cd-h">–</div><div class="l">小時</div></div>
         <div class="c"><div class="n" id="cd-m">–</div><div class="l">分鐘</div></div>
       </div>
+    </div>
+
+    <div class="card board" id="preBoard">
+      <div class="bh"><div class="bt">犬種積分榜・10 月 24 日開榜</div><div class="bn2">總分累積<br>通往隊際盃 Team Cup</div></div>
+      <div class="pb-line" id="pbLine"></div>
+      <div id="pbRows"></div>
+      <div class="pb-foot">分數會跨場、跨屆累積。同品種的朋友一起來，分數會加在一起。</div>
+    </div>
+
+    <div class="card" id="afterNote">
+      <h2 style="margin-bottom:6px">賽後，這一頁會變成成績表</h2>
+      <div class="note-list">當日完成三個項目後，這裡會出現三項分數、六格技能徽章、電子證書，以及你所屬品種在犬種積分榜上的位置。連結不變，用同一條就可以。</div>
     </div>
 
     <div class="card" id="vaccineTodo" style="display:none">
@@ -464,6 +475,8 @@ function render(d){
   el('avaInput').addEventListener('change', uploadAvatar);
   renderDogId(d);
 
+  renderPreBoard(d);
+
   if (d.result) { renderResult(d); return; }
 
   el('confirmedView').style.display = 'block';
@@ -601,12 +614,15 @@ function renderDogId(d){
   var ed = d.edition || { year: 2026, name: '第一屆' };
   el('idcSince').textContent = ed.year + '・' + ed.name;
   el('idcIssued').textContent = '發證 ISSUED ' + ed.year;
-  el('idcStamp').innerHTML = (ed.no === 1 ? '首屆會員<br>' + ed.year : ed.name + '<br>' + ed.year);
   if (d.avatarUrl) { el('idcAva').textContent = ''; el('idcAva').style.backgroundImage = 'url(' + d.avatarUrl + ')'; }
-  var rec = d.record || { events: 0, total: 0, bestGrade: '' };
+  var rec = d.record || { events: 0, bestTotal: 0, bestMax: 21, bestGrade: '', bestGradeYear: 0 };
   el('idcEvents').textContent = rec.events || 1;
-  el('idcTotal').textContent = rec.total ? rec.total : '—';
-  el('idcBest').textContent = rec.bestGrade || '—';
+  el('idcBest').innerHTML = rec.bestTotal
+    ? rec.bestTotal + '<span style="font-size:.62rem;color:var(--pw-ink-faint)"> / ' + (rec.bestMax || 21) + '</span>'
+    : '—';
+  el('idcGrade').innerHTML = rec.bestGrade
+    ? escapeHtml(rec.bestGrade) + (rec.bestGradeYear ? '<span style="font-size:.6rem;color:var(--pw-ink-faint)">・' + rec.bestGradeYear + '</span>' : '')
+    : '—';
   el('idcBreed').textContent = d.breed || '—';
   el('idcMrz').textContent = String(d.dogId).replace('-', '') + '<<' +
     String(d.dogName).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<SINCE' + ed.year + '<<HKG';
@@ -643,6 +659,40 @@ function saveChip(){
     });
 }
 
+// 賽前版積分榜：只講總分榜（只加不減，唔會有「拖低品種」嘅壓力）；
+// 有往屆數據就出排名，首屆冇數據就出「0 分・尚未開榜」
+function renderPreBoard(d){
+  var b = d.boards || { published: false, totals: [] };
+  el('pbLine').innerHTML = '當日 <b>' + escapeHtml(d.dogName) + '</b> 的分數，會計入「<b>' +
+    escapeHtml(d.breed || '你的品種') + '</b>」名下。';
+  if (!b.published || !b.totals.length) {
+    // 開榜日之前：列出已報名嘅品種，分數全部 0；自己品種一定出現並highlight
+    var pend = (b.pending || []).slice();
+    if (d.breed && !pend.some(function(x){ return x.breed === d.breed; })) pend.unshift({ breed: d.breed, value: 0 });
+    if (!pend.length) pend = [{ breed: d.breed || '你的品種', value: 0 }];
+    var ph = '<div class="rows">';
+    pend.forEach(function(row){
+      var mine = row.breed === d.breed;
+      ph += '<div class="brow' + (mine ? ' me' : '') + '"><span class="rk">🐾</span>' +
+        '<span class="bd2">' + escapeHtml(row.breed) + '</span>' +
+        '<span class="vl">0 分</span></div>';
+    });
+    el('pbRows').innerHTML = ph + '</div>' +
+      '<div class="pb-foot" style="margin-top:8px">10 月 24 日是開榜日，現在每個品種都是 0 分——第一分，就由 ' +
+      escapeHtml(d.dogName) + ' 開始。</div>';
+    return;
+  }
+  var MEDALS = ['🥇', '🥈', '🥉'];
+  var html = '<div class="rows">';
+  b.totals.forEach(function(row, i){
+    var me = row.breed === d.breed;
+    html += '<div class="brow' + (me ? ' me' : '') + '"><span class="rk">' + (MEDALS[i] || (i + 1)) + '</span>' +
+      '<span class="bd2">' + escapeHtml(row.breed) + '</span>' +
+      '<span class="vl">' + row.value + ' 分</span></div>';
+  });
+  el('pbRows').innerHTML = html + '</div>';
+}
+
 function renderBoards(d){
   var b = d.boards || { published: false, totals: [], avg: [] };
   var MEDALS = ['🥇', '🥈', '🥉'];
@@ -671,7 +721,7 @@ function escapeHtml(t){
   });
 }
 
-// 彩帶：等第越高越熱鬧（優才生最密）
+// 彩帶：等級越高越熱鬧（優才生最密）
 function paintConfetti(grade){
   var n = (grade === '模範生' ? 26 : grade === '高材生' ? 15 : grade === '好學生' ? 9 : 5);
   var cols = ['#F4B860', '#F4A6B8', '#7FB2E5', '#A8C686', '#FFD98A'];
