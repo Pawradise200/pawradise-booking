@@ -138,6 +138,53 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .save-hint{text-align:center;font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);margin-top:8px}
 .cta{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;background:var(--pw-gold);color:var(--pw-navy-deep);border-radius:var(--pill);font-weight:900;font-size:.92rem;margin-top:12px;text-decoration:none;box-shadow:var(--shadow)}
 #confirmedView,#resultView,#notFound{display:none}
+/* 狗狗證：跟住狗狗一世嘅永久身分（C 款證件風，手機直度） */
+#dogIdWrap{display:none;margin-top:16px}
+/* 有狗狗證時，改由佢疊上 hero 弧線，白卡唔好再爬上嚟壓住 */
+body.has-dogid #dogIdWrap{margin-top:-30px;position:relative;z-index:3}
+body.has-dogid .status-card{margin-top:16px}
+.idc{position:relative;overflow:hidden;border:2px solid #E0CFA8;border-radius:var(--r-xl);
+  background:linear-gradient(150deg,#FFFDF7,#FBF3E4 62%,#F7E7C6);box-shadow:var(--shadow)}
+.idc::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(135deg,rgba(201,141,44,.055) 0 2px,transparent 2px 9px)}
+.idc-in{position:relative;padding:14px 16px 12px}
+.idc-hd{display:flex;align-items:flex-start;gap:9px;border-bottom:1.5px solid rgba(201,141,44,.3);padding-bottom:10px}
+.idc-hd img{width:34px}
+.idc-hd .t1{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--pw-ink);line-height:1.15}
+.idc-hd .t2{font-size:.53rem;font-weight:800;color:#A08A62;letter-spacing:.2em;margin-top:3px}
+.idc-hd .rt{margin-left:auto;text-align:right}
+.idc-hd .rt i{display:block;font-style:normal;font-size:.5rem;font-weight:900;color:#A08A62;letter-spacing:.16em}
+.idc-hd .rt b{display:block;font-family:var(--disp);font-weight:700;font-size:.66rem;color:var(--pw-ink);letter-spacing:.06em;margin-top:1px}
+.idc-hd .rt span{display:block;font-size:.5rem;font-weight:800;color:#A08A62;letter-spacing:.12em;margin-top:3px}
+.idc-body{display:flex;gap:12px;margin-top:12px}
+.idc-avawrap{flex-shrink:0}
+.idc-avacap{text-align:center;font-size:.48rem;font-weight:900;color:#A08A62;letter-spacing:.16em;margin-top:4px}
+.idc-ava{width:88px;height:104px;border:1.5px solid #E0CFA8;border-radius:4px;
+  background:var(--pw-cream) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.idc-f{flex:1;min-width:0}
+.idc-nm{font-family:var(--disp);font-weight:700;font-size:1.28rem;color:var(--pw-ink);line-height:1.12;word-break:break-word}
+.idc-en{font-size:.6rem;font-weight:800;color:#A08A62;letter-spacing:.1em;margin-top:3px}
+.idc-row{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid rgba(160,138,98,.25)}
+.idc-row:last-child{border-bottom:none}
+.idc-row .k{width:112px;flex-shrink:0;font-size:.55rem;font-weight:900;color:#A08A62;letter-spacing:.08em}
+.idc-row .v{font-size:.8rem;font-weight:900;color:var(--pw-ink)}
+.idc-rect{margin-top:12px;border-top:1.5px dashed rgba(201,141,44,.45);padding-top:9px;font-size:.52rem;font-weight:900;color:#A08A62;letter-spacing:.16em}
+.idc-rec{display:flex;margin-top:8px}
+.idc-rec .c{flex:1;text-align:center}
+.idc-rec .c .k{font-size:.53rem;font-weight:900;color:#A08A62;letter-spacing:.08em}
+.idc-rec .c .v{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--pw-ink);margin-top:2px}
+.idc-stamp{position:absolute;right:14px;top:78px;width:74px;height:74px;border-radius:50%;
+  border:2px dashed rgba(192,78,60,.55);color:rgba(192,78,60,.8);display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:.5rem;font-weight:900;line-height:1.3;transform:rotate(-10deg);background:rgba(192,78,60,.05)}
+.idc-mrz{margin-top:11px;padding:8px 10px;background:#F2EADA;border:1px solid #E6D8BC;border-radius:var(--r-sm);
+  font-family:var(--disp);font-weight:700;font-size:.56rem;color:#8A7458;letter-spacing:.1em;word-break:break-all;line-height:1.6}
+.chip-add{margin-top:9px;background:var(--pw-cream-soft);border:1.5px dashed #E0CFA8;border-radius:var(--r-md);padding:9px 11px}
+.chip-add .t{font-size:.62rem;font-weight:800;color:var(--pw-ink-soft);line-height:1.5}
+.chip-add input{width:100%;margin-top:7px;padding:9px 11px;border:1.5px solid var(--pw-cream-deep);border-radius:var(--r-sm);
+  font-family:var(--sans);font-size:.78rem;font-weight:700;color:var(--pw-ink);background:var(--pw-paper)}
+.chip-add button{margin-top:7px;width:100%;padding:9px;border:none;border-radius:var(--pill);background:var(--pw-gold);
+  font-family:var(--sans);font-weight:900;font-size:.72rem;color:var(--pw-ink);cursor:pointer}
+.chip-msg{font-size:.6rem;font-weight:800;margin-top:6px}
 </style>
 </head>
 <body>
@@ -153,6 +200,46 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 <div class="wrap">
   <div class="loading" id="loading">載入中⋯⋯</div>
   <div class="notfound" id="notFound">找不到此同學頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
+
+  <!-- 狗狗證：永久身分，賽前賽後都顯示 -->
+  <div id="dogIdWrap">
+    <div class="idc">
+      <div class="idc-in">
+        <div class="idc-hd">
+          <img src="../assets/pawradise-crest.png" alt="">
+          <div><div class="t1">狗狗證　PAWRADISE</div><div class="t2">DOG IDENTITY CARD</div></div>
+          <div class="rt"><i>PAWRADISE</i><b>GRADING DAY</b><span id="idcIssued">發證 ISSUED 2026</span></div>
+        </div>
+        <div class="idc-body">
+          <div class="idc-avawrap"><div class="idc-ava" id="idcAva">🐶</div><div class="idc-avacap">PHOTO</div></div>
+          <div class="idc-f">
+            <div class="idc-nm" id="idcName"></div>
+            <div class="idc-en" id="idcEn"></div>
+            <div style="margin-top:7px">
+              <div class="idc-row"><div class="k">DOG ID　永久編號</div><div class="v" id="idcNo"></div></div>
+              <div class="idc-row"><div class="k">BREED　品種</div><div class="v" id="idcBreed"></div></div>
+              <div class="idc-row"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip"></div></div>
+              <div class="idc-row"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="idc-rect">歷屆紀錄　RECORD</div>
+        <div class="idc-rec">
+          <div class="c"><div class="k">累積出賽</div><div class="v" id="idcEvents">–</div></div>
+          <div class="c"><div class="k">歷屆總分</div><div class="v" id="idcTotal">–</div></div>
+          <div class="c"><div class="k">最佳等第</div><div class="v" id="idcBest">–</div></div>
+        </div>
+        <div class="idc-stamp" id="idcStamp">首屆<br>會員</div>
+        <div class="idc-mrz" id="idcMrz"></div>
+        <div class="chip-add" id="chipAdd" style="display:none">
+          <div class="t">補填晶片編號，可為狗狗建立永久參賽編號，日後每屆成績都會累積在同一位狗狗同學名下。</div>
+          <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
+          <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
+          <div class="chip-msg" id="chipMsg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 已確認（賽前） -->
   <div id="confirmedView">
@@ -194,8 +281,8 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
     </div>
 
     <div class="card">
-      <h2 style="margin-bottom:2px">三關玩法・出發前先看一次</h2>
-      <div style="font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);margin-bottom:8px">三關不分先後，當日按現場安排輪流進行；每關開始前司儀都會再簡短講解</div>
+      <h2 style="margin-bottom:2px">本屆三個指定項目・出發前先看一次</h2>
+      <div style="font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);margin-bottom:8px">三個項目不分先後，當日按現場安排輪流進行；每個項目開始前司儀都會再簡短講解</div>
       <div class="how">
         <img src="../assets/gt-level-1.png" alt="">
         <div><div class="nm">定力擂台大風吹</div>
@@ -252,7 +339,7 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
       <div class="grade-name" id="gradeName"></div>
       <div class="grade-score" id="gradeScore"></div>
       <div class="stat3">
-        <div><div class="k">總分</div><div class="v" id="stTotal"></div><div class="s">三關合計</div></div>
+        <div><div class="k">總分</div><div class="v" id="stTotal"></div><div class="s">三項合計</div></div>
         <div><div class="k">技能徽章</div><div class="v" id="stBadge"></div><div class="s" id="stBadgeSub"></div></div>
         <div><div class="k">參加場次</div><div class="v" id="stSess" style="font-size:.9rem;line-height:1.45"></div><div class="s">2026 首屆</div></div>
       </div>
@@ -264,12 +351,13 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
       <div class="wall" id="skillGrid"></div>
     </div>
     <div class="card board" id="boardTotals">
-      <div class="bh"><div class="bt">犬種積分榜</div><div class="bn2">總分累積<br>通往犬種隊際盃</div></div>
+      <div class="bh"><div class="bt">犬種積分榜</div><div class="bn2">總分累積<br>通往隊際盃・犬種組</div></div>
       <div id="btRows"></div>
     </div>
     <div class="card board" id="boardAvg">
-      <div class="bh"><div class="bt">平均實力榜</div><div class="bn2">每位同學平均分<br>罕見品種一樣有舞台</div></div>
+      <div class="bh"><div class="bt">平均實力榜</div><div class="bn2">每位同學平均分<br>品種累積滿 20 隻即加入</div></div>
       <div id="baRows"></div>
+      <div style="font-size:.6rem;font-weight:800;color:var(--pw-ink-faint);margin-top:8px;line-height:1.6">罕見品種一樣有舞台——集齊 20 隻同伴，就可以一起上榜。</div>
     </div>
     <div class="cert">
       <div style="font-size:1.8rem">🎓</div>
@@ -374,6 +462,7 @@ function render(d){
 
   if (d.avatarUrl) { var av = el('dogAva'); av.textContent = ''; av.style.backgroundImage = 'url(' + d.avatarUrl + ')'; }
   el('avaInput').addEventListener('change', uploadAvatar);
+  renderDogId(d);
 
   if (d.result) { renderResult(d); return; }
 
@@ -499,6 +588,60 @@ function tickCountdown(){
   el('cd-m').textContent = ('0' + Math.floor(diff % 3600000 / 60000)).slice(-2);
 }
 
+
+// ── 狗狗證：永久身分（DOG ID／晶片／歷屆紀錄）──────────────
+function renderDogId(d){
+  if (!d.dogId) return;                      // 未分配編號就唔出卡
+  el('dogIdWrap').style.display = 'block';
+  document.body.classList.add('has-dogid');
+  el('idcName').textContent = d.dogName;
+  el('idcEn').textContent = (d.breed && d.breed !== '其他／混種' ? d.breed + '・' : '') + (d.group || '');
+  el('idcNo').textContent = d.dogId;
+  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '未提供';
+  var ed = d.edition || { year: 2026, name: '第一屆' };
+  el('idcSince').textContent = ed.year + '・' + ed.name;
+  el('idcIssued').textContent = '發證 ISSUED ' + ed.year;
+  el('idcStamp').innerHTML = (ed.no === 1 ? '首屆會員<br>' + ed.year : ed.name + '<br>' + ed.year);
+  if (d.avatarUrl) { el('idcAva').textContent = ''; el('idcAva').style.backgroundImage = 'url(' + d.avatarUrl + ')'; }
+  var rec = d.record || { events: 0, total: 0, bestGrade: '' };
+  el('idcEvents').textContent = rec.events || 1;
+  el('idcTotal').textContent = rec.total ? rec.total : '—';
+  el('idcBest').textContent = rec.bestGrade || '—';
+  el('idcBreed').textContent = d.breed || '—';
+  el('idcMrz').textContent = String(d.dogId).replace('-', '') + '<<' +
+    String(d.dogName).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<SINCE' + ed.year + '<<HKG';
+  if (!d.chipOnFile) el('chipAdd').style.display = 'block';
+}
+
+function saveChip(){
+  var input = el('chipInput'), btn = el('chipBtn'), msg = el('chipMsg');
+  var chip = String(input.value || '').replace(/\D/g, '');
+  if (chip.length < 9 || chip.length > 15) {
+    msg.style.color = 'var(--pw-heart)';
+    msg.textContent = '晶片編號應為 9 至 15 位數字，請再核對一次。';
+    return;
+  }
+  btn.disabled = true; btn.textContent = '儲存中⋯⋯';
+  msg.style.color = 'var(--pw-ink-mute)'; msg.textContent = '';
+  fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'chip', t: token, chip: chip }) })
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var res = null;
+      try { res = JSON.parse(txt); } catch (e) { res = null; }
+      btn.disabled = false; btn.textContent = '儲存晶片編號';
+      // 轉址失敗時後台多數已經存咗——照顯示，唔好嚇家長
+      el('idcChip').textContent = '＊＊＊＊ ' + chip.slice(-4);
+      msg.style.color = 'var(--pw-success)';
+      msg.textContent = (res && res.ok === false && res.message) ? res.message : '已儲存，多謝你。';
+      if (!(res && res.ok === false)) setTimeout(function(){ el('chipAdd').style.display = 'none'; }, 1600);
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = '儲存晶片編號';
+      msg.style.color = 'var(--pw-heart)';
+      msg.textContent = '網絡連線異常，請稍後再試一次。';
+    });
+}
 
 function renderBoards(d){
   var b = d.boards || { published: false, totals: [], avg: [] };
