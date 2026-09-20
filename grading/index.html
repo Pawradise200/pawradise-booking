@@ -35,7 +35,7 @@ img{max-width:100%}
 .hero .eyebrow{font-weight:900;font-size:.7rem;letter-spacing:.18em;color:var(--pw-brown-deep);text-transform:uppercase}
 .hero h1{font-family:var(--disp);font-weight:700;font-size:clamp(2.6rem,9vw,3.6rem);line-height:1.15;margin:10px 0 6px;text-shadow:0 2px 0 rgba(255,255,255,.35)}
 .hero .sub{font-size:1rem;font-weight:700;color:var(--pw-brown-deep);max-width:30em}
-.hero .gd{font-family:var(--disp);font-weight:700;font-size:clamp(1.5rem,5.4vw,2.1rem);letter-spacing:.04em;color:var(--pw-navy-deep);margin:10px 0 -6px}
+.hero .gd{font-family:var(--disp);font-weight:700;font-size:clamp(1.9rem,7.4vw,2.9rem);line-height:1.1;letter-spacing:.02em;color:var(--pw-navy-deep);margin:10px 0 -4px}
 .date-pill{display:inline-flex;align-items:center;gap:8px;background:var(--pw-paper);color:var(--pw-navy-deep);font-weight:900;font-size:.85rem;border-radius:var(--pw-r-pill);padding:9px 18px;margin-top:16px;box-shadow:var(--pw-shadow-pop);transform:rotate(-1.5deg)}
 .cta-row{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:var(--sans);font-weight:900;font-size:1rem;border-radius:var(--pw-r-pill);padding:14px 28px;text-decoration:none;transition:transform .18s ease}
@@ -107,7 +107,7 @@ body.academy .gift-card{display:none}
 .f-group{margin-top:18px}
 label.f-label{display:block;font-weight:800;font-size:.8rem;color:var(--pw-ink);margin-bottom:7px}
 .req{color:var(--pw-heart)}
-input[type=text],input[type=tel],input[type=email],select,textarea{width:100%;font-family:var(--sans);font-size:.95rem;font-weight:600;color:var(--pw-ink);background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:12px 14px;outline:none}
+input[type=text],input[type=tel],input[type=email],input[type=month],select,textarea{width:100%;font-family:var(--sans);font-size:.95rem;font-weight:600;color:var(--pw-ink);background:var(--pw-cream-soft);border:1.5px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:12px 14px;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--pw-navy-light);background:#fff}
 textarea{min-height:64px;resize:vertical}
 .seg{display:grid;gap:8px}
@@ -191,7 +191,8 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
   <svg class="fl" width="30" height="30" viewBox="0 0 24 24" fill="#FFFFFF" opacity="0.35" style="top:34%;right:22%;--r:-10deg;animation-delay:1.2s"><circle cx="7" cy="8" r="2.4"/><circle cx="12" cy="6" r="2.4"/><circle cx="17" cy="8" r="2.4"/><path d="M12 11c-3 0-5.5 2.4-5.5 5 0 1.7 1.3 3 3 3h5c1.7 0 3-1.3 3-3 0-2.6-2.5-5-5.5-5z"/></svg>
   <img class="mascot" src="../assets/daki-explore.png" alt="DAKI">
   <div class="wrap">
-    <div class="eyebrow">Pawradise 狗狗幼稚園 · 第一屆 GRADING DAY 2026</div>
+    <div class="eyebrow public-only">Pawradise 狗狗幼稚園</div>
+    <div class="eyebrow academy-only">Pawradise 狗狗幼稚園 · 第一屆 GRADING DAY 2026</div>
     <div class="gd public-only">GRADING DAY 2026</div>
     <h1>狗狗呈分試</h1>
     <p class="sub public-only">未返過學也可以參加——三關遊戲，找出牠的隱藏實力，帶走牠的第一張成績表。</p>
@@ -395,6 +396,50 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
           <input type="radio" name="neutered" id="n2" value="否"><label for="n2">否</label>
         </div>
       </div>
+      <div class="f-group public-only">
+        <label class="f-label">狗狗性別 <span class="req">*</span></label>
+        <div class="seg seg2">
+          <input type="radio" name="sex" id="sx1" value="男生"><label for="sx1">男生</label>
+          <input type="radio" name="sex" id="sx2" value="女生"><label for="sx2">女生</label>
+        </div>
+      </div>
+      <div class="f-group public-only">
+        <label class="f-label" for="birthYM">狗狗出生年月 <span class="req">*</span></label>
+        <input type="month" id="birthYM" min="2005-01">
+        <div class="hint">不確定確實月份，可填大約年月。用於日後每屆成績按年齡對照。</div>
+      </div>
+      <div class="f-group public-only">
+        <label class="f-label" for="district">居住地區 <span class="req">*</span></label>
+        <select id="district">
+          <option value="">請選擇</option>
+          <optgroup label="香港島"><option>中西區</option><option>灣仔區</option><option>東區</option><option>南區</option></optgroup>
+          <optgroup label="九龍"><option>油尖旺區</option><option>深水埗區</option><option>九龍城區</option><option>黃大仙區</option><option>觀塘區</option></optgroup>
+          <optgroup label="新界"><option>荃灣區</option><option>葵青區</option><option>屯門區</option><option>元朗區</option><option>北區</option><option>大埔區</option><option>沙田區</option><option>西貢區</option><option>離島區</option></optgroup>
+          <option>香港以外</option>
+        </select>
+      </div>
+      <div class="f-group public-only">
+        <label class="f-label" for="training">狗狗的訓練背景 <span class="req">*</span></label>
+        <select id="training">
+          <option value="">請選擇</option>
+          <option>未上過任何課堂</option>
+          <option>上過訓練課堂</option>
+          <option>曾經寄宿訓練</option>
+          <option>現正就讀狗狗幼稚園或日託學校</option>
+          <option>家長自行訓練</option>
+        </select>
+      </div>
+      <div class="f-group public-only">
+        <label class="f-label" for="source">從哪裡得知這個活動 <span class="req">*</span></label>
+        <select id="source">
+          <option value="">請選擇</option>
+          <option>Instagram</option>
+          <option>朋友介紹</option>
+          <option>品種群組</option>
+          <option>Pawradise 酒店或學院</option>
+          <option>其他</option>
+        </select>
+      </div>
 
       <!-- 學院模式：參加安排自選 -->
       <div class="f-group academy-only">
@@ -458,7 +503,7 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
       </div>
 
       <div class="f-group">
-        <label class="checkline"><input type="checkbox" id="mediaConsent"><span>本人同意活動當日的攝影及錄影片段，可用於 Pawradise 宣傳用途（狗狗上鏡授權）<span class="req"> *</span></span></label>
+        <label class="checkline"><input type="checkbox" id="mediaConsent"><span>本人同意活動當日的攝影及錄影片段，可用於 Pawradise 及 Grading Day 賽事的宣傳用途（狗狗上鏡授權）<span class="req"> *</span></span></label>
         <div class="terms-box">
           <div class="terms-head" onclick="toggleTerms()">
             <span>📋 活動細則及條款</span>
@@ -493,12 +538,19 @@ footer a{color:var(--pw-gold);font-weight:900;text-decoration:none}
             ・如當日上午懸掛八號或以上熱帶氣旋警告信號、黑色暴雨警告信號，活動將改期，本校會另行通知新日期。<br>
             ・改期後已繳費用自動轉至新場次，無須重新報名。
             <h4>七、相片、影片及個人資料</h4>
-            ・活動當日的相片及影片可能用於 Pawradise 宣傳用途，詳見上鏡授權一項。<br>
-            ・家長提供的個人資料只用於本活動的報名、聯絡及活動後跟進，不會提供予第三方。
+            ・活動當日的相片及影片可能用於 Pawradise 及 Grading Day 賽事的宣傳用途（包括合作機構及傳媒報道），詳見上鏡授權一項。<br>
+            ・家長提供的個人資料用於本活動的報名、聯絡、活動後跟進，以及 Grading Day 歷屆成績紀錄的保存。<br>
+            ・狗狗的名字、品種、等級及分數會保留作跨屆累積紀錄，並可能於犬種榮譽榜及成績公布中顯示；家長的姓名、電話及電郵不會公開。<br>
+            ・經去識別化處理（不含家長姓名、電話及電郵）的成績及問卷資料，可能用於評分標準研發及統計發布。<br>
+            ・如 Grading Day 日後由 Pawradise 的關聯機構或繼承機構營運，上述資料可轉移予該機構，用途維持不變；除此以外，個人資料不會提供予第三方。<br>
+            ・活動消息只會發送予已勾選同意接收的家長，並可隨時取消。<br>
+            ・家長可隨時以 WhatsApp 9459 6420 查閱、更正或要求刪除個人資料。<br>
+            <span style="opacity:.7">條款版本：2026-09-20</span>
           </div>
         </div>
         <label class="checkline"><input type="checkbox" id="termsConsent" disabled><span>本人已閱讀並同意上述活動細則及條款<span class="req"> *</span></span></label>
         <div class="lock-hint" id="termsLockHint">請先展開閱讀活動細則</div>
+        <label class="checkline"><input type="checkbox" id="marketingOptIn"><span>本人願意接收 Pawradise 及 Grading Day 日後活動的消息（選填，可隨時取消）</span></label>
       </div>
 
       <div class="warn-box">📌 報名後請以 WhatsApp 補交狗狗有效狗牌及疫苗針卡照片。本活動不接受《危險狗隻規例》所列犬種報名。</div>
@@ -645,14 +697,16 @@ function paintQuota(q){
       if (c0) { c0.style.display = 'inline-flex'; c0.className = 'quota-chip low'; c0.textContent = '報名即將開放'; }
       document.getElementById('submitBtn').disabled = true; return;
     }
-    line.textContent = left > 0 ? ('剩餘名額：' + left + ' 位') : '名額已滿——仍可登記候補';
+    // 公眾版：名額數字只喺最後 5 個先顯示，之前只寫「額滿即止」；學院版照舊顯示數字（Erica 2026-09-20）
+    var hideNum = !IS_ACADEMY && left > 5;
+    line.textContent = hideNum ? '' : (left > 0 ? ('剩餘名額：' + left + ' 位') : '名額已滿——仍可登記候補');
     var chip = document.getElementById('quotaInline');
     if (chip) {
       chip.style.display = 'inline-flex';
       chip.className = 'quota-chip' + (left <= 0 ? ' full' : (left <= 5 ? ' low' : ''));
-      chip.textContent = left > 0
-        ? ('尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : ''))
-        : '名額已滿・仍可登記候補';
+      chip.textContent = hideNum
+        ? '額滿即止'
+        : (left > 0 ? ('尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : '')) : '名額已滿・仍可登記候補');
     }
   }
 }
@@ -668,6 +722,8 @@ function showErr(msg){
   box.textContent = msg; box.style.display = 'block';
   box.scrollIntoView({behavior:'smooth', block:'center'});
 }
+
+var TERMS_VERSION = '2026-09-20';   // 條款每次修訂要同步改呢度同條款尾嗰行
 
 function submitForm(){
   var box = document.getElementById('errBox'); box.style.display = 'none';
@@ -685,6 +741,13 @@ function submitForm(){
     group: (breedSel.value === 'other') ? '導師評定' : (breedOpt ? (breedOpt.dataset.g || '導師評定') : ''),
     age: radioVal('age'),
     neutered: radioVal('neutered'),
+    sex: radioVal('sex'),
+    birthYM: document.getElementById('birthYM').value,
+    district: document.getElementById('district').value,
+    training: document.getElementById('training').value,
+    source: document.getElementById('source').value,
+    marketingOptIn: document.getElementById('marketingOptIn').checked,
+    termsVersion: TERMS_VERSION,
     arrangement: IS_ACADEMY ? (radioVal('arrangement') || '標準組') : '導師安排',
     health: document.getElementById('health').value.trim(),
     dogReaction: radioVal('dogReaction'),
@@ -699,6 +762,7 @@ function submitForm(){
   if (breedSel.value === 'other' && !p.breed) { showErr('請輸入狗狗的品種。'); return; }
   if (!IS_ACADEMY) {
     if (!p.age || !p.neutered) { showErr('請選擇狗狗年齡及絕育狀況。'); return; }
+    if (!p.sex || !p.birthYM || !p.district || !p.training || !p.source) { showErr('請填寫狗狗性別、出生年月、居住地區、訓練背景及得知渠道。'); return; }
     if (!p.dogReaction || !p.stranger || !p.guarding || !p.foodAllergy || !p.attackHistory) { showErr('請完成安全評估的每一項。'); return; }
   }
   if (!p.mediaConsent || !p.termsConsent) { showErr('請確認上鏡授權及活動細則。'); return; }
