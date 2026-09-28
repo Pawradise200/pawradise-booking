@@ -48,6 +48,11 @@
 .idc-en{font-size:.6rem;font-weight:800;color:#A08A62;letter-spacing:.1em;margin-top:3px}
 .idc-row{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid rgba(160,138,98,.25)}
 .idc-row:last-child{border-bottom:none}
+/* [2026-09-29] 右欄窄（相片佔 140px）：標籤同數值改上下排，數值用返成欄闊度，唔會斷三行；英文品種另起一行，唔會凸出卡邊 */
+.idc-f .idc-row{display:block;padding:5px 0}
+.idc-f .idc-row .k{width:auto}
+.idc-f .idc-row .v{margin-top:2px;word-break:break-word}
+.idc-f .idc-row .v span{display:block;margin-top:1px}
 .idc-row .k{width:112px;flex-shrink:0;font-size:.55rem;font-weight:900;color:#A08A62;letter-spacing:.08em}
 .idc-row .v{font-size:.8rem;font-weight:900;color:var(--pw-ink)}
 .idc-rect{margin-top:12px;border-top:1.5px dashed rgba(201,141,44,.45);padding-top:9px;font-size:.52rem;font-weight:900;color:#A08A62;letter-spacing:.16em}
