@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Pawradise · 學生專屬頁</title>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../pawradise-tokens.css">
+<link rel="stylesheet" href="../pawradise.css">
+<style>
+/* [2026-09-28] 學生專屬頁 · 第一階段（唯讀：學生證、成長階梯、出席、課堂）
+   顏色／圓角／字體全部用 pawradise-tokens.css 現有 token */
+.view{display:none;}
+.view.show{display:block;}
+.center-msg{text-align:center;padding:40px 12px;font-size:14px;font-weight:700;color:var(--pw-ink-mute);line-height:1.7;}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--pw-cream-deep);border-top-color:var(--pw-navy);
+  margin:0 auto 14px;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* 狗狗證：由 grading/status.html 原樣搬過嚟（2026-09-29 老闆：要同呈分試嗰張一樣）。
+   嗰頁用自己一套變數名，呢度喺 .idc／.crop-mask 範圍內對應返 pawradise-tokens.css。
+   ⚠️ 證件米金色系（#E0CFA8／#A08A62 等）同呈分試頁一致，未收入 tokens */
+.idc,.crop-mask{--r-sm:var(--pw-r-sm);--r-md:var(--pw-r-md);--r-xl:var(--pw-r-xl);--pill:var(--pw-r-pill);
+  --shadow:var(--pw-shadow-card);--pop:var(--pw-shadow-pop);--disp:'Fredoka','Huninn','Nunito',sans-serif;}
+#dogIdWrap{margin-bottom:14px;}
+.idc{position:relative;overflow:hidden;border:2px solid #E0CFA8;border-radius:var(--r-xl);
+  background:linear-gradient(150deg,#FFFDF7,#FBF3E4 62%,#F7E7C6);box-shadow:var(--shadow)}
+.idc::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(135deg,rgba(201,141,44,.055) 0 2px,transparent 2px 9px)}
+.idc-in{position:relative;padding:14px 16px 12px}
+.idc-hd{display:flex;align-items:flex-start;gap:9px;border-bottom:1.5px solid rgba(201,141,44,.3);padding-bottom:10px}
+.idc-hd img{width:46px;margin-top:-2px}
+.idc-hd .t1{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--pw-ink);line-height:1.15}
+.idc-hd .t2{font-size:.53rem;font-weight:800;color:#A08A62;letter-spacing:.2em;margin-top:3px}
+.idc-hd .rt{margin-left:auto;text-align:right}
+.idc-hd .rt i{display:block;font-style:normal;font-size:.5rem;font-weight:900;color:#A08A62;letter-spacing:.16em}
+.idc-hd .rt b{display:block;font-family:var(--disp);font-weight:700;font-size:.66rem;color:var(--pw-ink);letter-spacing:.06em;margin-top:1px}
+.idc-hd .rt span{display:block;font-size:.5rem;font-weight:800;color:#A08A62;letter-spacing:.12em;margin-top:3px}
+.idc-body{display:flex;gap:12px;margin-top:12px}
+.idc-avawrap{flex-shrink:0}
+.idc-avacap{text-align:center;font-size:.48rem;font-weight:900;color:#A08A62;letter-spacing:.16em;margin-top:4px}
+.idc-ava{width:140px;height:166px;border:1.5px solid #E0CFA8;border-radius:4px;
+  background:var(--pw-cream) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.idc-f{flex:1;min-width:0}
+.idc-nm{font-family:var(--disp);font-weight:700;font-size:1.28rem;color:var(--pw-ink);line-height:1.12;word-break:break-word}
+.idc-en{font-size:.6rem;font-weight:800;color:#A08A62;letter-spacing:.1em;margin-top:3px}
+.idc-row{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid rgba(160,138,98,.25)}
+.idc-row:last-child{border-bottom:none}
+.idc-row .k{width:112px;flex-shrink:0;font-size:.55rem;font-weight:900;color:#A08A62;letter-spacing:.08em}
+.idc-row .v{font-size:.8rem;font-weight:900;color:var(--pw-ink)}
+.idc-rect{margin-top:12px;border-top:1.5px dashed rgba(201,141,44,.45);padding-top:9px;font-size:.52rem;font-weight:900;color:#A08A62;letter-spacing:.16em}
+.idc-rec{display:flex;margin-top:8px}
+.idc-rec .c{flex:1;text-align:center}
+.idc-rec .c .k{font-size:.53rem;font-weight:900;color:#A08A62;letter-spacing:.08em;line-height:1.5}
+.idc-rec .c .k span{display:block;font-size:.44rem;letter-spacing:.14em;opacity:.8}
+.idc-rec .c .v{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--pw-ink);margin-top:2px}
+.idc-mrz{margin-top:11px;padding:8px 10px;background:#F2EADA;border:1px solid #E6D8BC;border-radius:var(--r-sm);
+  font-family:var(--disp);font-weight:700;font-size:.56rem;color:#8A7458;letter-spacing:.1em;word-break:break-all;line-height:1.6}
+/* 學生頁加嘅部分：學籍行、上載相片 */
+.idc-ava img.ph{width:100px;height:100px;object-fit:contain;}
+.idc-up{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;font-size:.62rem;font-weight:900;
+  color:var(--pw-navy);cursor:pointer;}
+.idc-up svg{width:13px;height:13px;}
+.idc-row .v.over{color:var(--pw-danger);}
+.crop-mask{display:none;position:fixed;inset:0;background:rgba(31,53,82,.72);z-index:50;align-items:center;justify-content:center;padding:20px}
+.crop-box{background:var(--pw-paper);border-radius:var(--r-xl);padding:20px;width:100%;max-width:330px;box-shadow:var(--pop)}
+.crop-box h3{font-weight:900;font-size:.95rem;color:var(--pw-ink);text-align:center}
+.crop-box .tip{font-size:.66rem;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin-top:3px}
+.crop-view{position:relative;width:260px;height:260px;margin:14px auto 0;border-radius:50%;overflow:hidden;background:var(--pw-cream-deep);touch-action:none;cursor:grab;box-shadow:inset 0 0 0 3px var(--pw-gold)}
+.crop-view img{position:absolute;transform-origin:0 0;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.crop-zoom{width:100%;margin-top:14px;accent-color:var(--pw-gold-deep)}
+.crop-btns{display:flex;gap:10px;margin-top:6px}
+.crop-btns button{flex:1;height:44px;border:none;border-radius:var(--pill);font-family:inherit;font-weight:900;font-size:.85rem;cursor:pointer}
+.btn-ok{background:var(--pw-gold);color:var(--pw-navy-deep)}
+.btn-no{background:var(--pw-cream);color:var(--pw-ink-mute)}
+
+/* 行動按鈕 */
+.actions{display:flex;gap:10px;margin-bottom:14px;}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border:none;cursor:pointer;text-decoration:none;
+  font-family:var(--pw-font-sans);font-size:14px;font-weight:900;border-radius:var(--pw-r-md);padding:13px 12px;}
+.btn.primary{background:var(--pw-navy);color:var(--pw-paper);}
+.btn.ghost{background:var(--pw-paper);color:var(--pw-navy);box-shadow:var(--pw-shadow-card);}
+.btn:disabled{opacity:.55;cursor:default;}
+
+/* 成長階梯 */
+.ladder{display:flex;justify-content:space-between;gap:4px;position:relative;margin-top:4px;}
+.ladder::before{content:'';position:absolute;left:8%;right:8%;top:25px;height:4px;border-radius:var(--pw-r-pill);background:var(--pw-cream-deep);}
+.rung{flex:1;text-align:center;position:relative;}
+.rung .dot{width:50px;height:50px;border-radius:50%;margin:0 auto;background:var(--pw-cream-soft);
+  border:var(--pw-stroke) solid var(--pw-cream-deep);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.rung .dot img{width:42px;height:42px;object-fit:contain;opacity:.35;filter:grayscale(1);}
+.rung.done .dot img{opacity:.8;filter:none;}
+.rung.current .dot{border-color:var(--pw-gold);box-shadow:0 0 0 4px var(--pw-warn-bg);}
+.rung.current .dot img{opacity:1;filter:none;}
+.rung .k{font-size:13px;font-weight:900;color:var(--pw-ink-faint);margin-top:6px;}
+.rung .z{font-size:10.5px;font-weight:700;color:var(--pw-ink-faint);}
+.rung.current .k,.rung.current .z{color:var(--pw-navy);}
+.ladder-note{font-size:12.5px;font-weight:700;color:var(--pw-ink-mute);margin-top:14px;line-height:1.6;}
+
+/* 出席 */
+.att{margin-bottom:12px;}
+.att:last-child{margin-bottom:0;}
+.att-top{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:var(--pw-ink-soft);margin-bottom:6px;}
+.att-bar{height:10px;border-radius:var(--pw-r-pill);background:var(--pw-cream-deep);overflow:hidden;}
+.att-bar div{height:100%;background:var(--pw-gold);border-radius:var(--pw-r-pill);}
+
+/* 課堂 */
+.cls{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--pw-cream-deep);}
+.cls:first-of-type{border-top:none;}
+.cls-date{width:48px;text-align:center;flex-shrink:0;background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:6px 0;}
+.cls-date b{display:block;font-size:18px;font-weight:900;color:var(--pw-navy);line-height:1.1;}
+.cls-date span{font-size:10.5px;font-weight:800;color:var(--pw-ink-mute);}
+.cls.past .cls-date b{color:var(--pw-ink-faint);}
+.cls-t{font-size:14px;font-weight:800;color:var(--pw-ink);}
+.cls-m{font-size:12px;font-weight:700;color:var(--pw-ink-mute);margin-top:2px;}
+.empty{font-size:13px;font-weight:700;color:var(--pw-ink-faint);}
+.sub-h{font-size:11px;font-weight:900;letter-spacing:.07em;color:var(--pw-ink-faint);margin:14px 0 4px;}
+
+/* 登入 */
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:13px;font-weight:800;color:var(--pw-ink-soft);margin-bottom:6px;}
+.field input{width:100%;font-family:var(--pw-font-sans);font-size:16px;font-weight:700;padding:12px 14px;
+  border:var(--pw-stroke) solid var(--pw-cream-deep);border-radius:var(--pw-r-md);background:var(--pw-paper);color:var(--pw-ink);}
+.field input:focus{outline:none;border-color:var(--pw-navy);}
+.hint{font-size:12.5px;font-weight:600;color:var(--pw-ink-mute);line-height:1.65;margin-bottom:14px;}
+.msg{font-size:13px;font-weight:700;border-radius:var(--pw-r-md);padding:10px 13px;margin-bottom:12px;display:none;}
+.msg.show{display:block;}
+.msg.ok{background:var(--pw-success-bg);color:var(--pw-success);}
+.msg.err{background:var(--pw-danger-bg);color:var(--pw-danger);}
+.dogpick{display:flex;flex-direction:column;gap:10px;}
+
+/* 校褸披肩（勳章設計未定：暫時一律灰色上鎖） */
+.cape-h{display:flex;justify-content:space-between;align-items:baseline;margin:2px 0 10px;}
+.cape-h b{font-size:14px;font-weight:900;color:var(--pw-ink);}
+.cape-h span{font-size:12px;font-weight:800;color:var(--pw-ink-mute);}
+.cape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin-bottom:6px;}
+.bdg{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+.bdg i{width:62px;height:62px;border-radius:50%;background:var(--pw-cream-soft);border:2px dashed var(--c, var(--pw-cream-deep));
+  display:flex;align-items:center;justify-content:center;color:var(--c, var(--pw-ink-ghost));}
+/* 上鎖：保留每枚勳章專屬色做虛線框＋鎖頭提示，整體淡化；解鎖後（第四階段）先用實色 */
+.bdg i svg{opacity:.7;}
+.bdg i{opacity:.75;}
+.bdg .nm{font-size:11.5px;font-weight:800;color:var(--pw-ink-mute);line-height:1.35;}
+.bdg .nm .en{display:block;font-size:9.5px;font-weight:700;color:var(--pw-ink-faint);letter-spacing:.02em;margin-top:1px;}
+.cape-note{font-size:12px;font-weight:700;color:var(--pw-ink-faint);line-height:1.6;margin-bottom:16px;}
+.cape-note:last-child{margin-bottom:0;}
+
+.foot-note{text-align:center;font-size:12px;font-weight:700;color:var(--pw-ink-faint);line-height:1.7;margin-top:6px;}
+.foot-note a{color:var(--pw-ink-mute);}
+</style>
+</head>
+<body>
+
+<header class="pw-header">
+  <div class="crest"><img src="../assets/pawradise-crest.png" alt="Pawradise"></div>
+  <div class="htitle"><b>學生專屬頁</b><span>毛孩社交學院</span></div>
+  <div class="spacer"></div>
+</header>
+
+<div class="container">
+
+  <!-- 載入中 -->
+  <div class="view show" id="vLoading"><div class="center-msg"><div class="spin"></div>正在載入⋯⋯</div></div>
+
+  <!-- 登入：email 驗證碼 -->
+  <div class="view" id="vLogin">
+    <div class="sec">
+      <div class="sec-label">以電郵登入</div>
+      <p class="hint">請輸入登記時使用的電郵，我們會發送 6 位驗證碼。驗證後即可進入狗狗的學生專屬頁。</p>
+      <div class="msg" id="loginMsg"></div>
+      <div id="stepEmail">
+        <div class="field"><label for="inEmail">登記電郵</label><input type="email" id="inEmail" autocomplete="email" inputmode="email"></div>
+        <button type="button" class="btn primary" id="btnReq" onclick="requestCode()">發送驗證碼</button>
+      </div>
+      <div id="stepCode" style="display:none">
+        <div class="field"><label for="inCode">6 位驗證碼</label><input type="text" id="inCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></div>
+        <div class="actions">
+          <button type="button" class="btn ghost" onclick="backToEmail()">重新輸入電郵</button>
+          <button type="button" class="btn primary" id="btnVerify" onclick="verifyCode()">確認</button>
+        </div>
+      </div>
+    </div>
+    <p class="foot-note">未有登記電郵或未能收到驗證碼？<br>請 WhatsApp <a href="https://wa.me/85294596420" target="_blank" rel="noopener">9459 6420</a> 聯絡我們。</p>
+  </div>
+
+  <!-- 同一電郵多隻狗：揀邊隻 -->
+  <div class="view" id="vPick">
+    <div class="sec">
+      <div class="sec-label">請選擇狗狗</div>
+      <div class="dogpick" id="dogPick"></div>
+    </div>
+  </div>
+
+  <!-- 學生頁 -->
+  <div class="view" id="vStudent">
+    <!-- 狗狗證（同 grading/status.html 同一款）＋學籍。編號／晶片／首次參賽／歷屆紀錄要等第四階段同呈分試資料接通 -->
+    <div id="dogIdWrap">
+      <div class="idc">
+        <div class="idc-in">
+          <div class="idc-hd">
+            <img src="../assets/pawradise-crest.png" alt="">
+            <div><div class="t1">狗狗證　PAWRADISE</div><div class="t2">DOG IDENTITY CARD</div></div>
+            <div class="rt"><i>PAWRADISE</i><b>在讀學生</b><span>STUDENT</span></div>
+          </div>
+          <div class="idc-body">
+            <div class="idc-avawrap">
+              <div class="idc-ava" id="idcAva"><img class="ph" id="sAva" src="../assets/daki-explore.png" alt=""></div>
+              <div class="idc-avacap">相片　PHOTO</div>
+              <label class="idc-up" id="avaUp" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.6-2.4h4.8L16 6"/></svg>上載相片<input type="file" id="avaInput" accept="image/*" style="display:none"></label>
+            </div>
+            <div class="idc-f">
+              <div class="idc-nm" id="idcName"></div>
+              <div class="idc-en" id="idcEn"></div>
+              <div style="margin-top:7px">
+                <div class="idc-row"><div class="k">DOG ID　編號</div><div class="v" id="idcNo">—</div></div>
+                <div class="idc-row"><div class="k">BREED　品種</div><div class="v" id="idcBreed">—</div></div>
+                <div class="idc-row"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip">—</div></div>
+                <div class="idc-row"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince">—</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="idc-rect">學籍　ENROLMENT</div>
+          <div style="margin-top:4px">
+            <div class="idc-row"><div class="k">CLASS　班別</div><div class="v" id="idcClass">—</div></div>
+            <div class="idc-row"><div class="k">LEVEL　社交分級</div><div class="v" id="idcLevel">—</div></div>
+            <div class="idc-row"><div class="k">VALID UNTIL　學期有效期</div><div class="v" id="idcValid">—</div></div>
+          </div>
+          <div class="idc-rect">歷屆紀錄　RECORD</div>
+          <div class="idc-rec">
+            <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">—</div></div>
+            <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">—</div></div>
+            <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">—</div></div>
+          </div>
+          <div class="idc-mrz" id="idcMrz"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" id="btnBook" href="#">預約課堂</a>
+      <a class="btn ghost" href="https://wa.me/85294596420" target="_blank" rel="noopener">聯絡導師</a>
+    </div>
+
+    <div class="sec" id="secCape">
+      <div class="sec-label">校褸披肩</div>
+      <div class="cape-h"><b>能力勳章</b><span id="capeAbilityCount"></span></div>
+      <div class="cape-grid" id="capeAbility"></div>
+      <p class="cape-note">達到指定表現即可解鎖。</p>
+      <div class="cape-h"><b>活動限定勳章</b><span id="capeEventCount"></span></div>
+      <div class="cape-grid" id="capeEvent"></div>
+      <p class="cape-note">參加指定活動即可獲得。</p>
+    </div>
+
+    <div class="sec" id="secLadder" style="display:none">
+      <div class="sec-label">社交成長階梯</div>
+      <div class="ladder" id="ladder"></div>
+      <p class="ladder-note" id="ladderNote"></p>
+    </div>
+
+    <div class="sec" id="secAtt" style="display:none">
+      <div class="sec-label">出席進度</div>
+      <div id="attList"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">我的課堂</div>
+      <div id="upList"></div>
+      <div class="sub-h" id="pastH" style="display:none">最近完成</div>
+      <div id="pastList"></div>
+    </div>
+
+    <p class="foot-note">
+      這是 <span id="sName2"></span> 的私人連結，請勿轉發。<br>
+      建議將此頁加入手機主畫面，下次一按即開。<br>
+      <a href="#" onclick="switchDog();return false;">以另一個電郵登入</a>
+    </p>
+  </div>
+
+</div>
+
+<div class="crop-mask" id="cropMask">
+  <div class="crop-box">
+    <h3>調整相片</h3>
+    <div class="tip">拖動相片移位，下面拉桿調整大小</div>
+    <div class="crop-view" id="cropView"><img id="cropImg" alt=""></div>
+    <input class="crop-zoom" id="cropZoom" type="range" min="100" max="300" value="100">
+    <div class="crop-btns">
+      <button class="btn-no" onclick="closeCrop()">取消</button>
+      <button class="btn-ok" id="cropOk" onclick="confirmCrop()">確定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
+const BOOKING_PAGE = '../Academy%20Booking.html';
+const STORE_KEY = 'pw_student_t';
+
+const LADDER = [
+  { k:'C',  zh:'反應型', img:'../assets/dino-c.png' },
+  { k:'B',  zh:'膽小型', img:'../assets/dino-b.png' },
+  { k:'B+', zh:'適應期', img:'../assets/dino-bplus.png' },
+  { k:'A',  zh:'社交型', img:'../assets/dino-a.png' },
+  { k:'A+', zh:'穩定犬', img:'../assets/dino-aplus.png' },
+];
+const LADDER_NOTE = {
+  'C':  '由安全感和冷靜距離開始，一步一步來。',
+  'B':  '給狗狗多一點時間和空間，慢慢習慣其他狗狗的存在。',
+  'B+': '社交信心正在建立，多一些自然互動就會更穩定。',
+  'A':  '已經可以友善地與其他狗狗互動，再鞏固一下就是 A+。',
+  'A+': '情緒非常穩定，可以成為其他同學的社交榜樣。',
+};
+const WEEK = ['日','一','二','三','四','五','六'];
+const BREED_EN = {"貴婦（玩具／迷你）": "Poodle (Toy / Miniature)", "松鼠狗": "Pomeranian", "芝娃娃": "Chihuahua", "約瑟爹利": "Yorkshire Terrier", "西施": "Shih Tzu", "馬爾濟斯": "Maltese", "比熊": "Bichon Frise", "八哥": "Pug", "臘腸": "Dachshund", "迷你史立莎": "Miniature Schnauzer", "西高地": "West Highland White Terrier", "北京狗": "Pekingese", "蝴蝶犬": "Papillon", "日本銀狐": "Japanese Spitz", "積羅素爹利": "Jack Russell Terrier", "迷你賓沙": "Miniature Pinscher", "意大利靈緹": "Italian Greyhound", "騎士查理王": "Cavalier King Charles Spaniel", "柴犬": "Shiba Inu", "哥基": "Welsh Corgi", "法國鬥牛犬": "French Bulldog", "比高": "Beagle", "貝靈頓": "Bedlington Terrier", "喜樂蒂": "Shetland Sheepdog", "沙皮": "Shar Pei", "英國老虎狗": "English Bulldog", "惠比特": "Whippet", "鬆獅": "Chow Chow", "英國史賓格": "English Springer Spaniel", "巴仙吉": "Basenji", "澳洲牧牛犬": "Australian Cattle Dog", "金毛尋回犬": "Golden Retriever", "拉布拉多": "Labrador Retriever", "哈士奇": "Siberian Husky", "西摩": "Samoyed", "德國牧羊犬": "German Shepherd", "邊境牧羊犬": "Border Collie", "澳洲牧羊犬": "Australian Shepherd", "秋田": "Akita Inu", "阿拉斯加": "Alaskan Malamute", "標準貴婦": "Standard Poodle", "唐狗": "Mongrel", "都柏文": "Dobermann", "洛威拿": "Rottweiler", "伯恩山": "Bernese Mountain Dog", "斑點狗": "Dalmatian", "威瑪": "Weimaraner", "大丹": "Great Dane", "大白熊": "Great Pyrenees", "聖伯納": "Saint Bernard", "紐芬蘭犬": "Newfoundland", "古代英國牧羊犬": "Old English Sheepdog", "蘇俄牧羊犬": "Borzoi", "拳師犬": "Boxer", "愛爾蘭雪達": "Irish Setter", "標準史立莎": "Standard Schnauzer", "巨型史立莎": "Giant Schnauzer", "貴婦混種（Maltipoo／Cavoodle 等）": "Poodle Mix (Maltipoo / Cavoodle)", "其他品種／混種": "Other / Mixed Breed"};
+// 上載相片：後端 student_avatar（crm-backend v6.2，要 Drive 授權）
+const AVATAR_ENABLED = true;
+let CURRENT_TOKEN = '';
+// 勳章清單（2026-09-28 老闆定）。勳章紀錄未建立（第四階段），現時一律灰色上鎖顯示。
+const ABILITY_BADGES = [
+  { zh:'分離耐受', en:'Separation Tolerance',       c:'var(--pw-navy-deep)' },
+  { zh:'衝動控制', en:'Impulse Control',            c:'var(--pw-sage)' },
+  { zh:'人狗協作', en:'Human-Dog Cooperation',      c:'var(--pw-dusty-blue)' },
+  { zh:'環境適應', en:'Environmental Adaptability', c:'var(--pw-sage)' },
+  { zh:'社交穩定', en:'Social Stability',           c:'var(--pw-gold)' },
+  { zh:'壓力復原', en:'Stress Resilience',          c:'var(--pw-terracotta)' },
+];
+const EVENT_BADGES = [
+  { zh:'狗狗呈分試 2026', en:'Grading Day 2026', date:'10月24日',   c:'var(--pw-gold)' },
+  { zh:'Halloween Pawty', en:'',                 date:'10月31日',   c:'var(--pw-terracotta)' },
+  { zh:"X'mas Pawty",     en:'',                 date:'12月20–21日', c:'var(--pw-sage)' },
+];
+const LOCK_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function show(id){ document.querySelectorAll('.view').forEach(v => v.classList.toggle('show', v.id === id)); }
+function store(k, v){ try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function recall(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+function className(lv){
+  const s = String(lv || '');
+  if (/Explorer|Club/i.test(s)) return 'Calm Explorer Club';
+  if (s === 'S1+S2') return '狗狗幼稚園＋情緒重建小組班';
+  if (s === 'S2') return '情緒重建小組班';
+  if (s === 'S1') return '狗狗幼稚園';
+  return '毛孩社交學院';
+}
+
+// yyyy-MM-dd → 日／月／星期（純字串計，唔經 Date 解析字串）
+function dateParts(ds){
+  const m = String(ds || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  const y = +m[1], mo = +m[2], d = +m[3];
+  return { d: d, mo: mo, w: WEEK[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()] };
+}
+
+function clsRow(c, past){
+  const p = dateParts(c.classDate);
+  const title = c.lessonNum ? String(c.lessonNum) : String(c.classLabel || '課堂').split('·')[0].trim();
+  const time  = /^S2/i.test(String(c.classLabel || '')) ? c.classTime : (c.arrivalTime || c.classTime);
+  return `<div class="cls${past ? ' past' : ''}">
+    <div class="cls-date"><b>${p ? p.d : ''}</b><span>${p ? p.mo + '月・' + p.w : ''}</span></div>
+    <div><div class="cls-t">${esc(title)}</div><div class="cls-m">${esc(c.classLabel || '')}${time ? '　' + esc(time) : ''}</div></div>
+  </div>`;
+}
+
+function renderCape(){
+  const cell = b => `<div class="bdg"><i style="--c:${b.c}">${LOCK_SVG}</i><div class="nm">${esc(b.zh)}${b.en ? `<span class="en">${esc(b.en)}</span>` : ''}${b.date ? `<span class="en">${esc(b.date)}</span>` : ''}</div></div>`;
+  $('capeAbility').innerHTML = ABILITY_BADGES.map(cell).join('');
+  $('capeEvent').innerHTML   = EVENT_BADGES.map(cell).join('');
+  $('capeAbilityCount').textContent = '已獲得 0 / ' + ABILITY_BADGES.length;
+  $('capeEventCount').textContent   = '已獲得 0 / ' + EVENT_BADGES.length;
+}
+
+function ymd(ds){
+  const m = String(ds || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${+m[1]}年${+m[2]}月${+m[3]}日` : '';
+}
+
+function attRow(label, used, total){
+  const pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
+  return `<div class="att"><div class="att-top"><span>${esc(label)}</span><b>${used} / ${total} 堂</b></div>
+    <div class="att-bar"><div style="width:${Math.max(pct, 3)}%"></div></div></div>`;
+}
+
+function renderStudent(json, token){
+  const d = json.data;
+  const dog = d.dogName || '狗狗';
+  $('sName2').textContent = dog;
+  // 狗狗證（欄位同呈分試頁；未有嘅資料顯示「—」）
+  CURRENT_TOKEN = token;
+  $('idcName').textContent = dog;
+  $('idcEn').textContent = BREED_EN[d.breed] ? BREED_EN[d.breed].toUpperCase() : '';
+  $('idcBreed').innerHTML = d.breed
+    ? esc(d.breed) + (BREED_EN[d.breed] ? '<span style="font-size:.58rem;font-weight:800;color:#A08A62;letter-spacing:.06em">　' + BREED_EN[d.breed] + '</span>' : '')
+    : '—';
+  if (d.dogId) $('idcNo').textContent = d.dogId;
+  $('idcClass').textContent = className(d.courseLevel);
+  $('idcMrz').textContent = (d.dogId ? String(d.dogId).replace('-', '') : 'PAWRADISE') + '<<' +
+    String(dog).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<STUDENT<<HKG';
+  if (d.avatarUrl) setAvatar(d.avatarUrl);
+  if (AVATAR_ENABLED) $('avaUp').style.display = 'flex';
+  $('btnBook').href = BOOKING_PAGE + '?t=' + encodeURIComponent(token);
+  document.title = dog + ' · 學生專屬頁';
+
+  const gi = LADDER.findIndex(x => x.k === String(d.behavioralLevel || '').trim());
+  if (gi >= 0) {
+    const g = LADDER[gi];
+    if ($('sAva')) $('sAva').src = g.img;   // 未上載相片先用分級恐龍做相位
+    $('ladder').innerHTML = LADDER.map((x, i) =>
+      `<div class="rung ${i < gi ? 'done' : i === gi ? 'current' : ''}"><div class="dot"><img src="${x.img}" alt=""></div>
+       <div class="k">${x.k}</div><div class="z">${x.zh}</div></div>`).join('');
+    $('ladderNote').textContent = LADDER_NOTE[g.k] || '';
+    $('secLadder').style.display = 'block';
+  }
+
+  // 學籍：班別／社交分級／學期有效期（後端由 S1學期開始日 ＋ 3 個月計；未開始上課就冇）
+  let expiry = '', expCls = '';
+  if (Number(d.s1Total) > 0 && d.termExpiry) {
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+    expiry = d.termExpiry < today ? '已於 ' + ymd(d.termExpiry) + ' 屆滿' : ymd(d.termExpiry);
+    expCls = d.termExpiry < today ? 'over' : '';
+  }
+  if (gi >= 0) $('idcLevel').textContent = LADDER[gi].k + '｜' + LADDER[gi].zh;
+  if (expiry) { $('idcValid').textContent = expiry; if (expCls) $('idcValid').classList.add(expCls); }
+
+  renderCape();
+
+  let att = '';
+  if (Number(d.s1Total) > 0) {
+    att += attRow('狗狗幼稚園', Number(d.s1Attended || 0), Number(d.s1Total));
+  }
+  if (Number(d.s2Total) > 0) att += attRow('情緒重建小組班', Number(d.s2Attended || 0), Number(d.s2Total));
+  const q = String(d.monthlyQuota || '').trim();
+  if (q) {
+    att += /^\d+$/.test(q)
+      ? attRow('本月已預約', Number(d.usedThisMonth || 0), Number(q))
+      : `<div class="att"><div class="att-top"><span>本月已預約</span><b>${Number(d.usedThisMonth || 0)} 堂</b></div></div>`;
+  }
+  if (att) { $('attList').innerHTML = att; $('secAtt').style.display = 'block'; }
+
+  const all  = (json.upcomingClasses || []).slice().sort((a, b) => String(a.classDate).localeCompare(String(b.classDate)));
+  const up   = all.filter(c => c.status === 'upcoming');
+  const past = all.filter(c => c.status === 'done').slice(-3).reverse();
+  $('upList').innerHTML = up.length ? up.map(c => clsRow(c, false)).join('')
+    : '<p class="empty">暫時未有已預約的課堂。</p>';
+  if (past.length) { $('pastH').style.display = 'block'; $('pastList').innerHTML = past.map(c => clsRow(c, true)).join(''); }
+
+  show('vStudent');
+}
+
+async function loadToken(token){
+  show('vLoading');
+  try {
+    const res  = await fetch(API_URL + '?action=studentLookup&t=' + encodeURIComponent(token));
+    const json = await res.json();
+    if (json.found && json.data) {
+      store(STORE_KEY, token);
+      // 網址一定帶 ?t=：家長「加入主畫面」時會連連結一齊儲，之後一按即開唔使登入
+      if (new URLSearchParams(location.search).get('t') !== token) {
+        try { history.replaceState(null, '', location.pathname + '?t=' + encodeURIComponent(token)); } catch (e) {}
+      }
+      renderStudent(json, token); return;
+    }
+    store(STORE_KEY, null);
+    loginMsg('此連結已失效，請以電郵重新登入。', 'err');
+  } catch (e) {
+    loginMsg('暫時未能載入，請稍後再試。', 'err');
+  }
+  show('vLogin');
+}
+
+async function post(payload){
+  const r = await fetch(API_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+  return JSON.parse(await r.text());
+}
+
+function loginMsg(t, kind){
+  const m = $('loginMsg');
+  m.textContent = t || '';
+  m.className = 'msg' + (t ? ' show ' + kind : '');
+}
+
+async function requestCode(){
+  const email = $('inEmail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { loginMsg('請輸入有效電郵。', 'err'); return; }
+  $('btnReq').disabled = true;
+  try {
+    const r = await post({ action:'request_login_code', email: email });
+    if (r.success) {
+      loginMsg(r.message, 'ok');
+      $('stepEmail').style.display = 'none';
+      $('stepCode').style.display = 'block';
+      $('inCode').focus();
+    } else loginMsg(r.error || '發送失敗，請稍後再試。', 'err');
+  } catch (e) { loginMsg('發送失敗，請稍後再試。', 'err'); }
+  $('btnReq').disabled = false;
+}
+
+async function verifyCode(){
+  const email = $('inEmail').value.trim();
+  const code  = $('inCode').value.trim();
+  if (!/^\d{6}$/.test(code)) { loginMsg('請輸入 6 位數字驗證碼。', 'err'); return; }
+  $('btnVerify').disabled = true;
+  try {
+    const r = await post({ action:'verify_login_code', email: email, code: code });
+    if (r.success && r.dogs && r.dogs.length) {
+      if (r.dogs.length === 1) { location.replace('?t=' + r.dogs[0].token); return; }
+      $('dogPick').innerHTML = r.dogs.map(d =>
+        `<a class="btn ghost" href="?t=${encodeURIComponent(d.token)}">${esc(d.dogName || '狗狗')}</a>`).join('');
+      show('vPick');
+    } else loginMsg(r.error || '驗證失敗，請再試一次。', 'err');
+  } catch (e) { loginMsg('驗證失敗，請稍後再試。', 'err'); }
+  $('btnVerify').disabled = false;
+}
+
+function backToEmail(){
+  loginMsg('');
+  $('inCode').value = '';
+  $('stepCode').style.display = 'none';
+  $('stepEmail').style.display = 'block';
+}
+
+// ── 上載相片（同 grading/status.html 同一套裁切）──
+function el(id){ return document.getElementById(id); }
+function setAvatar(url){
+  const av = $('idcAva');
+  av.innerHTML = '';
+  av.style.backgroundImage = 'url("' + String(url).replace(/"/g, '') + '")';
+}
+$('avaInput').addEventListener('change', uploadAvatar);
+var CROP = { img: null, V: 260, base: 1, zoom: 1, x: 0, y: 0, drag: null };
+
+function uploadAvatar(ev){
+  var f = ev.target.files && ev.target.files[0];
+  ev.target.value = '';
+  if (!f) return;
+  var img = new Image();
+  img.onload = function(){ openCrop(img); };
+  img.onerror = function(){ alert('讀取不到這張相片，請換一張再試。'); };
+  img.src = URL.createObjectURL(f);
+}
+
+function openCrop(img){
+  CROP.img = img;
+  CROP.base = Math.max(CROP.V / img.width, CROP.V / img.height);
+  CROP.zoom = 1;
+  var ci = el('cropImg');
+  ci.src = img.src;
+  ci.style.width = img.width + 'px';
+  ci.style.height = img.height + 'px';
+  // 置中
+  CROP.x = (CROP.V - img.width * CROP.base) / 2;
+  CROP.y = (CROP.V - img.height * CROP.base) / 2;
+  el('cropZoom').value = 100;
+  applyCrop();
+  el('cropMask').style.display = 'flex';
+  bindCropDrag();
+}
+
+function scaleNow(){ return CROP.base * CROP.zoom; }
+
+function clampCrop(){
+  var sc = scaleNow();
+  var w = CROP.img.width * sc, h = CROP.img.height * sc;
+  CROP.x = Math.min(0, Math.max(CROP.V - w, CROP.x));
+  CROP.y = Math.min(0, Math.max(CROP.V - h, CROP.y));
+}
+
+function applyCrop(){
+  clampCrop();
+  el('cropImg').style.transform = 'translate(' + CROP.x + 'px,' + CROP.y + 'px) scale(' + scaleNow() + ')';
+}
+
+function bindCropDrag(){
+  var view = el('cropView');
+  if (view.dataset.bound) return;
+  view.dataset.bound = '1';
+  function pt(e){ var t = e.touches ? e.touches[0] : e; return { x: t.clientX, y: t.clientY }; }
+  function down(e){ CROP.drag = pt(e); CROP.dx = CROP.x; CROP.dy = CROP.y; }
+  function move(e){
+    if (!CROP.drag) return;
+    e.preventDefault();
+    var q = pt(e);
+    CROP.x = CROP.dx + (q.x - CROP.drag.x);
+    CROP.y = CROP.dy + (q.y - CROP.drag.y);
+    applyCrop();
+  }
+  function up(){ CROP.drag = null; }
+  view.addEventListener('mousedown', down);
+  view.addEventListener('touchstart', down, { passive: true });
+  window.addEventListener('mousemove', move);
+  window.addEventListener('touchmove', move, { passive: false });
+  window.addEventListener('mouseup', up);
+  window.addEventListener('touchend', up);
+  el('cropZoom').addEventListener('input', function(){
+    var prev = scaleNow();
+    CROP.zoom = parseInt(this.value, 10) / 100;
+    var next = scaleNow();
+    // 以中心為基準縮放，唔會跳位
+    CROP.x = CROP.V / 2 - (CROP.V / 2 - CROP.x) * (next / prev);
+    CROP.y = CROP.V / 2 - (CROP.V / 2 - CROP.y) * (next / prev);
+    applyCrop();
+  });
+}
+
+function closeCrop(){ el('cropMask').style.display = 'none'; CROP.img = null; }
+
+function confirmCrop(){
+  if (!CROP.img) return;
+  var sc = scaleNow(), size = 256;
+  var c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  var ctx = c.getContext('2d');
+  ctx.fillStyle = '#F5F0E8';
+  ctx.fillRect(0, 0, size, size);
+  ctx.drawImage(CROP.img, -CROP.x / sc, -CROP.y / sc, CROP.V / sc, CROP.V / sc, 0, 0, size, size);
+  var dataUrl = c.toDataURL('image/jpeg', 0.82);
+  var btn = el('cropOk');
+  btn.disabled = true; btn.textContent = '上載中…';
+  fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'student_avatar', t: CURRENT_TOKEN, image: dataUrl }) })
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var res = null;
+      try { res = JSON.parse(txt); } catch (e) { res = null; }
+      btn.disabled = false; btn.textContent = '確定';
+      // 轉址失敗時後台其實多數已經存咗——照顯示新頭像，唔好嚇家長
+      setAvatar(dataUrl);
+      closeCrop();
+      if (res && res.ok === false && res.message) alert(res.message);
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = '確定';
+      alert('網絡連線異常，頭像可能未儲存，請稍後再試一次。');
+    });
+}
+
+function switchDog(){
+  store(STORE_KEY, null);
+  location.href = location.pathname;
+}
+
+// INIT：網址有 ?t= 用網址；冇就試本機記住嘅連結；都冇就登入
+(function(){
+  const t = new URLSearchParams(location.search).get('t') || recall(STORE_KEY);
+  if (t) loadToken(t); else show('vLogin');
+})();
+</script>
+</body>
+</html>

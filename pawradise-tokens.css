@@ -28,6 +28,12 @@
   --pw-brown-deep:  #5C3E27; /* outline */
   --pw-tan:         #D9994A; /* mascot belly + ears */
   --pw-heart:       #EF6E6E; /* heart prop */
+  /* [2026-09-28] 品牌插畫色板（線條狗／勳章）。只做底色、勳章、分類色塊；
+     喺 cream 上做字對比度唔夠（sage 3.06／dusty 2.18／terracotta 2.39），字一律用 navy。
+     terracotta 同 danger 相近，唔好用嚟表示錯誤。 */
+  --pw-sage:        #7C8F76;
+  --pw-dusty-blue:  #8FA7C4;
+  --pw-terracotta:  #D98877;
 
   /* --- Category accents (from S1 game library) ---------------------- */
   --pw-cat-sniff:   #6B8E3D; /* sage / olive green — sniffing games (warmer, brand-friendly) */

@@ -466,7 +466,7 @@
   </div>
 
   <!-- Lookup -->
-  <div class="sec">
+  <div class="sec" id="lookupSec">
     <div class="sec-label"><svg class="ico"><use href="#ico-search"/></svg>舊生快速登入</div>
     <div class="lookup-row">
       <input type="tel" id="lookupPhone" placeholder="輸入 8 位 WhatsApp 號碼" maxlength="8" onkeydown="if(event.key==='Enter'){event.preventDefault();doLookup();}"/>
@@ -586,6 +586,7 @@
           <option value="Active Explorer">月費 · Active Explorer</option>
           <option value="Ultimate Explorer">月費 · Ultimate Explorer</option>
         </select>
+        <div class="hint" id="levelLockHint" style="display:none">已按狗狗報讀的課程設定。如需轉換課程，請 WhatsApp 9459 6420 聯絡我們。</div>
         <div class="err-msg" id="e-level">請選擇課程級別</div>
       </div>
     </div>
@@ -1151,6 +1152,30 @@ async function doLookup() {
   }
 }
 
+// [2026-09-28] 私人連結登入：收埋電話輸入列，其餘同舊生查詢一樣（fillRecord）
+async function tokenLookup(t) {
+  const sec = document.getElementById('lookupSec');
+  setLookupLoading(true);
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=studentLookup&t=${encodeURIComponent(t)}`);
+    const json = await res.json();
+    if (json.found && json.data) {
+      _allDogs = [{ ...json.data, upcomingClasses: json.upcomingClasses || [] }];
+      hideDogSelector();
+      fillRecord(_allDogs[0]);
+      // 只收埋標題＋電話輸入列；成長階梯／課程追蹤／課堂紀錄（取消掣）都喺同一個 section 入面，要保留
+      if (sec) sec.querySelectorAll(':scope > .sec-label, :scope > .lookup-row').forEach(el => { el.style.display = 'none'; });
+      try { localStorage.setItem('pw_student_t', t); } catch (e) {}   // 同學生頁共用：下次直接開報名頁都唔使再輸入電話
+    } else {
+      try { localStorage.removeItem('pw_student_t'); } catch (e) {}
+    }
+    // 連結無效／搵唔到：保留電話查詢區，家長照舊用電話登入
+  } catch (e) {
+  } finally {
+    setLookupLoading(false);
+  }
+}
+
 function showDogSelector(dogs) {
   const wrap = document.getElementById('dogSelectorWrap');
   if (!wrap) return;
@@ -1215,6 +1240,12 @@ function fillRecord(d) {
   window.HAS_ACADEMY = String(d.customerType || '').indexOf('學院') !== -1 ||
     Number(d.s1Total || 0) > 0 || Number(d.s2Total || 0) > 0 ||
     String(d.monthlyQuota || '').trim() !== '' || !!_lvl;
+  // [2026-09-29 老闆要求] 學院舊生課程級別按 CRM 報讀課程上鎖，避免家長揀錯；
+  //   CRM 冇級別或者級別唔喺選單入面（select 還原咗空白）就唔鎖，照舊畀家長揀
+  const _lvlSel = document.getElementById('courseLevel');
+  const _lockLvl = !!(window.HAS_ACADEMY && _lvl && _lvlSel.value === _lvl);
+  _lvlSel.disabled = _lockLvl;
+  document.getElementById('levelLockHint').style.display = _lockLvl ? 'block' : 'none';
   const noteEl = document.getElementById('foundNote');
   if (noteEl) noteEl.textContent = window.HAS_ACADEMY ? ''
     : '此電話目前只有酒店紀錄，屬首次報讀學院——資料已為您帶入，提交後專員會聯絡您確認學費及安排。';
@@ -1326,6 +1357,9 @@ async function submitEnrollment() {
 }
 
 function clearLookup() {
+  // [2026-09-29] 私人連結登入後撳「清除」：忘記記住嘅連結，並還原電話輸入列
+  try { localStorage.removeItem('pw_student_t'); } catch (e) {}
+  document.querySelectorAll('#lookupSec > .sec-label, #lookupSec > .lookup-row').forEach(el => { el.style.display = ''; });
   document.getElementById('lookupPhone').value = '';
   document.getElementById('foundMsg').classList.remove('show');
   document.getElementById('notfoundMsg').classList.remove('show');
@@ -1348,6 +1382,8 @@ function clearLookup() {
   });
   document.getElementById('healthDetailField').style.display = 'none';
   document.getElementById('courseLevel').value = '';
+  document.getElementById('courseLevel').disabled = false;          // [2026-09-29] 清除＝解鎖課程級別
+  document.getElementById('levelLockHint').style.display = 'none';
   applyCourseFilter();
   lookupActive = false;
   window.HAS_ACADEMY = false;
@@ -2119,6 +2155,11 @@ applyCourseFilter();
 applyEnrollmentMode();   // [2026-09-10] 初始狀態：未查詢＝新學員視角，條款區顯示
 buildTimes();
 loadClassesOnce().catch(() => {});  // 預先載入課堂資料：客戶填資料期間背景抓好，選課零等待
+// [2026-09-28] 學生專屬頁私人連結：?t=連結碼 → 直接載入該狗資料，唔使輸入電話
+// 冇 ?t= 就用學生頁／上次記住嘅連結（同一網域 localStorage）
+let _studentToken = _params.get('t');
+if (!_studentToken) { try { _studentToken = localStorage.getItem('pw_student_t'); } catch (e) {} }
+if (_studentToken && !DEMO_MODE) tokenLookup(_studentToken);
 const _demo = _params.get('demo');
 if (_demo) {
   const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
