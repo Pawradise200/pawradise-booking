@@ -204,7 +204,7 @@ body.has-dogid .status-card{margin-top:16px}
 </header>
 
 <div class="wrap">
-  <div class="loading" id="loading">載入中⋯⋯</div>
+  <div class="loading" id="loading">資料下載中，請稍候片刻</div>
   <div class="notfound" id="notFound">找不到此同學頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
 
   <!-- 狗狗證：永久身分，賽前賽後都顯示 -->
@@ -445,7 +445,7 @@ function loadStatus(tries){
 
 function retryLoad(tries){
   if (tries < 3) {
-    el('loading').textContent = '載入中⋯⋯（重試第 ' + (tries + 1) + ' 次）';
+    el('loading').textContent = '資料下載中，請稍候片刻（重試第 ' + (tries + 1) + ' 次）';
     setTimeout(function(){ loadStatus(tries + 1); }, 1500 + tries * 1500);
     return;
   }

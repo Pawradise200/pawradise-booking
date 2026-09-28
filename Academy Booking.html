@@ -483,7 +483,7 @@
     <!-- FIX 1: Loading state element -->
     <div class="lookup-loading" id="lookupLoading">
       <div class="lookup-spinner"></div>
-      <span>資料正在載入，請稍等⋯⋯</span>
+      <span>資料下載中，請稍候片刻</span>
     </div>
     <div class="found-msg" id="foundMsg">
       <svg class="ico"><use href="#ico-check-circle"/></svg>
@@ -945,7 +945,7 @@ async function buildClasses(allowedTypes, level) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>請先於上方選擇「課程級別」，系統會顯示對應的課堂日期。</div>';
     return;
   }
-  listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>載入課堂中⋯⋯</div>';
+  listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>資料下載中，請稍候片刻</div>';
   let classes = [];
   try {
     const json = await loadClassesOnce();
