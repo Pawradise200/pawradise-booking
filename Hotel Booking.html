@@ -146,9 +146,9 @@
 
   <!-- ② 主人資料 -->
   <div class="sec">
-    <div class="sec-label"><svg class="ico"><use href="#ico-user"/></svg>主人資料</div>
+    <div class="sec-label"><svg class="ico"><use href="#ico-user"/></svg>家長資料</div>
     <div class="r2">
-      <div class="field"><label>主人姓名 <span class="req">*</span></label><input type="text" id="f-owner" placeholder="例：陳大文"/></div>
+      <div class="field"><label>家長姓名 <span class="req">*</span></label><input type="text" id="f-owner" placeholder="例：陳大文"/></div>
       <div class="field"><label>WhatsApp 號碼 <span class="req">*</span></label><input type="tel" id="f-phone" placeholder="例：90000001"/></div>
     </div>
     <div class="field">
@@ -712,7 +712,7 @@ function calcForm() {
 // ══ SUBMIT ════════════════════════════════════════════════════════
 async function submitForm() {
   const required=[
-    {id:'f-owner',msg:'請填寫主人姓名'},
+    {id:'f-owner',msg:'請填寫家長姓名'},
     {id:'f-phone',msg:'請填寫 WhatsApp 號碼'},
     {id:'f-weight',msg:'請填寫體重（用作計算住宿價錢）'},
   ];
