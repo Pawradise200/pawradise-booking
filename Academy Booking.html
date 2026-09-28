@@ -708,6 +708,34 @@
       <div class="field-note"><svg class="ico"><use href="#ico-message"/></svg><span>轉賬後請將付款截圖 WhatsApp 至 <strong>9459 6420</strong>，並註明狗狗名字 + 接送日期 + 接送地區。</span></div>
     </div>
 
+    <!-- [2026-09-29 老闆要求] 得知渠道：只喺入學手續模式出現（畀 marketing 統計），放喺條款上面 -->
+    <div class="sec" id="sourceSec" style="display:none;">
+      <div class="sec-label"><svg class="ico"><use href="#ico-info"/></svg>得知渠道</div>
+      <div class="field">
+        <label>請問您從哪裡得知 Pawradise？ <span class="req">*</span></label>
+        <select id="enrollSource" onchange="document.getElementById('sourceOtherField').style.display = this.value === '其他' ? 'block' : 'none';">
+          <option value="">請選擇</option>
+          <option>Instagram</option>
+          <option>Facebook</option>
+          <option>小紅書</option>
+          <option>Google 搜尋或地圖</option>
+          <option>AI 搜尋（如 ChatGPT、Gemini）</option>
+          <option>朋友或家人介紹</option>
+          <option>曾使用 Pawradise 其他服務</option>
+          <option>狗狗呈分試或學校活動</option>
+          <option>品種群組或寵物社群</option>
+          <option>路過學校</option>
+          <option>其他</option>
+        </select>
+        <div class="err-msg" id="e-source">請選擇得知渠道</div>
+      </div>
+      <div class="field" id="sourceOtherField" style="display:none;">
+        <label>請註明 <span class="req">*</span></label>
+        <input type="text" id="enrollSourceOther" maxlength="40" placeholder="請簡單註明">
+        <div class="err-msg" id="e-source-other">請註明得知渠道</div>
+      </div>
+    </div>
+
     <!-- [2026-09-10] 入學條款及細則（已同意現行版本嘅學員唔會見到；由 applyEnrollmentMode 控制） -->
     <div class="sec" id="tcSec" style="display:none;">
       <div class="sec-label"><svg class="ico"><use href="#ico-clipboard"/></svg>學院課程條款及細則</div>
@@ -1286,6 +1314,8 @@ function applyEnrollmentMode() {
     (!window.TC_CONSENTED && (window.TC_TOUCHED || window.NEEDS_ENROLLMENT)) ? 'block' : 'none';
   const note = document.getElementById('enrollNote');
   if (note) note.classList.toggle('show', enroll);
+  const srcSec = document.getElementById('sourceSec');   // [2026-09-29] 得知渠道只喺入學手續模式出現
+  if (srcSec) srcSec.style.display = enroll ? 'block' : 'none';
   // 入學手續模式：收起預約相關區塊，淨返 主人資料＋狗狗資料＋條款
   //   （arrivalSec／paymentSec 本身預設隱藏、由其他邏輯開關，還原時還返 display:none）
   ['classSec', 'arrivalSec', 'transportSec', 'remarksSec', 'paymentSec'].forEach(id => {
@@ -1304,6 +1334,15 @@ function applyEnrollmentMode() {
 // 入學手續提交：只寫基本資料＋條款同意，唔涉任何課堂預約
 async function submitEnrollment() {
   if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  // [2026-09-29] 得知渠道（必填；揀「其他」要註明）
+  const srcSel = document.getElementById('enrollSource').value;
+  const srcOther = document.getElementById('enrollSourceOther').value.trim();
+  const okSrc = vf('enrollSource', !srcSel, 'e-source');
+  const okOther = vf('enrollSourceOther', srcSel === '其他' && !srcOther, 'e-source-other');
+  if (!okSrc || !okOther) {
+    document.getElementById('sourceSec').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
@@ -1324,6 +1363,7 @@ async function submitEnrollment() {
     dogHealth:      document.getElementById('dogHealthSel').value === 'yes'
                       ? document.getElementById('dogHealthText').value.trim() : '沒有',
     consentVersion: TC_VERSION,
+    source:         srcSel === '其他' ? '其他：' + srcOther : srcSel,
   };
   try {
     const res = await fetch(APPS_SCRIPT_URL, {

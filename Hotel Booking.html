@@ -370,6 +370,28 @@
     </div>
   </div>
 
+  <!-- [2026-09-29 老闆要求] 得知渠道：只問新客（查詢唔到記錄／冇查詢），放喺條款上面，畀 marketing 統計 -->
+  <div class="sec" id="hotelSourceSec">
+    <div class="sec-label"><svg class="ico"><use href="#ico-info"/></svg>得知渠道</div>
+    <div class="field"><label>請問您從哪裡得知 Pawradise？ <span class="req">*</span></label>
+      <select id="f-source" onchange="document.getElementById('f-source-other-wrap').style.display = this.value === '其他' ? 'block' : 'none';">
+          <option value="">請選擇</option>
+          <option>Instagram</option>
+          <option>Facebook</option>
+          <option>小紅書</option>
+          <option>Google 搜尋或地圖</option>
+          <option>AI 搜尋（如 ChatGPT、Gemini）</option>
+          <option>朋友或家人介紹</option>
+          <option>曾使用 Pawradise 其他服務</option>
+          <option>狗狗呈分試或學校活動</option>
+          <option>品種群組或寵物社群</option>
+          <option>路過學校</option>
+          <option>其他</option>
+      </select></div>
+    <div class="field" id="f-source-other-wrap" style="display:none;"><label>請註明 <span class="req">*</span></label>
+      <input type="text" id="f-source-other" maxlength="40" placeholder="請簡單註明"/></div>
+  </div>
+
   <!-- ⑧ 條款 + 提交 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-check-circle"/></svg>條款確認</div>
@@ -502,6 +524,7 @@ function showDogSelector(dogs) {
 
 function prefillReturning(d) {
   isReturning = true;
+  document.getElementById('hotelSourceSec').style.display = 'none';   // [2026-09-29] 舊客唔使答得知渠道
   // ★ 修訂：預填資料但允許家長更改（移除 readOnly，保留視覺樣式）
   [['f-owner',d.ownerName],['f-phone',d.phone],['f-email',d.email||''],
    ['f-dogname',d.dogName],['f-breed',d.breed],['f-weight',d.weight]].forEach(([id,val])=>{
@@ -566,6 +589,7 @@ function prefillReturning(d) {
 
 function clearPrefill() {
   isReturning=false;
+  document.getElementById('hotelSourceSec').style.display = '';       // [2026-09-29] 新客要答得知渠道
   _allDogs=[];
   _pkgPool=null;
   const selWrap=document.getElementById('dogSelectorWrap');
@@ -700,6 +724,11 @@ async function submitForm() {
   const ciD=getDateTime('f-ci-date','f-ci-time');
   const coD=getDateTime('f-co-date','f-co-time');
   if(!ciD||!coD){alert('請填寫入住及離開日期時間');return;}
+  // [2026-09-29] 新客：得知渠道必填；揀「其他」要註明
+  const srcSel = isReturning ? '' : document.getElementById('f-source').value;
+  const srcOther = document.getElementById('f-source-other').value.trim();
+  if(!isReturning && !srcSel){alert('請選擇從哪裡得知 Pawradise');document.getElementById('f-source').focus();return;}
+  if(!isReturning && srcSel==='其他' && !srcOther){alert('請註明從哪裡得知 Pawradise');document.getElementById('f-source-other').focus();return;}
   if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
 
   // ✅ 提交前重算 + 攔截：日托（同日）放行，但杜絕無效時序 / $0 落單
@@ -741,6 +770,7 @@ async function submitForm() {
     academyFee: (window._fees && window._fees.academy) || 0,
     transportFee: (window._fees && window._fees.transport) || 0,
     status:'待審批',
+    source: srcSel === '其他' ? '其他：' + srcOther : srcSel,   // [2026-09-29] 舊客＝空白
   };
 
   try {
