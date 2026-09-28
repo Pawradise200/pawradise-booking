@@ -1160,9 +1160,12 @@ async function tokenLookup(t) {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=studentLookup&t=${encodeURIComponent(t)}`);
     const json = await res.json();
     if (json.found && json.data) {
-      _allDogs = [{ ...json.data, upcomingClasses: json.upcomingClasses || [] }];
-      hideDogSelector();
-      fillRecord(_allDogs[0]);
+      // [2026-09-29 家庭切換] 同一電話多位學院狗狗 → 用現有狗狗選單（連結嗰隻排第一）
+      const upcomingClasses = json.upcomingClasses || [];
+      const dogs = (Array.isArray(json.dogs) && json.dogs.length) ? json.dogs : [json.data];
+      _allDogs = dogs.map(d => ({ ...d, upcomingClasses }));
+      if (_allDogs.length > 1) showDogSelector(_allDogs);
+      else { hideDogSelector(); fillRecord(_allDogs[0]); }
       // 只收埋標題＋電話輸入列；成長階梯／課程追蹤／課堂紀錄（取消掣）都喺同一個 section 入面，要保留
       if (sec) sec.querySelectorAll(':scope > .sec-label, :scope > .lookup-row').forEach(el => { el.style.display = 'none'; });
       try { localStorage.setItem('pw_student_t', t); } catch (e) {}   // 同學生頁共用：下次直接開報名頁都唔使再輸入電話

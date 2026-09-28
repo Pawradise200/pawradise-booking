@@ -63,6 +63,20 @@
 .idc-rec .c .v{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--pw-ink);margin-top:2px}
 .idc-mrz{margin-top:11px;padding:8px 10px;background:#F2EADA;border:1px solid #E6D8BC;border-radius:var(--r-sm);
   font-family:var(--disp);font-weight:700;font-size:.56rem;color:#8A7458;letter-spacing:.1em;word-break:break-all;line-height:1.6}
+.chip-add{margin-top:9px;background:var(--pw-cream-soft);border:1.5px dashed #E0CFA8;border-radius:var(--r-md);padding:9px 11px}
+.chip-add .t{font-size:.62rem;font-weight:800;color:var(--pw-ink-soft);line-height:1.5}
+.chip-add input{width:100%;margin-top:7px;padding:9px 11px;border:1.5px solid var(--pw-cream-deep);border-radius:var(--r-sm);
+  font-family:var(--sans);font-size:.78rem;font-weight:700;color:var(--pw-ink);background:var(--pw-paper)}
+.chip-add button{margin-top:7px;width:100%;padding:9px;border:none;border-radius:var(--pill);background:var(--pw-gold);
+  font-family:var(--sans);font-weight:900;font-size:.72rem;color:var(--pw-ink);cursor:pointer}
+.chip-msg{font-size:.6rem;font-weight:800;margin-top:6px}
+/* 家庭切換（同一電話多位狗狗）＋背景更新提示 */
+.fam{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;padding-bottom:2px;}
+.fam button{flex-shrink:0;border:1.5px solid var(--pw-cream-deep);background:var(--pw-paper);color:var(--pw-ink-soft);
+  font-family:var(--pw-font-sans);font-size:13px;font-weight:900;border-radius:var(--pw-r-pill);padding:7px 16px;cursor:pointer;}
+.fam button.on{background:var(--pw-navy);border-color:var(--pw-navy);color:var(--pw-paper);}
+.sync{font-size:11.5px;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin:-4px 0 10px;display:none;}
+.sync.show{display:block;}
 /* 學生頁加嘅部分：學籍行、上載相片 */
 .idc-ava img.ph{width:100px;height:100px;object-fit:contain;}
 .idc-up{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;font-size:.62rem;font-weight:900;
@@ -200,6 +214,8 @@
 
   <!-- 學生頁 -->
   <div class="view" id="vStudent">
+    <div class="fam" id="famTabs" style="display:none"></div>
+    <p class="sync" id="syncNote">正在更新最新資料⋯⋯</p>
     <!-- 狗狗證（同 grading/status.html 同一款）＋學籍。編號／晶片／首次參賽／歷屆紀錄要等第四階段同呈分試資料接通 -->
     <div id="dogIdWrap">
       <div class="idc">
@@ -239,6 +255,12 @@
             <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">—</div></div>
           </div>
           <div class="idc-mrz" id="idcMrz"></div>
+          <div class="chip-add" id="chipAdd" style="display:none">
+            <div class="t">登記晶片編號，日後呈分試及各項活動的成績，都會累積在同一張狗狗證下。</div>
+            <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
+            <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
+            <div class="chip-msg" id="chipMsg"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -250,12 +272,13 @@
 
     <div class="sec" id="secCape">
       <div class="sec-label">校褸披肩</div>
+      <p class="cape-note">所有勳章都可以由學校代為燙在校褸披肩上，陪伴的每一步都看得見。</p>
       <div class="cape-h"><b>能力勳章</b><span id="capeAbilityCount"></span></div>
       <div class="cape-grid" id="capeAbility"></div>
-      <p class="cape-note">達到指定表現即可解鎖。</p>
+      <p class="cape-note">在狗狗呈分試達到指定表現，即可解鎖並獲頒能力勳章。</p>
       <div class="cape-h"><b>活動限定勳章</b><span id="capeEventCount"></span></div>
       <div class="cape-grid" id="capeEvent"></div>
-      <p class="cape-note">參加指定活動即可獲得。</p>
+      <p class="cape-note">參加學校指定活動，即可獲得該活動的限定勳章。</p>
     </div>
 
     <div class="sec" id="secLadder" style="display:none">
@@ -390,25 +413,53 @@ function attRow(label, used, total){
     <div class="att-bar"><div style="width:${Math.max(pct, 3)}%"></div></div></div>`;
 }
 
+// [2026-09-29 老闆批：家庭切換] json.dogs＝同一電話所有學院狗狗；FAMILY 保留最新一份，切換唔使再問後台
+let FAMILY = null;
+function familyDogs(){ return (FAMILY && FAMILY.dogs && FAMILY.dogs.length) ? FAMILY.dogs : (FAMILY ? [FAMILY.data] : []); }
 function renderStudent(json, token){
-  const d = json.data;
+  FAMILY = json;
+  const dogs = familyDogs();
+  const idx = Math.max(0, dogs.findIndex(x => x.token === token));
+  renderDog(idx, token);
+}
+function renderDog(idx, fallbackToken){
+  const dogs = familyDogs();
+  const d = dogs[idx];
+  const token = d.token || fallbackToken || CURRENT_TOKEN;
   const dog = d.dogName || '狗狗';
+  CURRENT_TOKEN = d.token || '';   // 冇自己連結嘅狗狗（未 backfill）唔俾上載相片／晶片
+  if (d.token) {
+    store(STORE_KEY, d.token);
+    if (new URLSearchParams(location.search).get('t') !== d.token) {
+      try { history.replaceState(null, '', location.pathname + '?t=' + encodeURIComponent(d.token)); } catch (e) {}
+    }
+  }
+  $('famTabs').style.display = dogs.length > 1 ? 'flex' : 'none';
+  $('famTabs').innerHTML = dogs.length > 1 ? dogs.map((x, i) =>
+    `<button type="button" class="${i === idx ? 'on' : ''}" onclick="renderDog(${i})">${esc(x.dogName || '狗狗')}</button>`).join('') : '';
   $('sName2').textContent = dog;
-  // 狗狗證（欄位同呈分試頁；未有嘅資料顯示「—」）
-  CURRENT_TOKEN = token;
+  // 狗狗證（欄位同呈分試頁；未有嘅資料顯示「—」）——切換狗狗時每格都要重設
   $('idcName').textContent = dog;
   $('idcEn').textContent = BREED_EN[d.breed] ? BREED_EN[d.breed].toUpperCase() : '';
   $('idcBreed').innerHTML = d.breed
     ? esc(d.breed) + (BREED_EN[d.breed] ? '<span style="font-size:.58rem;font-weight:800;color:#A08A62;letter-spacing:.06em">　' + BREED_EN[d.breed] + '</span>' : '')
     : '—';
-  if (d.dogId) $('idcNo').textContent = d.dogId;
+  $('idcNo').textContent = d.dogId || '—';
+  $('idcChip').textContent = d.chipLast4 ? '＊＊＊＊ ' + d.chipLast4 : '—';
+  $('chipAdd').style.display = (!d.chipLast4 && CURRENT_TOKEN) ? 'block' : 'none';
+  $('chipMsg').textContent = ''; $('chipInput').value = '';
   $('idcClass').textContent = className(d.courseLevel);
+  $('idcLevel').textContent = '—';
+  $('idcValid').textContent = '—'; $('idcValid').classList.remove('over');
   $('idcMrz').textContent = (d.dogId ? String(d.dogId).replace('-', '') : 'PAWRADISE') + '<<' +
     String(dog).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<STUDENT<<HKG';
-  if (d.avatarUrl) setAvatar(d.avatarUrl);
-  if (AVATAR_ENABLED) $('avaUp').style.display = 'flex';
+  if (d.avatarUrl) setAvatar(d.avatarUrl); else resetAvatar();
+  $('avaUp').style.display = (AVATAR_ENABLED && CURRENT_TOKEN) ? 'flex' : 'none';
   $('btnBook').href = BOOKING_PAGE + '?t=' + encodeURIComponent(token);
   document.title = dog + ' · 學生專屬頁';
+  $('secLadder').style.display = 'none';
+  $('secAtt').style.display = 'none'; $('attList').innerHTML = '';
+  $('pastH').style.display = 'none'; $('pastList').innerHTML = '';
 
   const gi = LADDER.findIndex(x => x.k === String(d.behavioralLevel || '').trim());
   if (gi >= 0) {
@@ -446,7 +497,8 @@ function renderStudent(json, token){
   }
   if (att) { $('attList').innerHTML = att; $('secAtt').style.display = 'block'; }
 
-  const all  = (json.upcomingClasses || []).slice().sort((a, b) => String(a.classDate).localeCompare(String(b.classDate)));
+  const dk = s => String(s || '').trim().toLowerCase();
+  const all  = (FAMILY.upcomingClasses || []).filter(c => !c.dogName || dk(c.dogName) === dk(dog)).sort((a, b) => String(a.classDate).localeCompare(String(b.classDate)));
   const up   = all.filter(c => c.status === 'upcoming');
   const past = all.filter(c => c.status === 'done').slice(-3).reverse();
   $('upList').innerHTML = up.length ? up.map(c => clsRow(c, false)).join('')
@@ -456,25 +508,66 @@ function renderStudent(json, token){
   show('vStudent');
 }
 
+// [2026-09-29 老闆批：即開] 先顯示本機上次資料，同時背景向後台攞最新再重畫
+//   （資料只存喺家長自己手機；網址 ?t= 由 renderDog 維持，加入主畫面一按即開）
+const CACHE_KEY = 'pw_student_cache';
+function cacheGet(t){
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (c && c.json && (c.json.dogs || [c.json.data]).some(x => x && x.token === t)) return c.json;
+  } catch (e) {}
+  return null;
+}
+function cacheSet(json){ try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), json: json })); } catch (e) {} }
+function updateDog(patch){
+  const d = familyDogs().find(x => x.token === CURRENT_TOKEN);
+  if (d) { Object.assign(d, patch); cacheSet(FAMILY); }
+}
+
 async function loadToken(token){
-  show('vLoading');
+  const cached = cacheGet(token);
+  if (cached) { renderStudent(cached, token); $('syncNote').classList.add('show'); }
+  else show('vLoading');
   try {
     const res  = await fetch(API_URL + '?action=studentLookup&t=' + encodeURIComponent(token));
     const json = await res.json();
+    $('syncNote').classList.remove('show');
     if (json.found && json.data) {
-      store(STORE_KEY, token);
-      // 網址一定帶 ?t=：家長「加入主畫面」時會連連結一齊儲，之後一按即開唔使登入
-      if (new URLSearchParams(location.search).get('t') !== token) {
-        try { history.replaceState(null, '', location.pathname + '?t=' + encodeURIComponent(token)); } catch (e) {}
-      }
-      renderStudent(json, token); return;
+      cacheSet(json);
+      renderStudent(json, CURRENT_TOKEN || token);   // 背景更新期間家長切咗去第二隻，就留喺嗰隻
+      return;
     }
-    store(STORE_KEY, null);
+    store(STORE_KEY, null); store(CACHE_KEY, null);
     loginMsg('此連結已失效，請以電郵重新登入。', 'err');
   } catch (e) {
+    $('syncNote').classList.remove('show');
+    if (cached) return;   // 網絡問題：照顯示上次資料
     loginMsg('暫時未能載入，請稍後再試。', 'err');
   }
   show('vLogin');
+}
+
+// [2026-09-29 老闆批] 晶片登記（寫入 CRM「晶片編號」；頁面只顯示尾 4 位）
+async function saveChip(){
+  const chip = $('chipInput').value.replace(/\D/g, '');
+  const msg = $('chipMsg'), btn = $('chipBtn');
+  if (chip.length < 9 || chip.length > 15) {
+    msg.style.color = 'var(--pw-danger)'; msg.textContent = '晶片編號應為 9 至 15 位數字，請再核對一次。'; return;
+  }
+  btn.disabled = true; btn.textContent = '儲存中⋯⋯'; msg.textContent = '';
+  try {
+    const r = await post({ action: 'student_chip', t: CURRENT_TOKEN, chip: chip });
+    if (r && r.ok) {
+      updateDog({ chipLast4: r.chipLast4 });
+      $('idcChip').textContent = '＊＊＊＊ ' + r.chipLast4;
+      $('chipAdd').style.display = 'none';
+    } else {
+      msg.style.color = 'var(--pw-danger)'; msg.textContent = (r && r.message) || '儲存失敗，請稍後再試。';
+    }
+  } catch (e) {
+    msg.style.color = 'var(--pw-danger)'; msg.textContent = '網絡連線異常，請稍後再試。';
+  }
+  btn.disabled = false; btn.textContent = '儲存晶片編號';
 }
 
 async function post(payload){
@@ -530,6 +623,11 @@ function backToEmail(){
 
 // ── 上載相片（同 grading/status.html 同一套裁切）──
 function el(id){ return document.getElementById(id); }
+function resetAvatar(){
+  const av = $('idcAva');
+  av.style.backgroundImage = '';
+  av.innerHTML = '<img class="ph" id="sAva" src="../assets/daki-explore.png" alt="">';
+}
 function setAvatar(url){
   const av = $('idcAva');
   av.innerHTML = '';
@@ -634,6 +732,7 @@ function confirmCrop(){
       btn.disabled = false; btn.textContent = '確定';
       // 轉址失敗時後台其實多數已經存咗——照顯示新頭像，唔好嚇家長
       setAvatar(dataUrl);
+      if (res && res.ok && res.avatarUrl) updateDog({ avatarUrl: res.avatarUrl });
       closeCrop();
       if (res && res.ok === false && res.message) alert(res.message);
     })
@@ -644,7 +743,7 @@ function confirmCrop(){
 }
 
 function switchDog(){
-  store(STORE_KEY, null);
+  store(STORE_KEY, null); store(CACHE_KEY, null);
   location.href = location.pathname;
 }
 
