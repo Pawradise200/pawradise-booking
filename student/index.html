@@ -681,13 +681,27 @@ function updateDog(patch){
   if (d) { Object.assign(d, patch); cacheSet(FAMILY); }
 }
 
+// [2026-09-29 老闆批] Google Apps Script 間歇回 404／斷線（約 1/12）：自動重試最多 2 次（相隔 2 秒），
+//   家長只見到「資料下載中」。後台正常回覆（包括連結失效 found:false）就唔重試。
+async function fetchLookupRetry(token){
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt) await new Promise(r => setTimeout(r, 2000));
+    try {
+      const res = await fetch(API_URL + '?action=studentLookup&t=' + encodeURIComponent(token));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr;
+}
+
 async function loadToken(token){
   const cached = cacheGet(token);
   if (cached) { renderStudent(cached, token); $('syncNote').classList.add('show'); }
   else show('vLoading');
   try {
-    const res  = await fetch(API_URL + '?action=studentLookup&t=' + encodeURIComponent(token));
-    const json = await res.json();
+    const json = await fetchLookupRetry(token);
     $('syncNote').classList.remove('show');
     if (json.found && json.data) {
       cacheSet(json);
