@@ -104,6 +104,30 @@
 .nt-d{font-size:11.5px;font-weight:900;color:var(--pw-gold-deep);}
 .nt-t{font-size:15px;font-weight:900;color:var(--pw-ink);margin-top:2px;line-height:1.35;}
 .nt-b{font-size:13px;font-weight:600;color:var(--pw-ink-soft);line-height:1.65;margin-top:4px;white-space:pre-line;}
+/* [2026-09-30 老闆要求] 多過一個通告 → 左右掃動（下一張露出一截提示可以掃），避免頁面過長 */
+#noticeList.swipe{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -2px;padding:0 2px;}
+#noticeList.swipe::-webkit-scrollbar{display:none;}
+#noticeList.swipe .nt{flex:0 0 86%;margin-bottom:0;scroll-snap-align:start;}
+.nt-dots{display:flex;justify-content:center;gap:6px;margin-top:10px;}
+.nt-dots i{width:7px;height:7px;border-radius:50%;background:var(--pw-cream-deep);}
+.nt-dots i.on{background:var(--pw-gold-deep);}
+/* [2026-09-30] 活動投票（萬聖節最佳造型大獎） */
+.vt-note{font-size:13px;font-weight:700;color:var(--pw-ink-soft);line-height:1.65;margin-bottom:10px;}
+.vt-note b{color:var(--pw-gold-deep);}
+.vt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.vt-c{background:var(--pw-cream-soft);border:2px solid var(--pw-cream-deep);border-radius:var(--pw-r-md);padding:7px;text-align:center;}
+.vt-c.on{border-color:var(--pw-gold);background:var(--pw-paper);}
+.vt-c img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:var(--pw-r-sm);background:var(--pw-cream-deep);}
+.vt-c .nm{font-size:14px;font-weight:900;color:var(--pw-ink);margin:6px 0 5px;word-break:break-word;}
+.vt-c button{width:100%;border:none;border-radius:var(--pw-r-pill);padding:8px;font-family:var(--pw-font-sans);font-size:13px;font-weight:900;cursor:pointer;background:var(--pw-navy);color:var(--pw-paper);}
+.vt-c.on button{background:var(--pw-gold);color:var(--pw-navy-deep);}
+.vt-c button:disabled{cursor:default;}
+.vt-c.mine button{background:var(--pw-cream);color:var(--pw-ink-mute);}
+.vt-msg{font-size:13px;font-weight:800;margin-top:8px;min-height:1em;}
+.vt-win{background:var(--pw-navy);border-radius:var(--pw-r-lg);padding:14px;color:var(--pw-paper);text-align:center;}
+.vt-win .k{font-size:12px;font-weight:900;color:var(--pw-gold);letter-spacing:.12em;}
+.vt-win img{display:block;width:70%;margin:10px auto;aspect-ratio:1/1;object-fit:cover;border-radius:var(--pw-r-md);border:3px solid var(--pw-gold);}
+.vt-win .nm{font-family:var(--pw-font-display);font-size:22px;font-weight:700;}
 .nt-a{display:inline-block;margin-top:8px;font-size:13px;font-weight:900;color:var(--pw-paper);background:var(--pw-navy);
   border-radius:var(--pw-r-pill);padding:6px 14px;text-decoration:none;}
 
@@ -313,6 +337,12 @@
     <div class="sec" id="secNotice" style="display:none">
       <div class="sec-label">學校通告</div>
       <div id="noticeList"></div>
+      <div class="nt-dots" id="noticeDots" style="display:none"></div>
+    </div>
+
+    <div class="sec" id="secVote" style="display:none">
+      <div class="sec-label" id="voteTitle">活動投票</div>
+      <div id="voteBody"></div>
     </div>
 
     <div class="sec" id="secCape">
@@ -592,7 +622,20 @@ function renderNotices(d){
     ${n.body ? `<div class="nt-b">${esc(n.body)}</div>` : ''}
     ${n.link ? `<a class="nt-a" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkText || '了解更多')}</a>` : ''}
   </div>`).join('');
+  // 多過一張：橫向掃動＋頁點
+  const many = list.length > 1;
+  $('noticeList').classList.toggle('swipe', many);
+  $('noticeList').scrollLeft = 0;
+  $('noticeDots').style.display = many ? 'flex' : 'none';
+  $('noticeDots').innerHTML = many ? list.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('') : '';
 }
+function noticeDotSync(){
+  const box = $('noticeList'), cards = box.children;
+  if (!box.classList.contains('swipe') || !cards.length) return;
+  const i = Math.round(box.scrollLeft / (cards[0].offsetWidth + 10));
+  [...$('noticeDots').children].forEach((d, k) => d.classList.toggle('on', k === Math.min(i, cards.length - 1)));
+}
+$('noticeList').addEventListener('scroll', noticeDotSync, { passive: true });   // script 喺 body 尾，元素已存在
 
 function attRow(label, used, total){
   const pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
@@ -601,6 +644,56 @@ function attRow(label, used, total){
 }
 
 // [2026-09-29 老闆批：家庭切換] json.dogs＝同一電話所有學院狗狗；FAMILY 保留最新一份，切換唔使再問後台
+// [2026-09-30 老闆批：方案 B] 活動投票（見 crm-backend 投票.js）：全校家長一家一票、截止前可改、不可投自己的狗狗
+//   FAMILY.vote 係全家共用（唔跟狗狗切換變）；後端唔會傳任何其他家庭電話
+function voteToken(){ return CURRENT_TOKEN || (familyDogs().filter(x => x.token)[0] || {}).token || ''; }
+function renderVote(){
+  const v = FAMILY && FAMILY.vote;
+  $('secVote').style.display = v ? 'block' : 'none';
+  if (!v) return;
+  $('voteTitle').textContent = v.name || '活動投票';
+  const cands = v.candidates || [];
+  const byId = id => cands.filter(c => c.id === id)[0];
+  let h = '';
+  if (v.phase === 'soon') {
+    h = `<p class="vt-note">投票將於當日 <b>${esc(v.opensAt)}</b> 開始，<b>${esc(v.closesAt)}</b> 截止，結果於 <b>${esc(v.announceAt)}</b> 放學時公布。全校家長每個家庭一票，家長不可投給自己的狗狗。</p>`;
+  } else if (v.phase === 'open') {
+    const my = v.myVote && byId(v.myVote);
+    h = `<p class="vt-note">全校家長每個家庭一票，<b>${esc(v.closesAt)}</b> 前可以更改。家長不可投給自己的狗狗。${my ? `<br>你已投給 <b>${esc(my.dog)}</b>。` : ''}</p>`;
+    h += cands.length ? `<div class="vt-grid">${cands.map(c => {
+      const on = c.id === v.myVote;
+      const lab = c.mine ? '自己的狗狗' : on ? '已投票' : '投票';
+      return `<div class="vt-c${on ? ' on' : ''}${c.mine ? ' mine' : ''}"><img src="${esc(c.img)}" alt="${esc(c.dog)}" loading="lazy">
+        <div class="nm">${esc(c.dog)}</div>
+        <button type="button" ${c.mine || on ? 'disabled' : ''} onclick="castVote('${esc(c.id)}', this)">${lab}</button></div>`;
+    }).join('')}</div>` : '<p class="empty">老師正在上載同學的造型照，請稍後再看。</p>';
+    h += '<div class="vt-msg" id="voteMsg"></div>';
+  } else if (v.phase === 'closed') {
+    const my = v.myVote && byId(v.myVote);
+    h = `<p class="vt-note">投票已經截止，多謝參與！結果將於 <b>${esc(v.announceAt)}</b> 放學時公布。${my ? `<br>你投給了 <b>${esc(my.dog)}</b>。` : ''}</p>`;
+  } else {
+    const ws = v.winners || [];
+    h = ws.length ? ws.map(w => { const c = cands.filter(x => x.dog === w)[0];
+      return `<div class="vt-win"><div class="k">得獎同學</div>${c ? `<img src="${esc(c.img)}" alt="${esc(w)}">` : ''}<div class="nm">${esc(w)}</div></div>`; }).join('<div style="height:10px"></div>')
+      : '<p class="vt-note">投票已經結束，結果稍後公布。</p>';
+  }
+  $('voteBody').innerHTML = h;
+}
+async function castVote(cid, btn){
+  const v = FAMILY && FAMILY.vote, msg = $('voteMsg');
+  const t = voteToken();
+  if (!v || !t) return;
+  btn.disabled = true; btn.textContent = '投票中⋯⋯';
+  try {
+    const r = await post({ action: 'costume_vote', t: t, eventId: v.id, cid: cid });
+    if (r && r.ok) { v.myVote = r.myVote; renderVote(); $('voteMsg').style.color = 'var(--pw-success)'; $('voteMsg').textContent = r.changed ? '已更改投票。' : '投票成功，多謝支持！'; return; }
+    msg.style.color = 'var(--pw-danger)'; msg.textContent = (r && r.message) || '投票失敗，請稍後再試。';
+  } catch (e) {
+    msg.style.color = 'var(--pw-danger)'; msg.textContent = '網絡連線異常，請稍後再試。';
+  }
+  btn.disabled = false; btn.textContent = '投票';
+}
+
 let FAMILY = null;
 function familyDogs(){ return (FAMILY && FAMILY.dogs && FAMILY.dogs.length) ? FAMILY.dogs : (FAMILY ? [FAMILY.data] : []); }
 function renderStudent(json, token){
@@ -678,6 +771,7 @@ function renderDog(idx, fallbackToken){
   if (att) { $('attList').innerHTML = att; $('secAtt').style.display = 'block'; }
   renderReports(d.reports);
   renderNotices(d);
+  renderVote();
   renderGrading(d);
 
   const dk = s => String(s || '').trim().toLowerCase();
