@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>同學專屬頁｜狗狗呈分試 2026</title>
+<title>狗狗呈分試 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka:wght@500;600;700&family=Huninn&display=swap" rel="stylesheet">
 <style>
@@ -197,15 +197,16 @@ body.has-dogid .status-card{margin-top:16px}
 
 <header class="top">
   <div class="wrap" style="padding-bottom:0">
-    <div class="eyebrow">狗狗呈分試 2026 · 同學專屬頁</div>
-    <h1 id="pageTitle">同學專屬頁 🎒</h1>
+    <!-- [2026-09-29 老闆定] 改名「xxx 的呈分試」：所有考試資料同成績都喺呢頁，唔再叫「同學頁」，免同學生專屬頁混淆 -->
+    <div class="eyebrow">狗狗呈分試 2026</div>
+    <h1 id="pageTitle">狗狗呈分試</h1>
     <div class="sub" id="pageSub"></div>
   </div>
 </header>
 
 <div class="wrap">
   <div class="loading" id="loading">資料下載中，請稍候片刻</div>
-  <div class="notfound" id="notFound">找不到此同學頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
+  <div class="notfound" id="notFound">找不到此呈分試頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
 
   <!-- 已確認（賽前） -->
   <div id="confirmedView">
@@ -425,7 +426,7 @@ function retryLoad(tries){
     return;
   }
   el('loading').style.display = 'none';
-  el('notFound').innerHTML = '暫時載入不到你的同學頁。<br>請稍後重新整理此頁，或 WhatsApp 9459 6420 與我們聯絡。';
+  el('notFound').innerHTML = '暫時載入不到呈分試頁。<br>請稍後重新整理此頁，或 WhatsApp 9459 6420 與我們聯絡。';
   el('notFound').style.display = 'block';
 }
 
@@ -438,7 +439,8 @@ function render(d){
   el('loading').style.display = 'none';
   if (!d.ok) { showNotFound(); return; }
 
-  el('pageTitle').textContent = d.dogName + ' 的同學頁 🎒';
+  el('pageTitle').textContent = d.dogName + ' 的呈分試';
+  document.title = d.dogName + ' 的呈分試｜狗狗呈分試 2026';
   el('pageSub').textContent = '報名編號 ' + d.regNo;
   el('dogName').textContent = d.dogName;
   el('dogMeta').textContent = d.breed;

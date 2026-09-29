@@ -556,12 +556,13 @@ function renderGrading(d){
   let chip = '', body = '', btn = '';
   if (g && g.status === '已確認') {
     chip = '<span class="gt-chip">已確認</span>';
-    body = today > GT_DATE ? `${dog} 的成績、技能徽章及電子證書，可於專屬頁查看。`
-                           : `${dog} 已完成報名。專屬頁有報到時間、待辦事項及三關介紹，賽後亦可查看成績。`;
-    btn = g.link ? `<a class="gt-a" href="${esc(g.link)}" target="_blank" rel="noopener">打開呈分試專屬頁</a>` : '';
+    // [2026-09-29 老闆定] 呈分試頁改名「xxx 的呈分試」，唔再叫專屬頁／同學頁
+    body = today > GT_DATE ? `${dog} 的成績、技能徽章及電子證書，可於「${dog} 的呈分試」頁查看。`
+                           : `${dog} 已完成報名。「${dog} 的呈分試」頁有報到時間、待辦事項及三關介紹，賽後亦可查看成績。`;
+    btn = g.link ? `<a class="gt-a" href="${esc(g.link)}" target="_blank" rel="noopener">打開 ${dog} 的呈分試</a>` : '';
   } else if (g && g.status === '待繳費') {
     chip = '<span class="gt-chip wait">待付款</span>';
-    body = '報名已收到，完成付款後即確認學位，專屬頁連結會以電郵發送。如已付款，請將付款截圖 WhatsApp 至 9459 6420。';
+    body = '報名已收到，完成付款後即確認學位，呈分試頁連結會以電郵發送。如已付款，請將付款截圖 WhatsApp 至 9459 6420。';
   } else if (g && g.status === '候補') {
     chip = '<span class="gt-chip wait">候補中</span>';
     body = '如有學位，我們會以 WhatsApp 通知。';
