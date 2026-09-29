@@ -207,42 +207,29 @@ body.has-dogid .status-card{margin-top:16px}
   <div class="loading" id="loading">資料下載中，請稍候片刻</div>
   <div class="notfound" id="notFound">找不到此同學頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
 
-  <!-- 狗狗證：永久身分，賽前賽後都顯示 -->
+  <!-- [2026-09-29 老闆定] 狗狗證只喺學生專屬頁；呈分試專屬頁只放「簽證」（DOG ID／組別／紀錄／呈分試印章）
+       樣式同學生頁共用 assets/dog-passport.js -->
   <div id="dogIdWrap">
-    <div class="idc">
-      <div class="idc-in">
-        <div class="idc-hd">
-          <img src="../assets/pawradise-crest.png" alt="">
-          <div><div class="t1">狗狗證　PAWRADISE</div><div class="t2">DOG IDENTITY CARD</div></div>
-          <div class="rt"><i>PAWRADISE</i><b>GRADING DAY</b><span id="idcIssued">發證 ISSUED 2026</span></div>
-        </div>
-        <div class="idc-body">
-          <div class="idc-avawrap"><div class="idc-ava" id="idcAva">🐶</div><div class="idc-avacap">相片　PHOTO</div></div>
-          <div class="idc-f">
-            <div class="idc-nm" id="idcName"></div>
-            <div class="idc-en" id="idcEn"></div>
-            <div style="margin-top:7px">
-              <div class="idc-row"><div class="k">DOG ID　編號</div><div class="v" id="idcNo"></div></div>
-              <div class="idc-row"><div class="k">BREED　品種</div><div class="v" id="idcBreed"></div></div>
-              <div class="idc-row"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip"></div></div>
-              <div class="idc-row"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince"></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="idc-rect">歷屆紀錄　RECORD</div>
-        <div class="idc-rec">
-          <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">–</div></div>
-          <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">–</div></div>
-          <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">–</div></div>
-        </div>
-        <div class="idc-mrz" id="idcMrz"></div>
-        <div class="chip-add" id="chipAdd" style="display:none">
-          <div class="t">補填晶片編號，可為狗狗建立永久參賽編號，日後每屆成績都會累積在同一位狗狗同學名下。</div>
-          <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
-          <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
-          <div class="chip-msg" id="chipMsg"></div>
-        </div>
+    <script src="../assets/dog-passport.js"></script>
+    <div class="chip-add" id="chipAdd" style="display:none">
+      <div class="t">補填晶片編號，可為狗狗建立永久參賽編號，日後每屆成績都會累積在同一位狗狗同學名下。</div>
+      <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
+      <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
+      <div class="chip-msg" id="chipMsg"></div>
+    </div>
+    <div class="pp-visa">
+      <div class="pp-visa-t">簽證　VISA<span>狗狗呈分試</span></div>
+      <div class="pp-vrow"><div class="k">NAME　名字</div><div class="v" id="idcName">—</div></div>
+      <div class="pp-vrow"><div class="k">DOG ID　編號</div><div class="v" id="idcNo">—</div></div>
+      <div class="pp-vrow"><div class="k">GROUP　組別</div><div class="v" id="idcGroup">—</div></div>
+      <div class="pp-vrow"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip">—</div></div>
+      <div class="pp-vrow"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince">—</div></div>
+      <div class="pp-rec">
+        <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">–</div></div>
+        <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">–</div></div>
+        <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">–</div></div>
       </div>
+      <div class="pp-stamps" id="idcStamps"></div>
     </div>
   </div>
 
@@ -618,16 +605,16 @@ function renderDogId(d){
   if (!d.dogId) return;                      // 未分配編號就唔出卡
   el('dogIdWrap').style.display = 'block';
   document.body.classList.add('has-dogid');
-  el('idcName').textContent = d.dogName;
-  var grpEn = GROUP_EN[d.group] ? '　' + GROUP_EN[d.group] : '';
-  el('idcEn').textContent = (d.breed && d.breed !== '其他／混種' ? d.breed + '・' : '') + (d.group || '') + grpEn;
+  // [2026-09-29 老闆定] 呢頁只出簽證（狗狗證喺學生專屬頁）；組別連品種：柴犬・中型犬組
+  el('idcName').textContent = d.dogName || '—';
   el('idcNo').textContent = d.dogId;
-  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '未提供 N/A';
+  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '—';
+  var grpEn = GROUP_EN[d.group] ? '　' + GROUP_EN[d.group] : '';
+  var brd = d.breed && d.breed !== '其他／混種' ? d.breed : '';
+  el('idcGroup').textContent = [brd, d.group].filter(Boolean).join('・') + grpEn || '—';
   var ed = d.edition || { year: 2026, name: '第一屆' };
   var edEn = ed.no === 1 ? '1st' : (ed.no === 2 ? '2nd' : (ed.no === 3 ? '3rd' : ed.no + 'th'));
   el('idcSince').textContent = ed.year + '・' + ed.name + '  ' + edEn;
-  el('idcIssued').textContent = '發證 ISSUED ' + ed.year;
-  if (d.avatarUrl) { el('idcAva').textContent = ''; el('idcAva').style.backgroundImage = 'url(' + d.avatarUrl + ')'; }
   var rec = d.record || { events: 0, bestTotal: 0, bestMax: 21, bestGrade: '', bestGradeYear: 0 };
   el('idcEvents').textContent = rec.events || 1;
   el('idcBest').innerHTML = rec.bestTotal
@@ -638,11 +625,9 @@ function renderDogId(d){
       '<span style="display:block;font-size:.5rem;font-weight:900;color:#A08A62;letter-spacing:.1em;margin-top:1px">' +
       (GRADE_EN[rec.bestGrade] || '').toUpperCase() + (rec.bestGradeYear ? '・' + rec.bestGradeYear : '') + '</span>'
     : '—';
-  el('idcBreed').innerHTML = d.breed
-    ? escapeHtml(d.breed) + (BREED_EN[d.breed] ? '<span style="font-size:.58rem;font-weight:800;color:#A08A62;letter-spacing:.06em">　' + BREED_EN[d.breed] + '</span>' : '')
-    : '—';
-  el('idcMrz').textContent = String(d.dogId).replace('-', '') + '<<' +
-    String(d.dogName).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<SINCE' + ed.year + '<<HKG';
+  // 呈分試印章：出咗成績先蓋印
+  el('idcStamps').innerHTML = PawPassport.stamp({ zh: '狗狗呈分試', en: 'Grading Day ' + ed.year,
+    date: ed.year + '-10-24', when: '10月24日', done: !!rec.bestTotal, color: 1 });
   if (!d.chipOnFile) el('chipAdd').style.display = 'block';
 }
 

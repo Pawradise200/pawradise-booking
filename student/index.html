@@ -22,7 +22,7 @@
 /* 狗狗證：由 grading/status.html 原樣搬過嚟（2026-09-29 老闆：要同呈分試嗰張一樣）。
    嗰頁用自己一套變數名，呢度喺 .idc／.crop-mask 範圍內對應返 pawradise-tokens.css。
    ⚠️ 證件米金色系（#E0CFA8／#A08A62 等）同呈分試頁一致，未收入 tokens */
-.idc,.crop-mask{--r-sm:var(--pw-r-sm);--r-md:var(--pw-r-md);--r-xl:var(--pw-r-xl);--pill:var(--pw-r-pill);
+#dogIdWrap,.idc,.crop-mask{--r-sm:var(--pw-r-sm);--r-md:var(--pw-r-md);--r-xl:var(--pw-r-xl);--pill:var(--pw-r-pill);
   --shadow:var(--pw-shadow-card);--pop:var(--pw-shadow-pop);--disp:'Fredoka','Huninn','Nunito',sans-serif;}
 #dogIdWrap{margin-bottom:14px;}
 .idc{position:relative;overflow:hidden;border:2px solid #E0CFA8;border-radius:var(--r-xl);
@@ -287,52 +287,29 @@
   <div class="view" id="vStudent">
     <div class="fam" id="famTabs" style="display:none"></div>
     <p class="sync" id="syncNote">資料下載中，請稍候片刻</p>
-    <!-- 狗狗證（同 grading/status.html 同一款）＋學籍。編號／晶片／首次參賽／歷屆紀錄要等第四階段同呈分試資料接通 -->
+    <!-- [2026-09-29 老闆批] 狗狗證護照款（同呈分試專屬頁共用 assets/dog-passport.js；125×88 真護照比例）
+         證上只放身份資料；學籍／紀錄／活動印章放下面「簽證頁」 -->
     <div id="dogIdWrap">
-      <div class="idc">
-        <div class="idc-in">
-          <div class="idc-hd">
-            <img src="../assets/pawradise-crest.png" alt="">
-            <div><div class="t1">狗狗證　PAWRADISE</div><div class="t2">DOG IDENTITY CARD</div></div>
-            <div class="rt"><i>PAWRADISE</i><b>在讀學生</b><span>STUDENT</span></div>
-          </div>
-          <div class="idc-body">
-            <div class="idc-avawrap">
-              <div class="idc-ava" id="idcAva"><img class="ph" id="sAva" src="../assets/daki-explore.png" alt=""></div>
-              <div class="idc-avacap">相片　PHOTO</div>
-              <label class="idc-up" id="avaUp" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.6-2.4h4.8L16 6"/></svg>上載相片<input type="file" id="avaInput" accept="image/*" style="display:none"></label>
-            </div>
-            <div class="idc-f">
-              <div class="idc-nm" id="idcName"></div>
-              <div class="idc-en" id="idcEn"></div>
-              <div style="margin-top:7px">
-                <div class="idc-row"><div class="k">DOG ID　編號</div><div class="v" id="idcNo">—</div></div>
-                <div class="idc-row"><div class="k">BREED　品種</div><div class="v" id="idcBreed">—</div></div>
-                <div class="idc-row"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip">—</div></div>
-                <div class="idc-row"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince">—</div></div>
-              </div>
-            </div>
-          </div>
-          <div class="idc-rect">學籍　ENROLMENT</div>
-          <div style="margin-top:4px">
-            <div class="idc-row"><div class="k">CLASS　班別</div><div class="v" id="idcClass">—</div></div>
-            <div class="idc-row"><div class="k">LEVEL　社交分級</div><div class="v" id="idcLevel">—</div></div>
-            <div class="idc-row"><div class="k">VALID UNTIL　學期有效期</div><div class="v" id="idcValid">—</div></div>
-          </div>
-          <div class="idc-rect">歷屆紀錄　RECORD</div>
-          <div class="idc-rec">
-            <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">—</div></div>
-            <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">—</div></div>
-            <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">—</div></div>
-          </div>
-          <div class="idc-mrz" id="idcMrz"></div>
-          <div class="chip-add" id="chipAdd" style="display:none">
-            <div class="t">登記晶片編號，日後呈分試及各項活動的成績，都會累積在同一張狗狗證下。</div>
-            <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
-            <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
-            <div class="chip-msg" id="chipMsg"></div>
-          </div>
+      <div data-paw-passport></div>
+      <script src="../assets/dog-passport.js"></script>
+      <label class="idc-up" id="avaUp" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2.5"/><circle cx="12" cy="13" r="3.4"/><path d="M8 6l1.6-2.4h4.8L16 6"/></svg>上載相片<input type="file" id="avaInput" accept="image/*" style="display:none"></label>
+      <div class="chip-add" id="chipAdd" style="display:none">
+        <div class="t">登記晶片編號，日後呈分試及各項活動的成績，都會累積在同一張狗狗證下。</div>
+        <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
+        <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
+        <div class="chip-msg" id="chipMsg"></div>
+      </div>
+      <div class="pp-visa">
+        <div class="pp-visa-t">簽證頁　VISAS<span>學籍・紀錄・活動</span></div>
+        <div class="pp-vrow"><div class="k">CLASS　班別</div><div class="v" id="idcClass">—</div></div>
+        <div class="pp-vrow"><div class="k">LEVEL　社交分級</div><div class="v" id="idcLevel">—</div></div>
+        <div class="pp-vrow"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince">—</div></div>
+        <div class="pp-rec">
+          <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">—</div></div>
+          <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">—</div></div>
+          <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">—</div></div>
         </div>
+        <div class="pp-stamps" id="idcStamps"></div>
       </div>
     </div>
 
@@ -661,20 +638,23 @@ function renderDog(idx, fallbackToken){
     `<button type="button" class="${i === idx ? 'on' : ''}" onclick="renderDog(${i})">${esc(x.dogName || '狗狗')}</button>`).join('') : '';
   $('sName2').textContent = dog;
   // 狗狗證（欄位同呈分試頁；未有嘅資料顯示「—」）——切換狗狗時每格都要重設
-  $('idcName').textContent = dog;
-  $('idcEn').textContent = BREED_EN[d.breed] ? BREED_EN[d.breed].toUpperCase() : '';
-  $('idcBreed').innerHTML = d.breed
-    ? esc(d.breed) + (BREED_EN[d.breed] ? '<span style="font-size:.58rem;font-weight:800;color:#A08A62;letter-spacing:.06em">　' + BREED_EN[d.breed] + '</span>' : '')
-    : '—';
-  $('idcNo').textContent = d.dogId || '—';
-  $('idcChip').textContent = d.chipLast4 ? '＊＊＊＊ ' + d.chipLast4 : '—';
+  // 狗狗證（護照款，見 assets/dog-passport.js）——切換狗狗時每格都要重設
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+  const hasTerm = Number(d.s1Total) > 0 && d.termExpiry;
+  const alumni = String(d.linkStatus || '').trim() === '校友';
+  PawPassport.fill({
+    name: dog, dogId: d.dogId, breed: d.breed, breedEn: BREED_EN[d.breed] || '',
+    typeZh: alumni ? '校友' : '在讀學生', typeEn: alumni ? 'ALUMNI' : 'STUDENT',
+    sex: d.gender, dob: d.dob, chipLast4: d.chipLast4,
+    issued: hasTerm ? d.termStart : '', expiry: hasTerm ? d.termExpiry : '', expired: hasTerm && d.termExpiry < today,
+  });
+  $('idcSince').textContent = d.since || '—';   // [2026-09-29] 有報呈分試＝同一個狗狗編號／首次參賽
   $('chipAdd').style.display = (!d.chipLast4 && CURRENT_TOKEN) ? 'block' : 'none';
   $('chipMsg').textContent = ''; $('chipInput').value = '';
   $('idcClass').textContent = className(d.courseLevel);
   $('idcLevel').textContent = '—';
-  $('idcValid').textContent = '—'; $('idcValid').classList.remove('over');
-  $('idcMrz').textContent = (d.dogId ? String(d.dogId).replace('-', '') : 'PAWRADISE') + '<<' +
-    String(dog).toUpperCase().replace(/[^A-Z0-9]/g, '') + '<<STUDENT<<HKG';
+  $('idcStamps').innerHTML = EVENT_BADGES.map((e, i) =>
+    PawPassport.stamp({ zh: e.zh.replace(/ 2026$/, ''), en: e.en || 'PAWRADISE', when: e.date, done: false, color: i + 1 })).join('');
   if (d.avatarUrl) setAvatar(d.avatarUrl); else resetAvatar();
   $('avaUp').style.display = (AVATAR_ENABLED && CURRENT_TOKEN) ? 'flex' : 'none';
   $('btnBook').href = BOOKING_PAGE + '?t=' + encodeURIComponent(token);
@@ -694,15 +674,8 @@ function renderDog(idx, fallbackToken){
     $('secLadder').style.display = 'block';
   }
 
-  // 學籍：班別／社交分級／學期有效期（後端由 S1學期開始日 ＋ 3 個月計；未開始上課就冇）
-  let expiry = '', expCls = '';
-  if (Number(d.s1Total) > 0 && d.termExpiry) {
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
-    expiry = d.termExpiry < today ? '已於 ' + ymd(d.termExpiry) + ' 屆滿' : ymd(d.termExpiry);
-    expCls = d.termExpiry < today ? 'over' : '';
-  }
+  // 簽證頁：社交分級（學期有效期已搬上狗狗證「有效期至」）
   if (gi >= 0) $('idcLevel').textContent = LADDER[gi].k + '｜' + LADDER[gi].zh;
-  if (expiry) { $('idcValid').textContent = expiry; if (expCls) $('idcValid').classList.add(expCls); }
 
   renderCape();
 
@@ -996,56 +969,40 @@ function loadH2C(){
     sc.onload = ok; sc.onerror = bad; document.head.appendChild(sc);
   });
 }
+// [2026-09-29 老闆批 5A] 分享圖：護照款狗狗證擺中間（同頁面同一個 assets/dog-passport.js），下面班別／分級＋活動印章
 function shareCardNode(d, useAvatar){
   const gi = LADDER.findIndex(x => x.k === String(d.behavioralLevel || '').trim());
   const g = gi >= 0 ? LADDER[gi] : null;
-  const photo = (useAvatar && d.avatarUrl) ? d.avatarUrl : (g ? g.img : '../assets/daki-explore.png');
-  const photoStyle = (useAvatar && d.avatarUrl) ? 'width:100%;height:100%;object-fit:cover;' : 'width:78%;height:78%;object-fit:contain;';
-  const t1 = Number(d.s1Total) > 0 ? termView(Number(d.s1Attended || 0), Number(d.s1Total), 9) : null;
-  const en = BREED_EN[d.breed] || '';
-  const ladder = LADDER.map((x, i) => `<div style="flex:1;text-align:center;">
-      <div style="width:104px;height:104px;margin:0 auto;border-radius:50%;background:#FFFDF7;border:${i === gi ? '6px solid #F4B860' : '3px solid #E6D8BC'};display:flex;align-items:center;justify-content:center;">
-        <img src="${x.img}" style="width:78px;height:78px;object-fit:contain;${i === gi ? '' : 'opacity:.35;filter:grayscale(1);'}"></div>
-      <div style="font:900 30px Nunito,sans-serif;color:${i === gi ? '#1F3552' : '#A8B2C0'};margin-top:8px;">${x.k}</div>
-      <div style="font:800 22px Nunito,sans-serif;color:${i === gi ? '#1F3552' : '#A8B2C0'};">${x.zh}</div></div>`).join('');
-  const row = (k, v) => v ? `<div style="display:flex;align-items:baseline;gap:24px;padding:20px 0;border-bottom:2px solid rgba(160,138,98,.25);">
-      <div style="width:230px;font:900 24px Nunito,sans-serif;letter-spacing:3px;color:#A08A62;">${k}</div>
-      <div style="font:900 40px Nunito,sans-serif;color:#1F3552;">${esc(v)}</div></div>` : '';
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+  const hasTerm = Number(d.s1Total) > 0 && d.termExpiry;
+  const alumni = String(d.linkStatus || '').trim() === '校友';
   const n = document.createElement('div');
-  n.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1350px;box-sizing:border-box;padding:70px 76px 0;' +
+  n.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1350px;box-sizing:border-box;padding:64px 60px 0;' +
     'background:linear-gradient(150deg,#FFFDF7,#FBF3E4 62%,#F7E7C6);font-family:Nunito,Huninn,sans-serif;color:#1F3552;overflow:hidden;';
+  const cell = (k, v) => `<div style="flex:1;"><div style="font:900 22px Nunito,sans-serif;letter-spacing:3px;color:#A08A62;">${k}</div>
+      <div style="font:900 36px Nunito,sans-serif;color:#1F3552;margin-top:6px;">${esc(v || '—')}</div></div>`;
   n.innerHTML = `
-    <div style="display:flex;align-items:center;gap:26px;border-bottom:4px solid rgba(201,141,44,.3);padding-bottom:30px;">
-      <img src="../assets/pawradise-crest.png" style="width:120px;height:auto;">
-      <div style="flex:1;">
-        <div style="font:700 56px Fredoka,Huninn,sans-serif;letter-spacing:2px;">狗狗證　PAWRADISE</div>
-        <div style="font:800 24px Nunito,sans-serif;letter-spacing:8px;color:#A08A62;margin-top:6px;">DOG IDENTITY CARD</div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font:900 20px Nunito,sans-serif;letter-spacing:6px;color:#A08A62;">毛孩社交學院</div>
-        <div style="font:700 34px Fredoka,Huninn,sans-serif;margin-top:4px;">在讀學生</div>
-      </div>
+    <div style="text-align:center;font:900 24px Nunito,sans-serif;letter-spacing:10px;color:#A08A62;">PAWRADISE　毛孩社交學院</div>
+    <div style="margin-top:30px;">${PawPassport.markup('sp')}</div>
+    <div style="display:flex;gap:30px;margin-top:40px;padding:0 10px;">
+      ${cell('CLASS 班別', className(d.courseLevel))}
+      ${cell('LEVEL 社交分級', g ? g.k + '｜' + g.zh : '')}
     </div>
-    <div style="display:flex;gap:44px;margin-top:46px;">
-      <div style="width:380px;height:450px;border:4px solid #E0CFA8;border-radius:10px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-        <img src="${photo}" crossorigin="anonymous" style="${photoStyle}"></div>
-      <div style="flex:1;min-width:0;">
-        <div style="font:700 92px Fredoka,Huninn,sans-serif;line-height:1.05;word-break:break-word;">${esc(d.dogName || '狗狗')}</div>
-        <div style="font:800 28px Nunito,sans-serif;letter-spacing:4px;color:#A08A62;margin-top:10px;">${esc(en.toUpperCase())}</div>
-        <div style="margin-top:18px;">
-          ${row('BREED 品種', d.breed)}
-          ${row('CLASS 班別', className(d.courseLevel))}
-          ${row('LEVEL 分級', g ? g.k + '｜' + g.zh : '')}
-          ${row('TERM 學期', t1 && t1.term > 1 ? '第 ' + t1.term + ' 期' : (t1 ? '第 1 期' : ''))}
-        </div>
-      </div>
-    </div>
-    ${g ? `<div style="margin-top:52px;font:900 26px Nunito,sans-serif;letter-spacing:6px;color:#A08A62;">社交成長階梯　SOCIAL GROWTH</div>
-    <div style="display:flex;gap:10px;margin-top:22px;">${ladder}</div>` : ''}
-    <div style="position:absolute;left:0;right:0;bottom:0;height:120px;background:#1F3552;display:flex;align-items:center;justify-content:space-between;padding:0 76px;">
+    <div class="pp-stamps pp-big" style="margin-top:34px;">${EVENT_BADGES.map((e, i) =>
+      PawPassport.stamp({ zh: e.zh.replace(/ 2026$/, ''), en: e.en || 'PAWRADISE', when: e.date, done: false, color: i + 1 })).join('')}</div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:110px;background:#1F3552;display:flex;align-items:center;justify-content:space-between;padding:0 70px;">
       <div style="font:700 40px Fredoka,Huninn,sans-serif;color:#F4B860;letter-spacing:2px;">PAWRADISE</div>
       <div style="font:800 26px Nunito,sans-serif;color:#F5F0E8;letter-spacing:3px;">Calm · Respect · Together</div>
     </div>`;
+  PawPassport.fill({
+    name: d.dogName || '狗狗', dogId: d.dogId, breed: d.breed, breedEn: BREED_EN[d.breed] || '',
+    typeZh: alumni ? '校友' : '在讀學生', typeEn: alumni ? 'ALUMNI' : 'STUDENT',
+    sex: d.gender, dob: d.dob, chipLast4: d.chipLast4,
+    issued: hasTerm ? d.termStart : '', expiry: hasTerm ? d.termExpiry : '', expired: hasTerm && d.termExpiry < today,
+  }, 'sp', n);
+  const ph = n.querySelector('#spAva');
+  if (useAvatar && d.avatarUrl) { ph.innerHTML = ''; ph.style.backgroundImage = 'url("' + String(d.avatarUrl).replace(/"/g, '') + '")'; }
+  else if (g) ph.querySelector('img').src = g.img;
   return n;
 }
 async function renderShareCanvas(d, useAvatar){
