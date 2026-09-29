@@ -73,6 +73,7 @@
 /* [2026-09-29] 學校通告 */
 .nt{border-left:4px solid var(--pw-gold);background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:11px 13px;margin-bottom:10px;}
 .nt:last-child{margin-bottom:0;}
+.nt-img{display:block;width:100%;height:auto;border-radius:var(--pw-r-sm);margin-bottom:9px;background:var(--pw-cream-deep);}
 .nt-d{font-size:11.5px;font-weight:900;color:var(--pw-gold-deep);}
 .nt-t{font-size:15px;font-weight:900;color:var(--pw-ink);margin-top:2px;line-height:1.35;}
 .nt-b{font-size:13px;font-weight:600;color:var(--pw-ink-soft);line-height:1.65;margin-top:4px;white-space:pre-line;}
@@ -579,7 +580,12 @@ function renderNotices(d){
   const want = dogTypes(d).map(t => NOTICE_MAP[t]);
   const list = (FAMILY.notices || []).filter(n => n.target === '全部' || want.indexOf(n.target) !== -1);
   $('secNotice').style.display = list.length ? 'block' : 'none';
+  // 圖片：有連結就成張圖撳得；載入失敗就收埋，照顯示文字
+  const img = n => !n.image ? '' : (n.link
+    ? `<a href="${esc(n.link)}" target="_blank" rel="noopener"><img class="nt-img" src="${esc(n.image)}" alt="${esc(n.title)}" loading="lazy" onerror="this.remove()"></a>`
+    : `<img class="nt-img" src="${esc(n.image)}" alt="${esc(n.title)}" loading="lazy" onerror="this.remove()">`);
   $('noticeList').innerHTML = list.map(n => `<div class="nt">
+    ${img(n)}
     ${n.date ? `<div class="nt-d">${esc(fmtMD(n.date))}</div>` : ''}
     <div class="nt-t">${esc(n.title)}</div>
     ${n.body ? `<div class="nt-b">${esc(n.body)}</div>` : ''}
