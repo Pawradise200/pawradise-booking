@@ -500,6 +500,17 @@ function renderReports(list){
     old.map(r => `<details><summary>${esc(r.season || r.created)}・${esc(r.course || '')}</summary>${rpCard(r)}</details>`).join('') + '</div>';
 }
 
+// [2026-09-29 老闆要求] 出席只顯示本學期：CRM 總堂數／已出席係累計（例：兩期 18 堂、已出席 13），
+//   按後端 fmtLessonSeq_ 同一把尺（S1 每期 9 堂、S2 每期 4 堂）拆返本期。
+//   唔夠一期嘅零頭（轉介獎勵堂等）併入最後一期。
+function termView(used, total, size){
+  if (!(total > 0)) return { term: 1, used: used, total: total };
+  const lastIdx = Math.max(1, Math.floor(total / size)) - 1;
+  const done = Math.min(Math.floor(used / size), lastIdx);
+  const termTotal = done < lastIdx ? size : total - done * size;
+  return { term: done + 1, used: Math.min(used - done * size, termTotal), total: termTotal };
+}
+
 function attRow(label, used, total){
   const pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
   return `<div class="att"><div class="att-top"><span>${esc(label)}</span><b>${used} / ${total} 堂</b></div>
@@ -579,9 +590,13 @@ function renderDog(idx, fallbackToken){
 
   let att = '';
   if (Number(d.s1Total) > 0) {
-    att += attRow('狗狗幼稚園', Number(d.s1Attended || 0), Number(d.s1Total));
+    const t1 = termView(Number(d.s1Attended || 0), Number(d.s1Total), 9);
+    att += attRow('狗狗幼稚園' + (t1.term > 1 ? '・第 ' + t1.term + ' 期' : ''), t1.used, t1.total);
   }
-  if (Number(d.s2Total) > 0) att += attRow('情緒重建小組班', Number(d.s2Attended || 0), Number(d.s2Total));
+  if (Number(d.s2Total) > 0) {
+    const t2 = termView(Number(d.s2Attended || 0), Number(d.s2Total), 4);
+    att += attRow('情緒重建小組班' + (t2.term > 1 ? '・第 ' + t2.term + ' 期' : ''), t2.used, t2.total);
+  }
   const q = String(d.monthlyQuota || '').trim();
   if (q) {
     att += /^\d+$/.test(q)
