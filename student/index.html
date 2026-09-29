@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow">
-<title>Pawradise · 學生專屬頁</title>
+<title>學院學生專屬頁 | Pawradise 毛孩社交學院</title>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../pawradise-tokens.css">
 <link rel="stylesheet" href="../pawradise.css">
@@ -245,7 +245,7 @@
 
 <header class="pw-header">
   <div class="crest"><img src="../assets/pawradise-crest.png" alt="Pawradise"></div>
-  <div class="htitle"><b>學生專屬頁</b><span>毛孩社交學院</span></div>
+  <div class="htitle"><b>學院學生專屬頁</b><span>Pawradise 毛孩社交學院</span></div>
   <div class="spacer"></div>
 </header>
 
@@ -642,7 +642,7 @@ function renderDog(idx, fallbackToken){
   if (d.avatarUrl) setAvatar(d.avatarUrl); else resetAvatar();
   $('avaUp').style.display = (AVATAR_ENABLED && CURRENT_TOKEN) ? 'flex' : 'none';
   $('btnBook').href = BOOKING_PAGE + '?t=' + encodeURIComponent(token);
-  document.title = dog + ' · 學生專屬頁';
+  document.title = dog + ' · 學院學生專屬頁 | Pawradise 毛孩社交學院';
   $('secLadder').style.display = 'none';
   $('secAtt').style.display = 'none'; $('attList').innerHTML = '';
   $('pastH').style.display = 'none'; $('pastList').innerHTML = '';
@@ -996,14 +996,28 @@ async function renderShareCanvas(d, useAvatar){
     return await new Promise((ok, bad) => canvas.toBlob(b => b ? ok(b) : bad(new Error('blob')), 'image/png'));
   } finally { node.remove(); }
 }
+const SHARE_AVA = {};   // avatarUrl → data URL（同一張相唔使再攞；換相後 avatarUrl 會變）
+async function shareAvatarData(d){
+  if (!d.avatarUrl || !d.token) return '';
+  if (SHARE_AVA[d.avatarUrl]) return SHARE_AVA[d.avatarUrl];
+  try {
+    const r = await (await fetch(API_URL + '?action=studentAvatarData&t=' + encodeURIComponent(d.token))).json();
+    if (r && r.ok && r.dataUrl) return (SHARE_AVA[d.avatarUrl] = r.dataUrl);
+  } catch (e) {}
+  return '';
+}
 async function makeShareCard(){
   if (!CUR_DOG) return;
   const btn = $('shareBtn');
   btn.disabled = true; btn.textContent = '生成中⋯⋯';
   try {
     await loadH2C();
-    try { SHARE_BLOB = await renderShareCanvas(CUR_DOG, true); }
-    catch (e) { SHARE_BLOB = await renderShareCanvas(CUR_DOG, false); }   // 頭像跨網域畫唔到 → 用分級恐龍
+    // [2026-09-30] Drive 頭像 html2canvas 畫唔到（跨網域，唔報錯只出空白）→ 先向後台攞 data URL 先畫；
+    //   攞唔到就用分級恐龍
+    const ava = await shareAvatarData(CUR_DOG);
+    const d = ava ? Object.assign({}, CUR_DOG, { avatarUrl: ava }) : CUR_DOG;
+    try { SHARE_BLOB = await renderShareCanvas(d, !!ava); }
+    catch (e) { SHARE_BLOB = await renderShareCanvas(CUR_DOG, false); }
     $('shareImg').src = URL.createObjectURL(SHARE_BLOB);
     $('shareMask').classList.add('show');
   } catch (e) {
