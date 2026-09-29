@@ -408,6 +408,28 @@
 .rung-goal{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;background:color-mix(in srgb,var(--pw-gold) 18%,#fff);
   color:var(--pw-gold-deep);font-size:9.5px;font-weight:900;padding:4px 9px;border-radius:var(--pw-r-pill);}
 .rung-goal .gr-star{color:var(--pw-gold);}
+
+/* [2026-09-29 老闆要求] 課堂校曆（喺「選擇課堂日期」頂；顏色跟月曆圖：幼稚園金、S2 陶紅、Club 灰綠） */
+.bk-cal{margin-bottom:14px;}
+.bk-cal-tabs{display:flex;gap:8px;margin-bottom:10px;}
+.bk-cal-tabs button{border:1.5px solid var(--pw-cream-deep);background:var(--pw-paper);color:var(--pw-ink-soft);font-family:var(--pw-font-sans);
+  font-size:13px;font-weight:900;border-radius:var(--pw-r-pill);padding:5px 14px;cursor:pointer;}
+.bk-cal-tabs button.on{background:var(--pw-navy);border-color:var(--pw-navy);color:var(--pw-paper);}
+.bk-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.bk-cal-wd{text-align:center;font-size:10.5px;font-weight:900;color:var(--pw-ink-faint);padding:2px 0;}
+.bk-cal-c{min-height:50px;border-radius:var(--pw-r-sm);background:var(--pw-cream-soft);padding:3px 3px 2px;display:flex;flex-direction:column;gap:1px;overflow:hidden;position:relative;}
+.bk-cal-c.blank{background:transparent;}
+.bk-cal-c.has{cursor:pointer;background-color:var(--c);background-image:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55));}
+.bk-cal-c .n{font-size:12px;font-weight:900;color:var(--pw-ink);line-height:1.1;}
+.bk-cal-c .k{font-size:9.5px;font-weight:900;color:var(--pw-ink);line-height:1.15;}
+.bk-cal-c .r{font-size:9px;font-weight:700;color:var(--pw-ink-soft);line-height:1.15;}
+.bk-cal-c .f{font-size:9px;font-weight:900;color:var(--pw-danger);line-height:1.15;}
+.bk-cal-c .b{font-size:9px;font-weight:900;color:var(--pw-navy);line-height:1.15;}
+.bk-cal-c .ev{position:absolute;bottom:2px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--pw-navy);}
+.bk-cal-leg{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:11.5px;font-weight:700;color:var(--pw-ink-mute);}
+.bk-cal-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:4px;vertical-align:-1px;}
+.bk-cal-tip{font-size:11.5px;font-weight:700;color:var(--pw-ink-faint);margin-top:6px;}
+.cls-opt.flash .cls-card{box-shadow:0 0 0 3px var(--pw-gold);transition:box-shadow .2s;}
 </style>
 </head>
 <body>
@@ -595,6 +617,7 @@
     <!-- 選擇課堂日期 -->
     <div class="sec" id="classSec">
       <div class="sec-label"><svg class="ico"><use href="#ico-calendar"/></svg>選擇課堂日期 <span class="req">*</span></div>
+      <div class="bk-cal" id="bkCal" style="display:none"></div>
       <div class="class-list" id="classList"></div>
       <div class="s2-courses" id="s2Info">
         <div class="s2-title">S2・情緒重建小組班 — 課堂內容</div>
@@ -971,6 +994,7 @@ async function buildClasses(allowedTypes, level) {
   const listEl = document.getElementById('classList');
   if (!allowedTypes) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>請先於上方選擇「課程級別」，系統會顯示對應的課堂日期。</div>';
+    renderBkCal([]);
     return;
   }
   listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>資料下載中，請稍候片刻</div>';
@@ -987,6 +1011,7 @@ async function buildClasses(allowedTypes, level) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>載入課堂失敗，請重試或 WhatsApp 9459 6420 查詢。</div>';
     return;
   }
+  renderBkCal(classes);
   if (!classes.length) {
     listEl.innerHTML = '<div class="cls-empty"><svg class="ico"><use href="#ico-info"/></svg>暫時未有對應此級別的課堂，請 WhatsApp 9459 6420 查詢。</div>';
     return;
@@ -1027,6 +1052,86 @@ async function buildClasses(allowedTypes, level) {
     </div>`;
   }).join('');
   document.querySelectorAll('input[name=cls]').forEach(cb => cb.addEventListener('change', onClassChange));
+}
+
+// ── [2026-09-29 老闆要求] 課堂校曆：月曆格總覽（只顯示課程級別對應嘅課堂），撳日期跳去下面嗰堂 ──
+const BK_KIND = {
+  S1:   { name: '狗狗幼稚園',        short: '幼稚園', c: 'var(--pw-gold)' },
+  S2:   { name: '情緒重建小組班',    short: 'S2',     c: 'var(--pw-terracotta)' },
+  CLUB: { name: 'Calm Explorer Club', short: 'Club',   c: 'var(--pw-sage)' },
+};
+const BK_WEEK = ['日','一','二','三','四','五','六'];
+let BKCAL = { months: [], month: '', byDate: {} };
+function bkRoute_(r){
+  const s = String(r || '');
+  return /港島/.test(s) ? '港島' : /九龍/.test(s) ? '九龍' : /新界/.test(s) ? '新界' : /不設/.test(s) ? '不設' : '';
+}
+function renderBkCal(classes){
+  const box = document.getElementById('bkCal');
+  if (!box) return;
+  // 已預約：用而家載入緊嗰隻狗嘅課堂紀錄（冇登入＝冇）
+  const dogNm = String(document.getElementById('dogName').value || '').trim().toLowerCase();
+  const me = (_allDogs || []).find(x => String(x.dogName || '').trim().toLowerCase() === dogNm);
+  const booked = {};
+  ((me && me.upcomingClasses) || []).forEach(c => {
+    if (c.status === 'upcoming' && (!c.dogName || String(c.dogName).trim().toLowerCase() === dogNm)) booked[c.classDate] = true;
+  });
+  const byDate = {};
+  classes.forEach(c => {
+    const t = String(c.type || '').toUpperCase();
+    const mm = classMonthOf_(c.id), dd = String(c.id || '').slice(-2);
+    if (!BK_KIND[t] || !mm) return;
+    const ds = mm + '-' + dd;
+    const ev = (String(c.label || '').split(')')[1] || '').replace(/^[\s·]+/, '').trim();
+    (byDate[ds] = byDate[ds] || { items: [] }).items.push({ t: t, id: c.id, route: bkRoute_(c.route),
+      full: Number(c.max) - Number(c.enrolled) <= 0, ev: /第.堂/.test(ev) ? '' : ev });
+    if (booked[ds]) byDate[ds].booked = true;
+  });
+  const months = Array.from(new Set(Object.keys(byDate).map(x => x.slice(0, 7)))).sort();
+  if (!months.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const busy = months.find(m => Object.keys(byDate).filter(x => x.slice(0, 7) === m).length >= 3);
+  BKCAL = { months: months, month: months.indexOf(BKCAL.month) !== -1 ? BKCAL.month : (busy || months[0]), byDate: byDate };
+  box.style.display = 'block';
+  drawBkCal();
+}
+function drawBkCal(){
+  const box = document.getElementById('bkCal');
+  const y = +BKCAL.month.slice(0, 4), mo = +BKCAL.month.slice(5, 7);
+  const first = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay();
+  const days = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+  const types = [];
+  Object.values(BKCAL.byDate).forEach(e => e.items.forEach(x => { if (types.indexOf(x.t) === -1) types.push(x.t); }));
+  let h = '<div class="bk-cal-tabs">' + BKCAL.months.map(m =>
+    `<button type="button" class="${m === BKCAL.month ? 'on' : ''}" onclick="BKCAL.month='${m}';drawBkCal()">${+m.slice(5)}月</button>`).join('') + '</div>';
+  h += '<div class="bk-cal-grid">' + BK_WEEK.map(w => `<div class="bk-cal-wd">${w}</div>`).join('');
+  for (let i = 0; i < first; i++) h += '<div class="bk-cal-c blank"></div>';
+  for (let d = 1; d <= days; d++) {
+    const ds = BKCAL.month + '-' + String(d).padStart(2, '0');
+    const e = BKCAL.byDate[ds];
+    if (!e) { h += `<div class="bk-cal-c"><span class="n">${d}</span></div>`; continue; }
+    const it = e.items[0];
+    h += `<div class="bk-cal-c has" style="--c:${BK_KIND[it.t].c}" onclick="bkCalPick('${ds}')">
+      <span class="n">${d}</span>
+      ${e.items.map(x => `<span class="k">${BK_KIND[x.t].short}</span>`).join('')}
+      ${it.route ? `<span class="r">${it.route}</span>` : ''}
+      ${e.booked ? '<span class="b">✓ 已約</span>' : (e.items.every(x => x.full) ? '<span class="f">額滿</span>' : '')}
+      ${e.items.some(x => x.ev) ? '<span class="ev"></span>' : ''}
+    </div>`;
+  }
+  h += '</div><div class="bk-cal-leg">' + types.map(t => `<span><i style="--c:${BK_KIND[t].c}"></i>${BK_KIND[t].name}</span>`).join('') +
+    (Object.values(BKCAL.byDate).some(e => e.items.some(x => x.ev)) ? '<span><i style="--c:var(--pw-navy);border-radius:50%"></i>活動</span>' : '') +
+    '</div><div class="bk-cal-tip">按日期可跳至下方課堂，於清單中剔選報名。</div>';
+  box.innerHTML = h;
+}
+function bkCalPick(ds){
+  const e = BKCAL.byDate[ds];
+  if (!e) return;
+  const el = document.getElementById(e.items[0].id);
+  const opt = el && el.closest('.cls-opt');
+  if (!opt) return;
+  opt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  opt.classList.add('flash');
+  setTimeout(() => opt.classList.remove('flash'), 1600);
 }
 
 // classId 尾4位＝MMDD（同後端 parseClassDate 一致嘅年份判斷：跨埋年就用下一年）
