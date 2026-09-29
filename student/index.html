@@ -70,6 +70,20 @@
 .chip-add button{margin-top:7px;width:100%;padding:9px;border:none;border-radius:var(--pill);background:var(--pw-gold);
   font-family:var(--sans);font-weight:900;font-size:.72rem;color:var(--pw-ink);cursor:pointer}
 .chip-msg{font-size:.6rem;font-weight:800;margin-top:6px}
+/* [2026-09-29] 分享狗狗證（生成 IG 用圖片：冇連結、冇私人資料） */
+.share-btn{display:block;width:100%;margin:-4px 0 14px;border:2px solid var(--pw-gold);background:var(--pw-paper);color:var(--pw-ink);
+  font-family:var(--pw-font-sans);font-size:14px;font-weight:900;border-radius:var(--pw-r-md);padding:11px;cursor:pointer;}
+.share-btn:disabled{opacity:.6;cursor:default;}
+.share-mask{display:none;position:fixed;inset:0;background:rgba(31,53,82,.72);z-index:60;align-items:center;justify-content:center;padding:18px;}
+.share-mask.show{display:flex;}
+.share-box{background:var(--pw-paper);border-radius:var(--pw-r-xl);padding:16px;width:100%;max-width:360px;max-height:92vh;overflow:auto;box-shadow:var(--pw-shadow-pop);}
+.share-box img{display:block;width:100%;border-radius:var(--pw-r-md);}
+.share-box .tip{font-size:12px;font-weight:700;color:var(--pw-ink-mute);text-align:center;margin:10px 0 4px;line-height:1.6;}
+.share-box .row{display:flex;gap:8px;margin-top:8px;}
+.share-box .row button{flex:1;border:none;border-radius:var(--pw-r-pill);padding:11px;font-family:var(--pw-font-sans);font-size:13.5px;font-weight:900;cursor:pointer;}
+#shareGo{background:var(--pw-gold);color:var(--pw-navy-deep);}
+#shareClose{background:var(--pw-cream);color:var(--pw-ink-mute);}
+
 /* [2026-09-29] 學校通告 */
 .nt{border-left:4px solid var(--pw-gold);background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:11px 13px;margin-bottom:10px;}
 .nt:last-child{margin-bottom:0;}
@@ -309,6 +323,8 @@
       </div>
     </div>
 
+    <button type="button" class="share-btn" id="shareBtn" onclick="makeShareCard()">分享狗狗證</button>
+
     <div class="actions">
       <a class="btn primary" id="btnBook" href="#">預約課堂</a>
       <a class="btn ghost" href="https://wa.me/85294596420" target="_blank" rel="noopener">聯絡導師</a>
@@ -356,12 +372,20 @@
     </div>
 
     <p class="foot-note">
-      這是 <span id="sName2"></span> 的私人連結，請勿轉發。<br>
+      歡迎截圖分享！此連結可預約及取消課堂，請勿公開張貼。<span id="sName2" hidden></span><br>
       建議將此頁加入手機主畫面，下次一按即開。<br>
       <a href="#" onclick="switchDog();return false;">以另一個電郵登入</a>
     </p>
   </div>
 
+</div>
+
+<div class="share-mask" id="shareMask">
+  <div class="share-box">
+    <img id="shareImg" alt="狗狗證">
+    <div class="tip">手機：按「分享／儲存」，或長按圖片儲存至相簿，即可上載 IG。</div>
+    <div class="row"><button type="button" id="shareGo" onclick="shareCardOut()">分享／儲存</button><button type="button" id="shareClose" onclick="document.getElementById('shareMask').classList.remove('show')">關閉</button></div>
+  </div>
 </div>
 
 <div class="crop-mask" id="cropMask">
@@ -401,6 +425,7 @@ const BREED_EN = {"貴婦（玩具／迷你）": "Poodle (Toy / Miniature)", "�
 // 上載相片：後端 student_avatar（crm-backend v6.2，要 Drive 授權）
 const AVATAR_ENABLED = true;
 let CURRENT_TOKEN = '';
+let CUR_DOG = null;   // 而家顯示緊嘅狗（分享狗狗證用）
 // 勳章清單（2026-09-28 老闆定）。勳章紀錄未建立（第四階段），現時一律灰色上鎖顯示。
 const ABILITY_BADGES = [
   { zh:'分離耐受', en:'Separation Tolerance',       c:'var(--pw-navy-deep)' },
@@ -576,6 +601,7 @@ function renderStudent(json, token){
 function renderDog(idx, fallbackToken){
   const dogs = familyDogs();
   const d = dogs[idx];
+  CUR_DOG = d;
   const token = d.token || fallbackToken || CURRENT_TOKEN;
   const dog = d.dogName || '狗狗';
   CURRENT_TOKEN = d.token || '';   // 冇自己連結嘅狗狗（未 backfill）唔俾上載相片／晶片
@@ -911,6 +937,106 @@ function confirmCrop(){
       btn.disabled = false; btn.textContent = '確定';
       alert('網絡連線異常，頭像可能未儲存，請稍後再試一次。');
     });
+}
+
+// ── [2026-09-29 老闆批] 分享狗狗證：生成 1080×1350（IG 直向）圖片，只有狗名／品種／班別／分級／勳章，
+//   冇連結、冇電話電郵。用 html2canvas（同 progress-card 同一個）。Drive 頭像如因跨網域畫唔到，自動改用分級恐龍。
+let SHARE_BLOB = null;
+function loadH2C(){
+  if (window.html2canvas) return Promise.resolve();
+  return new Promise((ok, bad) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+    sc.onload = ok; sc.onerror = bad; document.head.appendChild(sc);
+  });
+}
+function shareCardNode(d, useAvatar){
+  const gi = LADDER.findIndex(x => x.k === String(d.behavioralLevel || '').trim());
+  const g = gi >= 0 ? LADDER[gi] : null;
+  const photo = (useAvatar && d.avatarUrl) ? d.avatarUrl : (g ? g.img : '../assets/daki-explore.png');
+  const photoStyle = (useAvatar && d.avatarUrl) ? 'width:100%;height:100%;object-fit:cover;' : 'width:78%;height:78%;object-fit:contain;';
+  const t1 = Number(d.s1Total) > 0 ? termView(Number(d.s1Attended || 0), Number(d.s1Total), 9) : null;
+  const en = BREED_EN[d.breed] || '';
+  const ladder = LADDER.map((x, i) => `<div style="flex:1;text-align:center;">
+      <div style="width:104px;height:104px;margin:0 auto;border-radius:50%;background:#FFFDF7;border:${i === gi ? '6px solid #F4B860' : '3px solid #E6D8BC'};display:flex;align-items:center;justify-content:center;">
+        <img src="${x.img}" style="width:78px;height:78px;object-fit:contain;${i === gi ? '' : 'opacity:.35;filter:grayscale(1);'}"></div>
+      <div style="font:900 30px Nunito,sans-serif;color:${i === gi ? '#1F3552' : '#A8B2C0'};margin-top:8px;">${x.k}</div>
+      <div style="font:800 22px Nunito,sans-serif;color:${i === gi ? '#1F3552' : '#A8B2C0'};">${x.zh}</div></div>`).join('');
+  const row = (k, v) => v ? `<div style="display:flex;align-items:baseline;gap:24px;padding:20px 0;border-bottom:2px solid rgba(160,138,98,.25);">
+      <div style="width:230px;font:900 24px Nunito,sans-serif;letter-spacing:3px;color:#A08A62;">${k}</div>
+      <div style="font:900 40px Nunito,sans-serif;color:#1F3552;">${esc(v)}</div></div>` : '';
+  const n = document.createElement('div');
+  n.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1350px;box-sizing:border-box;padding:70px 76px 0;' +
+    'background:linear-gradient(150deg,#FFFDF7,#FBF3E4 62%,#F7E7C6);font-family:Nunito,Huninn,sans-serif;color:#1F3552;overflow:hidden;';
+  n.innerHTML = `
+    <div style="display:flex;align-items:center;gap:26px;border-bottom:4px solid rgba(201,141,44,.3);padding-bottom:30px;">
+      <img src="../assets/pawradise-crest.png" style="width:120px;height:auto;">
+      <div style="flex:1;">
+        <div style="font:700 56px Fredoka,Huninn,sans-serif;letter-spacing:2px;">狗狗證　PAWRADISE</div>
+        <div style="font:800 24px Nunito,sans-serif;letter-spacing:8px;color:#A08A62;margin-top:6px;">DOG IDENTITY CARD</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font:900 20px Nunito,sans-serif;letter-spacing:6px;color:#A08A62;">毛孩社交學院</div>
+        <div style="font:700 34px Fredoka,Huninn,sans-serif;margin-top:4px;">在讀學生</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:44px;margin-top:46px;">
+      <div style="width:380px;height:450px;border:4px solid #E0CFA8;border-radius:10px;background:#F5F0E8;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+        <img src="${photo}" crossorigin="anonymous" style="${photoStyle}"></div>
+      <div style="flex:1;min-width:0;">
+        <div style="font:700 92px Fredoka,Huninn,sans-serif;line-height:1.05;word-break:break-word;">${esc(d.dogName || '狗狗')}</div>
+        <div style="font:800 28px Nunito,sans-serif;letter-spacing:4px;color:#A08A62;margin-top:10px;">${esc(en.toUpperCase())}</div>
+        <div style="margin-top:18px;">
+          ${row('BREED 品種', d.breed)}
+          ${row('CLASS 班別', className(d.courseLevel))}
+          ${row('LEVEL 分級', g ? g.k + '｜' + g.zh : '')}
+          ${row('TERM 學期', t1 && t1.term > 1 ? '第 ' + t1.term + ' 期' : (t1 ? '第 1 期' : ''))}
+        </div>
+      </div>
+    </div>
+    ${g ? `<div style="margin-top:52px;font:900 26px Nunito,sans-serif;letter-spacing:6px;color:#A08A62;">社交成長階梯　SOCIAL GROWTH</div>
+    <div style="display:flex;gap:10px;margin-top:22px;">${ladder}</div>` : ''}
+    <div style="position:absolute;left:0;right:0;bottom:0;height:120px;background:#1F3552;display:flex;align-items:center;justify-content:space-between;padding:0 76px;">
+      <div style="font:700 40px Fredoka,Huninn,sans-serif;color:#F4B860;letter-spacing:2px;">PAWRADISE</div>
+      <div style="font:800 26px Nunito,sans-serif;color:#F5F0E8;letter-spacing:3px;">Calm · Respect · Together</div>
+    </div>`;
+  return n;
+}
+async function renderShareCanvas(d, useAvatar){
+  const node = shareCardNode(d, useAvatar);
+  document.body.appendChild(node);
+  try {
+    await Promise.all([...node.querySelectorAll('img')].map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; })));
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const canvas = await html2canvas(node, { scale: 1, useCORS: true, backgroundColor: null, logging: false });
+    return await new Promise((ok, bad) => canvas.toBlob(b => b ? ok(b) : bad(new Error('blob')), 'image/png'));
+  } finally { node.remove(); }
+}
+async function makeShareCard(){
+  if (!CUR_DOG) return;
+  const btn = $('shareBtn');
+  btn.disabled = true; btn.textContent = '生成中⋯⋯';
+  try {
+    await loadH2C();
+    try { SHARE_BLOB = await renderShareCanvas(CUR_DOG, true); }
+    catch (e) { SHARE_BLOB = await renderShareCanvas(CUR_DOG, false); }   // 頭像跨網域畫唔到 → 用分級恐龍
+    $('shareImg').src = URL.createObjectURL(SHARE_BLOB);
+    $('shareMask').classList.add('show');
+  } catch (e) {
+    alert('暫時未能生成圖片，請直接截圖分享。');
+  }
+  btn.disabled = false; btn.textContent = '分享狗狗證';
+}
+async function shareCardOut(){
+  if (!SHARE_BLOB) return;
+  const name = 'Pawradise狗狗證-' + ((CUR_DOG && CUR_DOG.dogName) || '') + '.png';
+  const file = new File([SHARE_BLOB], name, { type: 'image/png' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file] }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(SHARE_BLOB); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 function switchDog(){
