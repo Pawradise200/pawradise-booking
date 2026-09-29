@@ -981,7 +981,10 @@ function shareCardNode(d, useAvatar){
     sex: d.gender, dob: d.dob, chipLast4: d.chipLast4,
     issued: hasTerm ? d.termStart : '', expiry: hasTerm ? d.termExpiry : '', expired: hasTerm && d.termExpiry < today,
   }, 'sp', n);
+  // [2026-09-30] html2canvas 將卡嘅 box-shadow 畫成成張卡蓋一層暗色（實測卡底 250→219）→ 分享圖唔用陰影
+  n.querySelector('.pp').style.boxShadow = 'none';
   const ph = n.querySelector('#spAva');
+  ph.style.boxShadow = 'none';
   if (useAvatar && d.avatarUrl) { ph.innerHTML = ''; ph.style.backgroundImage = 'url("' + String(d.avatarUrl).replace(/"/g, '') + '")'; }
   else if (g) ph.querySelector('img').src = g.img;
   return n;
