@@ -70,6 +70,42 @@
 .chip-add button{margin-top:7px;width:100%;padding:9px;border:none;border-radius:var(--pill);background:var(--pw-gold);
   font-family:var(--sans);font-weight:900;font-size:.72rem;color:var(--pw-ink);cursor:pointer}
 .chip-msg{font-size:.6rem;font-weight:800;margin-top:6px}
+/* [2026-09-29] 學校通告 */
+.nt{border-left:4px solid var(--pw-gold);background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:11px 13px;margin-bottom:10px;}
+.nt:last-child{margin-bottom:0;}
+.nt-d{font-size:11.5px;font-weight:900;color:var(--pw-gold-deep);}
+.nt-t{font-size:15px;font-weight:900;color:var(--pw-ink);margin-top:2px;line-height:1.35;}
+.nt-b{font-size:13px;font-weight:600;color:var(--pw-ink-soft);line-height:1.65;margin-top:4px;white-space:pre-line;}
+.nt-a{display:inline-block;margin-top:8px;font-size:13px;font-weight:900;color:var(--pw-paper);background:var(--pw-navy);
+  border-radius:var(--pw-r-pill);padding:6px 14px;text-decoration:none;}
+
+/* [2026-09-29] 課堂校曆（讀課堂名額表；顏色跟月曆圖：S1 金、S2 陶紅、Club 灰綠、活動深藍） */
+.cal-tabs{display:flex;gap:8px;margin-bottom:10px;}
+.cal-tabs button{border:1.5px solid var(--pw-cream-deep);background:var(--pw-paper);color:var(--pw-ink-soft);font-family:var(--pw-font-sans);
+  font-size:13px;font-weight:900;border-radius:var(--pw-r-pill);padding:5px 14px;cursor:pointer;}
+.cal-tabs button.on{background:var(--pw-navy);border-color:var(--pw-navy);color:var(--pw-paper);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-wd{text-align:center;font-size:10.5px;font-weight:900;color:var(--pw-ink-faint);padding:2px 0;}
+.cal-c{min-height:52px;border-radius:var(--pw-r-sm);background:var(--pw-cream-soft);padding:3px 3px 2px;position:relative;cursor:default;
+  display:flex;flex-direction:column;gap:1px;overflow:hidden;}
+.cal-c.blank{background:transparent;}
+.cal-c.has{cursor:pointer;background-color:var(--c);background-image:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55));}
+.cal-c.sel{box-shadow:0 0 0 2px var(--pw-navy);}
+.cal-c .n{font-size:12px;font-weight:900;color:var(--pw-ink);line-height:1.1;}
+.cal-c .k{font-size:9.5px;font-weight:900;color:var(--pw-ink);line-height:1.15;}
+.cal-c .r{font-size:9px;font-weight:700;color:var(--pw-ink-soft);line-height:1.15;}
+.cal-c .f{font-size:9px;font-weight:900;color:var(--pw-danger);line-height:1.15;}
+.cal-c .b{font-size:9px;font-weight:900;color:var(--pw-navy);line-height:1.15;}
+.cal-c .ev{position:absolute;bottom:2px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--pw-navy);}
+.cal-leg{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px;font-size:11.5px;font-weight:700;color:var(--pw-ink-mute);}
+.cal-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:4px;vertical-align:-1px;}
+.cal-dt{margin-top:12px;background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:11px 13px;display:none;}
+.cal-dt.show{display:block;}
+.cal-dt h4{font-size:14px;font-weight:900;color:var(--pw-ink);margin-bottom:4px;}
+.cal-dt p{font-size:13px;font-weight:700;color:var(--pw-ink-soft);line-height:1.7;}
+.cal-dt a{display:inline-block;margin-top:8px;font-size:13px;font-weight:900;color:var(--pw-paper);background:var(--pw-navy);
+  border-radius:var(--pw-r-pill);padding:6px 14px;text-decoration:none;}
+
 /* [2026-09-29] 學期報告（導師喺 progress-card 儲存） */
 .rp-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
 .rp-t{font-size:15px;font-weight:900;color:var(--pw-ink);line-height:1.3;}
@@ -304,6 +340,11 @@
       <a class="btn ghost" href="https://wa.me/85294596420" target="_blank" rel="noopener">聯絡導師</a>
     </div>
 
+    <div class="sec" id="secNotice" style="display:none">
+      <div class="sec-label">學校通告</div>
+      <div id="noticeList"></div>
+    </div>
+
     <div class="sec" id="secCape">
       <div class="sec-label">校褸披肩</div>
       <p class="cape-note">所有勳章都可以由學校代為燙在校褸披肩上，陪伴的每一步都看得見。</p>
@@ -338,6 +379,14 @@
       <div id="upList"></div>
       <div class="sub-h" id="pastH" style="display:none">最近完成</div>
       <div id="pastList"></div>
+    </div>
+
+    <div class="sec" id="secCal" style="display:none">
+      <div class="sec-label">課堂校曆</div>
+      <div class="cal-tabs" id="calTabs"></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-leg" id="calLeg"></div>
+      <div class="cal-dt" id="calDt"></div>
     </div>
 
     <p class="foot-note">
@@ -511,6 +560,127 @@ function termView(used, total, size){
   return { term: done + 1, used: Math.min(used - done * size, termTotal), total: termTotal };
 }
 
+// ── [2026-09-29] 狗狗可上嘅課堂類型（按課程級別；冇級別＝全部顯示）──
+function dogTypes(d){
+  const lv = String(d.courseLevel || '');
+  if (/Explorer|Club/i.test(lv)) return ['S1', 'CLUB'];
+  if (lv === 'S1+S2') return ['S1', 'S2'];
+  if (lv === 'S1' || lv === 'S2') return [lv];
+  return ['S1', 'S2', 'CLUB'];
+}
+const NOTICE_MAP = { S1: 'S1', S2: 'S2', CLUB: 'Club' };
+function fmtMD(ds){
+  const p = dateParts(ds);
+  return p ? `${p.mo}月${p.d}日（${p.w}）` : '';
+}
+
+// ── 學校通告 ──
+function renderNotices(d){
+  const want = dogTypes(d).map(t => NOTICE_MAP[t]);
+  const list = (FAMILY.notices || []).filter(n => n.target === '全部' || want.indexOf(n.target) !== -1);
+  $('secNotice').style.display = list.length ? 'block' : 'none';
+  $('noticeList').innerHTML = list.map(n => `<div class="nt">
+    ${n.date ? `<div class="nt-d">${esc(fmtMD(n.date))}</div>` : ''}
+    <div class="nt-t">${esc(n.title)}</div>
+    ${n.body ? `<div class="nt-b">${esc(n.body)}</div>` : ''}
+    ${n.link ? `<a class="nt-a" href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkText || '了解更多')}</a>` : ''}
+  </div>`).join('');
+}
+
+// ── 課堂校曆（月曆格；只顯示呢隻狗可以上嘅日子）──
+const CAL_KIND = {
+  S1:   { name: '狗狗幼稚園',        short: '幼稚園', c: 'var(--pw-gold)',       time: '11:00–17:00' },
+  S2:   { name: '情緒重建小組班',    short: 'S2',     c: 'var(--pw-terracotta)' },
+  CLUB: { name: 'Calm Explorer Club', short: 'Club',   c: 'var(--pw-sage)',       time: '11:00–17:00' },
+};
+let CAL = { months: [], month: '', byDate: {}, sel: '', token: '' };
+function classDate(c){
+  const m = String(c.id || '').match(/(\d{2})(\d{2})$/);
+  const y = String(c.label || '').match(/(\d{4})/);
+  return (m && y) ? `${y[1]}-${m[1]}-${m[2]}` : '';
+}
+function routeShort(r){
+  const s = String(r || '');
+  return /港島/.test(s) ? '港島' : /九龍/.test(s) ? '九龍' : /新界/.test(s) ? '新界' : /不設/.test(s) ? '不設' : '';
+}
+function renderCalendar(d, token){
+  const types = dogTypes(d);
+  const dk = s => String(s || '').trim().toLowerCase();
+  const booked = {};
+  (FAMILY.upcomingClasses || []).forEach(c => {
+    if (c.status === 'upcoming' && (!c.dogName || dk(c.dogName) === dk(d.dogName))) booked[c.classDate] = true;
+  });
+  const byDate = {};
+  (FAMILY.classes || []).forEach(c => {
+    const t = String(c.type || '').toUpperCase();
+    if (types.indexOf(t) === -1) return;
+    const ds = classDate(c);
+    if (!ds) return;
+    const ev = (String(c.label || '').split(')')[1] || '').replace(/^[\s·]+/, '').trim();
+    (byDate[ds] = byDate[ds] || { items: [], events: [] }).items.push({
+      t: t, route: routeShort(c.route), full: Number(c.max) > 0 && Number(c.enrolled) >= Number(c.max),
+      time: CAL_KIND[t].time || String(c.time || '').replace(/^週.\s*/, ''), ev: /第.堂/.test(ev) ? '' : ev,
+    });
+    if (booked[ds]) byDate[ds].booked = true;
+  });
+  const want = types.map(t => NOTICE_MAP[t]);
+  (FAMILY.notices || []).forEach(n => {
+    if (!n.date || !(n.target === '全部' || want.indexOf(n.target) !== -1)) return;
+    (byDate[n.date] = byDate[n.date] || { items: [], events: [] }).events.push(n.title);
+  });
+  const months = Array.from(new Set(Object.keys(byDate).map(x => x.slice(0, 7)))).sort();
+  $('secCal').style.display = months.length ? 'block' : 'none';
+  if (!months.length) return;
+  const keep = CAL.months.indexOf(CAL.month) !== -1 && months.indexOf(CAL.month) !== -1 && CAL.token === token;
+  // 預設月份：第一個仲有 3 日或以上課堂嘅月（月尾唔會淨係見到一兩格）
+  const busy = months.find(m => Object.keys(byDate).filter(x => x.slice(0, 7) === m && byDate[x].items.length).length >= 3);
+  CAL = { months: months, month: keep ? CAL.month : (busy || months[0]), byDate: byDate, sel: '', token: token };
+  $('calLeg').innerHTML = types.map(t => `<span><i style="--c:${CAL_KIND[t].c}"></i>${CAL_KIND[t].name}</span>`).join('') +
+    '<span><i style="--c:var(--pw-navy);border-radius:50%"></i>活動</span>';
+  drawCalendar();
+}
+function drawCalendar(){
+  $('calTabs').innerHTML = CAL.months.map(m =>
+    `<button type="button" class="${m === CAL.month ? 'on' : ''}" onclick="CAL.month='${m}';CAL.sel='';drawCalendar()">${+m.slice(5)}月</button>`).join('');
+  const y = +CAL.month.slice(0, 4), mo = +CAL.month.slice(5, 7);
+  const first = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay();
+  const days = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+  let h = WEEK.map(w => `<div class="cal-wd">${w}</div>`).join('');
+  for (let i = 0; i < first; i++) h += '<div class="cal-c blank"></div>';
+  for (let dd = 1; dd <= days; dd++) {
+    const ds = `${CAL.month}-${('0' + dd).slice(-2)}`;
+    const e = CAL.byDate[ds];
+    if (!e) { h += `<div class="cal-c"><span class="n">${dd}</span></div>`; continue; }
+    const it = e.items[0];
+    const c = it ? CAL_KIND[it.t].c : 'var(--pw-navy)';
+    h += `<div class="cal-c has${ds === CAL.sel ? ' sel' : ''}" style="--c:${c}" onclick="calPick('${ds}')">
+      <span class="n">${dd}</span>
+      ${e.items.map(x => `<span class="k">${CAL_KIND[x.t].short}</span>`).join('')}
+      ${it && it.route ? `<span class="r">${it.route}</span>` : ''}
+      ${e.items.some(x => x.full) && !e.booked ? '<span class="f">額滿</span>' : ''}
+      ${e.booked ? '<span class="b">✓ 已約</span>' : ''}
+      ${(e.events.length || e.items.some(x => x.ev)) ? '<span class="ev"></span>' : ''}
+    </div>`;
+  }
+  $('calGrid').innerHTML = h;
+  calDetail();
+}
+function calPick(ds){ CAL.sel = CAL.sel === ds ? '' : ds; drawCalendar(); }
+function calDetail(){
+  const e = CAL.byDate[CAL.sel];
+  const box = $('calDt');
+  if (!e) { box.classList.remove('show'); box.innerHTML = ''; return; }
+  const lines = e.items.map(x => {
+    const k = CAL_KIND[x.t];
+    return `${k.name}${x.time ? '　' + esc(x.time) : ''}${x.route ? '<br>接送：' + esc(x.route === '不設' ? '不設接送' : x.route + '區') : ''}` +
+      (x.ev ? '<br>活動：' + esc(x.ev) : '') + (x.full && !e.booked ? '<br><span style="color:var(--pw-danger)">額滿</span>' : '');
+  });
+  e.events.forEach(t => lines.push('活動：' + esc(t)));
+  box.innerHTML = `<h4>${esc(fmtMD(CAL.sel))}${e.booked ? '　・已預約' : ''}</h4><p>${lines.join('<br>')}</p>` +
+    (e.items.length ? `<a href="${$('btnBook').href}">預約課堂</a>` : '');
+  box.classList.add('show');
+}
+
 function attRow(label, used, total){
   const pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
   return `<div class="att"><div class="att-top"><span>${esc(label)}</span><b>${used} / ${total} 堂</b></div>
@@ -605,6 +775,8 @@ function renderDog(idx, fallbackToken){
   }
   if (att) { $('attList').innerHTML = att; $('secAtt').style.display = 'block'; }
   renderReports(d.reports);
+  renderNotices(d);
+  renderCalendar(d, token);
 
   const dk = s => String(s || '').trim().toLowerCase();
   const all  = (FAMILY.upcomingClasses || []).filter(c => !c.dogName || dk(c.dogName) === dk(dog)).sort((a, b) => String(a.classDate).localeCompare(String(b.classDate)));
