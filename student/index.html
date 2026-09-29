@@ -84,6 +84,19 @@
 #shareGo{background:var(--pw-gold);color:var(--pw-navy-deep);}
 #shareClose{background:var(--pw-cream);color:var(--pw-ink-mute);}
 
+/* [2026-09-29] 狗狗呈分試卡（讀呈分試報名狀態） */
+.gt{background:var(--pw-navy);border-radius:var(--pw-r-lg);padding:16px 18px;margin-bottom:14px;color:var(--pw-paper);display:none;}
+.gt.show{display:block;}
+.gt-top{display:flex;align-items:center;gap:10px;}
+.gt-top img{width:44px;height:44px;object-fit:contain;flex-shrink:0;}
+.gt-t{font-family:var(--pw-font-display);font-size:19px;font-weight:700;line-height:1.2;}
+.gt-s{font-size:12.5px;font-weight:700;color:var(--pw-gold);margin-top:2px;}
+.gt-chip{margin-left:auto;flex-shrink:0;font-size:12px;font-weight:900;border-radius:var(--pw-r-pill);padding:3px 11px;background:var(--pw-gold);color:var(--pw-navy-deep);}
+.gt-chip.wait{background:var(--pw-cream);color:var(--pw-ink-soft);}
+.gt-b{font-size:13px;font-weight:600;line-height:1.7;margin-top:10px;color:var(--pw-cream);}
+.gt-a{display:block;text-align:center;margin-top:12px;background:var(--pw-gold);color:var(--pw-navy-deep);font-size:14px;font-weight:900;
+  border-radius:var(--pw-r-md);padding:11px;text-decoration:none;}
+
 /* [2026-09-29] 學校通告 */
 .nt{border-left:4px solid var(--pw-gold);background:var(--pw-cream-soft);border-radius:var(--pw-r-md);padding:11px 13px;margin-bottom:10px;}
 .nt:last-child{margin-bottom:0;}
@@ -330,6 +343,8 @@
       <a class="btn ghost" href="https://wa.me/85294596420" target="_blank" rel="noopener">聯絡導師</a>
     </div>
 
+    <div class="gt" id="gtCard"></div>
+
     <div class="sec" id="secNotice" style="display:none">
       <div class="sec-label">學校通告</div>
       <div id="noticeList"></div>
@@ -565,6 +580,36 @@ function fmtMD(ds){
   return p ? `${p.mo}月${p.d}日（${p.w}）` : '';
 }
 
+// ── [2026-09-29 老闆批] 狗狗呈分試卡：已確認出專屬頁連結；待繳費／候補出狀態；未報名（賽前）出立即報名 ──
+const GT_DATE = '2026-10-24';
+function renderGrading(d){
+  const box = $('gtCard');
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+  const g = d.grading;
+  if (!FAMILY.gradingEnabled || (!g && today > GT_DATE)) { box.classList.remove('show'); box.innerHTML = ''; return; }
+  const dog = esc(d.dogName || '狗狗');
+  let chip = '', body = '', btn = '';
+  if (g && g.status === '已確認') {
+    chip = '<span class="gt-chip">已確認</span>';
+    body = today > GT_DATE ? `${dog} 的成績、技能徽章及電子證書，可於專屬頁查看。`
+                           : `${dog} 已完成報名。專屬頁有報到時間、待辦事項及三關介紹，賽後亦可查看成績。`;
+    btn = g.link ? `<a class="gt-a" href="${esc(g.link)}" target="_blank" rel="noopener">打開呈分試專屬頁</a>` : '';
+  } else if (g && g.status === '待繳費') {
+    chip = '<span class="gt-chip wait">待付款</span>';
+    body = '報名已收到，完成付款後即確認學位，專屬頁連結會以電郵發送。如已付款，請將付款截圖 WhatsApp 至 9459 6420。';
+  } else if (g && g.status === '候補') {
+    chip = '<span class="gt-chip wait">候補中</span>';
+    body = '如有學位，我們會以 WhatsApp 通知。';
+  } else {
+    body = '三關遊戲，找出牠的隱藏實力——家長跟毛孩一起參與校園體驗的大日子。';
+    btn = '<a class="gt-a" href="../grading/index.html?mode=academy" target="_blank" rel="noopener">立即報名</a>';
+  }
+  box.innerHTML = `<div class="gt-top"><img src="../assets/daki-cert.png" alt="">
+      <div><div class="gt-t">狗狗呈分試 2026</div><div class="gt-s">${esc(fmtMD(GT_DATE))}・學院學生場</div></div>${chip}</div>
+    <div class="gt-b">${body}</div>${btn}`;
+  box.classList.add('show');
+}
+
 // ── 學校通告 ──
 function renderNotices(d){
   const want = dogTypes(d).map(t => NOTICE_MAP[t]);
@@ -679,6 +724,7 @@ function renderDog(idx, fallbackToken){
   if (att) { $('attList').innerHTML = att; $('secAtt').style.display = 'block'; }
   renderReports(d.reports);
   renderNotices(d);
+  renderGrading(d);
 
   const dk = s => String(s || '').trim().toLowerCase();
   const all  = (FAMILY.upcomingClasses || []).filter(c => !c.dogName || dk(c.dogName) === dk(dog)).sort((a, b) => String(a.classDate).localeCompare(String(b.classDate)));
