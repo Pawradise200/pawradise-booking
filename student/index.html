@@ -287,8 +287,8 @@
   <div class="view" id="vStudent">
     <div class="fam" id="famTabs" style="display:none"></div>
     <p class="sync" id="syncNote">資料下載中，請稍候片刻</p>
-    <!-- [2026-09-29 老闆批] 狗狗證護照款（同呈分試專屬頁共用 assets/dog-passport.js；125×88 真護照比例）
-         證上只放身份資料；學籍／紀錄／活動印章放下面「簽證頁」 -->
+    <!-- [2026-09-29 老闆批] 狗狗證護照款（assets/dog-passport.js；125×88 真護照比例），每隻狗都有
+         簽證（呈分試資料）只喺呈分試專屬頁，呢度唔放 -->
     <div id="dogIdWrap">
       <div data-paw-passport></div>
       <script src="../assets/dog-passport.js"></script>
@@ -298,18 +298,6 @@
         <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
         <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
         <div class="chip-msg" id="chipMsg"></div>
-      </div>
-      <div class="pp-visa">
-        <div class="pp-visa-t">簽證頁　VISAS<span>學籍・紀錄・活動</span></div>
-        <div class="pp-vrow"><div class="k">CLASS　班別</div><div class="v" id="idcClass">—</div></div>
-        <div class="pp-vrow"><div class="k">LEVEL　社交分級</div><div class="v" id="idcLevel">—</div></div>
-        <div class="pp-vrow"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince">—</div></div>
-        <div class="pp-rec">
-          <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">—</div></div>
-          <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">—</div></div>
-          <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">—</div></div>
-        </div>
-        <div class="pp-stamps" id="idcStamps"></div>
       </div>
     </div>
 
@@ -648,13 +636,8 @@ function renderDog(idx, fallbackToken){
     sex: d.gender, dob: d.dob, chipLast4: d.chipLast4,
     issued: hasTerm ? d.termStart : '', expiry: hasTerm ? d.termExpiry : '', expired: hasTerm && d.termExpiry < today,
   });
-  $('idcSince').textContent = d.since || '—';   // [2026-09-29] 有報呈分試＝同一個狗狗編號／首次參賽
   $('chipAdd').style.display = (!d.chipLast4 && CURRENT_TOKEN) ? 'block' : 'none';
   $('chipMsg').textContent = ''; $('chipInput').value = '';
-  $('idcClass').textContent = className(d.courseLevel);
-  $('idcLevel').textContent = '—';
-  $('idcStamps').innerHTML = EVENT_BADGES.map((e, i) =>
-    PawPassport.stamp({ zh: e.zh.replace(/ 2026$/, ''), en: e.en || 'PAWRADISE', when: e.date, done: false, color: i + 1 })).join('');
   if (d.avatarUrl) setAvatar(d.avatarUrl); else resetAvatar();
   $('avaUp').style.display = (AVATAR_ENABLED && CURRENT_TOKEN) ? 'flex' : 'none';
   $('btnBook').href = BOOKING_PAGE + '?t=' + encodeURIComponent(token);
@@ -673,9 +656,6 @@ function renderDog(idx, fallbackToken){
     $('ladderNote').textContent = LADDER_NOTE[g.k] || '';
     $('secLadder').style.display = 'block';
   }
-
-  // 簽證頁：社交分級（學期有效期已搬上狗狗證「有效期至」）
-  if (gi >= 0) $('idcLevel').textContent = LADDER[gi].k + '｜' + LADDER[gi].zh;
 
   renderCape();
 
@@ -969,7 +949,8 @@ function loadH2C(){
     sc.onload = ok; sc.onerror = bad; document.head.appendChild(sc);
   });
 }
-// [2026-09-29 老闆批 5A] 分享圖：護照款狗狗證擺中間（同頁面同一個 assets/dog-passport.js），下面班別／分級＋活動印章
+// [2026-09-29 老闆批 5A] 分享圖：護照款狗狗證擺中間（同頁面同一個 assets/dog-passport.js），下面班別／分級
+//   （活動印章屬簽證，只喺呈分試專屬頁，分享圖唔放）
 function shareCardNode(d, useAvatar){
   const gi = LADDER.findIndex(x => x.k === String(d.behavioralLevel || '').trim());
   const g = gi >= 0 ? LADDER[gi] : null;
@@ -977,7 +958,8 @@ function shareCardNode(d, useAvatar){
   const hasTerm = Number(d.s1Total) > 0 && d.termExpiry;
   const alumni = String(d.linkStatus || '').trim() === '校友';
   const n = document.createElement('div');
-  n.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1350px;box-sizing:border-box;padding:64px 60px 0;' +
+  n.style.cssText = 'position:fixed;left:-99999px;top:0;width:1080px;height:1350px;box-sizing:border-box;padding:0 60px 110px;' +
+    'display:flex;flex-direction:column;justify-content:center;' +
     'background:linear-gradient(150deg,#FFFDF7,#FBF3E4 62%,#F7E7C6);font-family:Nunito,Huninn,sans-serif;color:#1F3552;overflow:hidden;';
   const cell = (k, v) => `<div style="flex:1;"><div style="font:900 22px Nunito,sans-serif;letter-spacing:3px;color:#A08A62;">${k}</div>
       <div style="font:900 36px Nunito,sans-serif;color:#1F3552;margin-top:6px;">${esc(v || '—')}</div></div>`;
@@ -988,8 +970,6 @@ function shareCardNode(d, useAvatar){
       ${cell('CLASS 班別', className(d.courseLevel))}
       ${cell('LEVEL 社交分級', g ? g.k + '｜' + g.zh : '')}
     </div>
-    <div class="pp-stamps pp-big" style="margin-top:34px;">${EVENT_BADGES.map((e, i) =>
-      PawPassport.stamp({ zh: e.zh.replace(/ 2026$/, ''), en: e.en || 'PAWRADISE', when: e.date, done: false, color: i + 1 })).join('')}</div>
     <div style="position:absolute;left:0;right:0;bottom:0;height:110px;background:#1F3552;display:flex;align-items:center;justify-content:space-between;padding:0 70px;">
       <div style="font:700 40px Fredoka,Huninn,sans-serif;color:#F4B860;letter-spacing:2px;">PAWRADISE</div>
       <div style="font:800 26px Nunito,sans-serif;color:#F5F0E8;letter-spacing:3px;">Calm · Respect · Together</div>

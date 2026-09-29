@@ -207,32 +207,6 @@ body.has-dogid .status-card{margin-top:16px}
   <div class="loading" id="loading">資料下載中，請稍候片刻</div>
   <div class="notfound" id="notFound">找不到此同學頁。請確認連結是否完整，或 WhatsApp 9459 6420 與我們聯絡。</div>
 
-  <!-- [2026-09-29 老闆定] 狗狗證只喺學生專屬頁；呈分試專屬頁只放「簽證」（DOG ID／組別／紀錄／呈分試印章）
-       樣式同學生頁共用 assets/dog-passport.js -->
-  <div id="dogIdWrap">
-    <script src="../assets/dog-passport.js"></script>
-    <div class="chip-add" id="chipAdd" style="display:none">
-      <div class="t">補填晶片編號，可為狗狗建立永久參賽編號，日後每屆成績都會累積在同一位狗狗同學名下。</div>
-      <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
-      <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
-      <div class="chip-msg" id="chipMsg"></div>
-    </div>
-    <div class="pp-visa">
-      <div class="pp-visa-t">簽證　VISA<span>狗狗呈分試</span></div>
-      <div class="pp-vrow"><div class="k">NAME　名字</div><div class="v" id="idcName">—</div></div>
-      <div class="pp-vrow"><div class="k">DOG ID　編號</div><div class="v" id="idcNo">—</div></div>
-      <div class="pp-vrow"><div class="k">GROUP　組別</div><div class="v" id="idcGroup">—</div></div>
-      <div class="pp-vrow"><div class="k">MICROCHIP　晶片</div><div class="v" id="idcChip">—</div></div>
-      <div class="pp-vrow"><div class="k">SINCE　首次參賽</div><div class="v" id="idcSince">—</div></div>
-      <div class="pp-rec">
-        <div class="c"><div class="k">累積出賽<span>EVENTS</span></div><div class="v" id="idcEvents">–</div></div>
-        <div class="c"><div class="k">最佳總分<span>BEST SCORE</span></div><div class="v" id="idcBest">–</div></div>
-        <div class="c"><div class="k">最佳等級<span>BEST GRADE</span></div><div class="v" id="idcGrade">–</div></div>
-      </div>
-      <div class="pp-stamps" id="idcStamps"></div>
-    </div>
-  </div>
-
   <!-- 已確認（賽前） -->
   <div id="confirmedView">
     <div class="card status-card">
@@ -255,6 +229,20 @@ body.has-dogid .status-card{margin-top:16px}
         <div class="info-cell"><div class="k">場次</div><div class="v" id="sessLabel"></div></div>
         <div class="info-cell"><div class="k">日期</div><div class="v">10 月 24 日（六）</div></div>
         <div class="info-cell" style="grid-column:1/-1"><div class="k">報到時間</div><div class="v" id="sessTime"></div></div>
+      </div>
+      <!-- [2026-09-29 老闆定] 呈分試資料（DOG ID／晶片／首次參賽／出賽次數）同報名資料歸納喺同一張卡，品牌原本風格；
+           狗狗證只喺學生專屬頁 -->
+      <div class="info-grid" id="idGrid" style="display:none">
+        <div class="info-cell"><div class="k">DOG ID 編號</div><div class="v" id="idcNo"></div></div>
+        <div class="info-cell"><div class="k">晶片 MICROCHIP</div><div class="v" id="idcChip"></div></div>
+        <div class="info-cell"><div class="k">首次參賽 SINCE</div><div class="v" id="idcSince"></div></div>
+        <div class="info-cell"><div class="k">累積出賽 EVENTS</div><div class="v" id="idcEvents"></div></div>
+      </div>
+      <div class="chip-add" id="chipAdd" style="display:none">
+        <div class="t">補填晶片編號，可為狗狗建立永久參賽編號，日後每屆成績都會累積在同一位狗狗同學名下。</div>
+        <input type="text" id="chipInput" inputmode="numeric" placeholder="例如：900012345678901">
+        <button id="chipBtn" onclick="saveChip()">儲存晶片編號</button>
+        <div class="chip-msg" id="chipMsg"></div>
       </div>
     </div>
 
@@ -602,32 +590,16 @@ var GRADE_EN = { '模範生': 'Distinction', '高材生': 'Merit', '好學生': 
 
 // ── 狗狗證：永久身分（DOG ID／晶片／歷屆紀錄）──────────────
 function renderDogId(d){
-  if (!d.dogId) return;                      // 未分配編號就唔出卡
-  el('dogIdWrap').style.display = 'block';
-  document.body.classList.add('has-dogid');
-  // [2026-09-29 老闆定] 呢頁只出簽證（狗狗證喺學生專屬頁）；組別連品種：柴犬・中型犬組
-  el('idcName').textContent = d.dogName || '—';
+  if (!d.dogId) return;                      // 未分配編號就唔出
+  // [2026-09-29 老闆定] 呈分試資料歸納入報名卡（品牌原本風格）；最佳總分／等級賽後喺成績表
+  el('idGrid').style.display = 'grid';
   el('idcNo').textContent = d.dogId;
-  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '—';
-  var grpEn = GROUP_EN[d.group] ? '　' + GROUP_EN[d.group] : '';
-  var brd = d.breed && d.breed !== '其他／混種' ? d.breed : '';
-  el('idcGroup').textContent = [brd, d.group].filter(Boolean).join('・') + grpEn || '—';
+  el('idcChip').textContent = d.chipOnFile ? ('＊＊＊＊ ' + d.chipLast4) : '未提供';
   var ed = d.edition || { year: 2026, name: '第一屆' };
   var edEn = ed.no === 1 ? '1st' : (ed.no === 2 ? '2nd' : (ed.no === 3 ? '3rd' : ed.no + 'th'));
-  el('idcSince').textContent = ed.year + '・' + ed.name + '  ' + edEn;
-  var rec = d.record || { events: 0, bestTotal: 0, bestMax: 21, bestGrade: '', bestGradeYear: 0 };
-  el('idcEvents').textContent = rec.events || 1;
-  el('idcBest').innerHTML = rec.bestTotal
-    ? rec.bestTotal + '<span style="font-size:.62rem;color:var(--pw-ink-faint)"> / ' + (rec.bestMax || 21) + '</span>'
-    : '—';
-  el('idcGrade').innerHTML = rec.bestGrade
-    ? escapeHtml(rec.bestGrade) +
-      '<span style="display:block;font-size:.5rem;font-weight:900;color:#A08A62;letter-spacing:.1em;margin-top:1px">' +
-      (GRADE_EN[rec.bestGrade] || '').toUpperCase() + (rec.bestGradeYear ? '・' + rec.bestGradeYear : '') + '</span>'
-    : '—';
-  // 呈分試印章：出咗成績先蓋印
-  el('idcStamps').innerHTML = PawPassport.stamp({ zh: '狗狗呈分試', en: 'Grading Day ' + ed.year,
-    date: ed.year + '-10-24', when: '10月24日', done: !!rec.bestTotal, color: 1 });
+  el('idcSince').textContent = ed.year + '・' + ed.name + ' ' + edEn;
+  var rec = d.record || { events: 0 };
+  el('idcEvents').textContent = (rec.events || 1) + ' 次';
   if (!d.chipOnFile) el('chipAdd').style.display = 'block';
 }
 
@@ -763,6 +735,9 @@ function renderResult(d){
   el('gradeScore').textContent = r.medal || '';
   if (d.ultimateExplorer) el('ueChip').style.display = 'inline-flex';
   el('reportSub').textContent = '狗狗呈分試 2026 · ' + (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;
+  // [2026-09-29 老闆批 A] 賽後報名卡收埋 → 成績表頂補一行 DOG ID
+  if (d.dogId) el('reportSub').insertAdjacentHTML('afterend',
+    '<div class="report-sub" style="margin-top:2px">DOG ID ' + escapeHtml(d.dogId) + '・首次參賽 ' + ((d.edition && d.edition.year) || 2026) + '</div>');
 
   var GAMES = [
     { nm: '定力擂台大風吹', img: 'gt-level-1.png', base: r.g1, bon: [0, 1] },
