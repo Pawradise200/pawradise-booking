@@ -1389,6 +1389,18 @@ async function submitEnrollment() {
       ' 加入 Pawradise 學院！您的資料及條款同意已完成記錄，之後可以隨時回到本頁登入並預約課堂。';
     const refBadge = scr.querySelector('.ref-badge');
     if (refBadge) refBadge.style.display = 'none';
+    // [2026-09-29] 新生學生專屬頁連結（後端入學手續完成時產生，亦已隨歡迎 email 發出）
+    if (result && result.studentUrl) {
+      const a = document.createElement('a');
+      a.href = result.studentUrl;
+      a.textContent = '打開學生專屬頁';
+      a.style.cssText = 'display:inline-block;margin-top:16px;background:var(--pw-navy);color:var(--pw-paper);' +
+        'font-weight:900;font-size:15px;text-decoration:none;border-radius:var(--pw-r-pill);padding:12px 26px;';
+      const tip = document.createElement('div');
+      tip.textContent = '連結亦已發送至您的電郵，建議加入手機主畫面。';
+      tip.style.cssText = 'font-size:12.5px;font-weight:600;color:var(--pw-ink-mute);margin-top:10px;';
+      scr.querySelector('p').after(a, tip);
+    }
     scr.classList.add('show');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (err) {
