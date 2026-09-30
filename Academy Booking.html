@@ -2296,14 +2296,17 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     document.getElementById('mainForm').style.display = 'none';
     document.querySelector('.notice').style.display   = 'none';
     document.getElementById('sDog').textContent = payload.dogName;
-    document.getElementById('sRef').textContent = ref;
+    // [2026-09-30] 後端認出係重複提交（全部堂之前已報）→ 顯示原本嗰張單嘅編號
+    document.getElementById('sRef').textContent = (result && result.duplicate && result.ref) ? result.ref : ref;
     document.getElementById('successScreen').classList.add('show');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch(err) {
     btn.disabled = false;
     btn.classList.remove('loading');
     waitEl.classList.remove('show');
-    alert('提交時出現錯誤，請稍後重試或透過 WhatsApp 聯絡我們。');
+    // [2026-09-30] 讀唔到回應唔等於冇收到：後端可能已寫入。舊文案叫家長「重試」
+    //   → 重撳 → 重複佔位（十一月開報名真實事故）。改為叫家長唔好重複提交。
+    alert('系統未能確認提交結果，你的報名可能已經收到。請勿重複提交，我們會以 WhatsApp 聯絡確認；如有疑問請 WhatsApp 9459 6420。');
   }
 });
 
