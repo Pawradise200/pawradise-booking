@@ -447,7 +447,7 @@ const GROOMING = {
 let isReturning = false;
 
 function getSizeKey(w){ if(!w||w<=0)return null; if(w<8)return'small'; if(w<18)return'medium'; if(w<28)return'large'; return'giant'; }
-function getSizeLabel(k){ return{small:'Small <8kg',medium:'Medium 8–18kg',large:'Large 18–28kg',giant:'Giant ≥28kg'}[k]||''; }
+function getSizeLabel(k){ return{small:'Small <8kg',medium:'Medium 8–17.9kg',large:'Large 18–27.9kg',giant:'Giant ≥28kg'}[k]||''; }
 function getSizeChipClass(k){ return{small:'chip-s',medium:'chip-m',large:'chip-l',giant:'chip-g'}[k]||''; }
 
 function getDateTime(dateId, timeId) {
