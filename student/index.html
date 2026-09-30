@@ -346,7 +346,7 @@
     </div>
 
     <div class="sec" id="secCape">
-      <div class="sec-label">校褸披肩</div>
+      <div class="sec-label">毛孩成長歷程</div>
       <p class="cape-note">所有勳章都可以由學校代為燙在校褸披肩上，陪伴的每一步都看得見。</p>
       <div class="cape-h"><b>能力勳章</b><span id="capeAbilityCount"></span></div>
       <div class="cape-grid" id="capeAbility"></div>
@@ -490,7 +490,7 @@ function renderCape(){
   $('capeAbility').innerHTML = ABILITY_BADGES.map(cell).join('');
   $('capeEvent').innerHTML   = EVENT_BADGES.map(cell).join('');
   $('capeAbilityCount').textContent = '已獲得 0 / ' + ABILITY_BADGES.length;
-  $('capeEventCount').textContent   = '已獲得 0 / ' + EVENT_BADGES.length;
+  // [2026-09-30 Erica] 活動限定勳章會隨新活動陸續加入（儲勳章嘅儀式感），唔顯示「0 / 總數」
 }
 
 function ymd(ds){
