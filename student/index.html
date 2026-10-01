@@ -219,6 +219,7 @@
 .att-top{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:var(--pw-ink-soft);margin-bottom:6px;}
 .att-bar{height:10px;border-radius:var(--pw-r-pill);background:var(--pw-cream-deep);overflow:hidden;}
 .att-bar div{height:100%;background:var(--pw-gold);border-radius:var(--pw-r-pill);}
+.att-note{margin-top:6px;font-size:12px;font-weight:700;color:var(--pw-ink-mute);}   /* [2026-10-01] 有效期一行 */
 
 /* 課堂 */
 .cls{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--pw-cream-deep);}
@@ -757,6 +758,9 @@ function renderDog(idx, fallbackToken){
   if (Number(d.s1Total) > 0) {
     const t1 = termView(Number(d.s1Attended || 0), Number(d.s1Total), 9);
     att += attRow('狗狗幼稚園' + (t1.term > 1 ? '・第 ' + t1.term + ' 期' : ''), t1.used, t1.total);
+    // [2026-10-01 Erica 批 Mock A] 學期制先出有效期（月費會員後端唔回 termExpiry）；例外延期已由後端換成延期日
+    if (d.termExpiry && !String(d.monthlyQuota || '').trim())
+      att = att.replace(/<\/div>$/, `<div class="att-note">有效期至 ${ymd(d.termExpiry)}・尚餘 ${Math.max(0, t1.total - t1.used)} 堂</div></div>`);
   }
   if (Number(d.s2Total) > 0) {
     const t2 = termView(Number(d.s2Attended || 0), Number(d.s2Total), 4);
@@ -767,6 +771,7 @@ function renderDog(idx, fallbackToken){
     att += /^\d+$/.test(q)
       ? attRow('本月已預約', Number(d.usedThisMonth || 0), Number(q))
       : `<div class="att"><div class="att-top"><span>本月已預約</span><b>${Number(d.usedThisMonth || 0)} 堂</b></div></div>`;
+    att = att.replace(/<\/div>$/, '<div class="att-note">月費計劃・當月有效</div></div>');   // [2026-10-01 Erica 批]
   }
   if (att) { $('attList').innerHTML = att; $('secAtt').style.display = 'block'; }
   renderReports(d.reports);
