@@ -257,6 +257,12 @@
 /* 上鎖：保留每枚勳章專屬色做虛線框＋鎖頭提示，整體淡化；解鎖後（第四階段）先用實色 */
 .bdg i svg{opacity:.7;}
 .bdg i{opacity:.75;}
+.bdg i.img{background:none;border:0;opacity:1;position:relative;}
+/* [2026-10-02 Erica] 有圖案嘅活動勳章：未獲得＝圖案半透明＋前面鎖頭 */
+.bdg i.img img{width:100%;height:100%;object-fit:contain;opacity:.35;}
+.bdg i.img svg{position:absolute;opacity:1;color:var(--pw-navy);}
+.bdg i.img.got img{opacity:1;}
+.bdg.got .nm{color:var(--pw-ink);}
 .bdg .nm{font-size:11.5px;font-weight:800;color:var(--pw-ink-mute);line-height:1.35;}
 .bdg .nm .en{display:block;font-size:9.5px;font-weight:700;color:var(--pw-ink-faint);letter-spacing:.02em;margin-top:1px;}
 .cape-note{font-size:12px;font-weight:700;color:var(--pw-ink-faint);line-height:1.6;margin-bottom:16px;}
@@ -447,8 +453,8 @@ const ABILITY_BADGES = [
   { zh:'壓力復原', en:'Stress Resilience',          c:'var(--pw-terracotta)' },
 ];
 const EVENT_BADGES = [
-  { zh:'狗狗呈分試 2026', en:'Grading Day 2026', date:'10月24日',   c:'var(--pw-gold)' },
-  { zh:'Halloween Pawty', en:'',                 date:'10月31日',   c:'var(--pw-terracotta)' },
+  { zh:'狗狗呈分試 2026', en:'Grading Day 2026', date:'10月24日',   c:'var(--pw-gold)',       img:'../assets/ev-grading-day-2026.png',      k:'grading',   day:'2026-10-24' },
+  { zh:'Halloween Pawty', en:'',                 date:'10月31日',   c:'var(--pw-terracotta)', img:'../assets/ev-halloween-pawty-2026.png', k:'halloween', day:'2026-10-31' },
   { zh:"X'mas Pawty",     en:'',                 date:'12月20–21日', c:'var(--pw-sage)' },
 ];
 const LOCK_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
@@ -486,10 +492,23 @@ function clsRow(c, past){
   </div>`;
 }
 
-function renderCape(){
-  const cell = b => `<div class="bdg"><i style="--c:${b.c}">${LOCK_SVG}</i><div class="nm">${esc(b.zh)}${b.en ? `<span class="en">${esc(b.en)}</span>` : ''}${b.date ? `<span class="en">${esc(b.date)}</span>` : ''}</div></div>`;
+// [2026-10-02 Erica] 活動限定勳章解鎖（活動翌日起，當日仍上鎖）：呈分試＝報名狀態「已確認」；
+//   Halloween Pawty＝報咗 10/31 課堂（未取消；過咗當日要標「已出席」先會由後台回傳）
+function eventEarned(b, d, cls, today){
+  if (!b.day || today <= b.day) return false;
+  if (b.k === 'grading')   return !!(d.grading && d.grading.status === '已確認');
+  if (b.k === 'halloween') return cls.some(c => c.classDate === b.day && c.status !== 'cancelled');
+  return false;
+}
+
+function renderCape(d){
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' });
+  const dk = s => String(s || '').trim().toLowerCase();
+  const cls = ((FAMILY && FAMILY.upcomingClasses) || []).filter(c => !c.dogName || dk(c.dogName) === dk(d && d.dogName));
+  const cell = b => { const got = !!(d && eventEarned(b, d, cls, today)); return `<div class="bdg${got ? ' got' : ''}"><i${b.img ? ` class="img${got ? ' got' : ''}"` : ''} style="--c:${b.c}">${b.img ? `<img src="${b.img}" alt="">` : ''}${got ? '' : LOCK_SVG}</i><div class="nm">${esc(b.zh)}${b.en ? `<span class="en">${esc(b.en)}</span>` : ''}${b.date ? `<span class="en">${esc(b.date)}</span>` : ''}</div></div>`; };
   $('capeAbility').innerHTML = ABILITY_BADGES.map(cell).join('');
-  $('capeEvent').innerHTML   = EVENT_BADGES.map(cell).join('');
+  // [2026-10-02 Erica] 活動完咗而冇獲得 → 唔顯示嗰枚（名額有限，避免永久上鎖）
+  $('capeEvent').innerHTML   = EVENT_BADGES.filter(b => !(b.day && today > b.day && !(d && eventEarned(b, d, cls, today)))).map(cell).join('');
   $('capeAbilityCount').textContent = '已獲得 0 / ' + ABILITY_BADGES.length;
   // [2026-09-30 Erica] 活動限定勳章會隨新活動陸續加入（儲勳章嘅儀式感），唔顯示「0 / 總數」
 }
@@ -752,7 +771,7 @@ function renderDog(idx, fallbackToken){
     $('secLadder').style.display = 'block';
   }
 
-  renderCape();
+  renderCape(d);
 
   let att = '';
   if (Number(d.s1Total) > 0) {
