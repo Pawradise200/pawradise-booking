@@ -1113,7 +1113,10 @@ async function renderShareCanvas(d, useAvatar){
   try {
     await Promise.all([...node.querySelectorAll('img')].map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; })));
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const canvas = await html2canvas(node, { scale: 1, useCORS: true, backgroundColor: null, logging: false });
+    // [2026-10-05] iPhone（WebKit）上 html2canvas 會等複製頁面每張圖載完先畫、冇時限；頁面嘅延遲載入圖（通告圖片／投票相）
+    //   喺隱藏複製頁永遠唔載 → 卡死「生成中」。分享圖用唔到呢啲圖 → 複製時略過
+    const canvas = await html2canvas(node, { scale: 1, useCORS: true, backgroundColor: null, logging: false,
+      ignoreElements: el => el.tagName === 'IMG' && el.loading === 'lazy' });
     return await new Promise((ok, bad) => canvas.toBlob(b => b ? ok(b) : bad(new Error('blob')), 'image/png'));
   } finally { node.remove(); }
 }
