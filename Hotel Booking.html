@@ -399,6 +399,10 @@
       <input type="checkbox" id="f-terms"/>
       <span>本人已閱讀並同意 <a class="terms-link" href="https://drive.google.com/file/d/1oYZq0Up8spXkP-UXOWMJx00b3sJL6yXS/view?usp=drive_link" target="_blank" rel="noopener">Pawradise 寄養條款及細則</a>，包括取消及退款政策。</span>
     </label>
+    <label class="terms-check" id="f-addon-ack-wrap" style="display:none;margin-top:12px;">
+      <input type="checkbox" id="f-addon-ack"/>
+      <span>本人明白所有附加服務（美容、社交學院、接送）均需另行透過 WhatsApp 與前台確認時間。所填寫的入住及離開時間並不代表接送時間；未經前台確認前，附加服務並不算已預約。</span>
+    </label>
     <button class="btn-primary" onclick="submitForm()" id="submitBtn"><svg class="ico ico-sm"><use href="#ico-paw"/></svg>提交預約申請</button>
     <div class="submit-result" id="submitResult"></div>
   </div>
@@ -618,9 +622,16 @@ function selectRadio(el,name){
 }
 function showGrooming(show){ document.getElementById('f-gr-detail').style.display=show?'block':'none'; }
 function showTransport(show){ document.getElementById('f-tr-detail').style.display=show?'block':'none'; }
+function hasAddon(){
+  return document.querySelector('input[name=f-gr]:checked')?.value==='yes'
+    || (parseInt(document.getElementById('f-ac')?.value)||0)>0
+    || (document.querySelector('input[name=f-tr]:checked')?.value||'none')!=='none';
+}
+function updateAddonAck(){ document.getElementById('f-addon-ack-wrap').style.display=hasAddon()?'flex':'none'; }
 
 // ══ PRICING ENGINE ════════════════════════════════════════════════
 function calcForm() {
+  updateAddonAck();
   const w    = parseFloat(document.getElementById('f-weight')?.value);
   const ciD  = getDateTime('f-ci-date','f-ci-time');
   const coD  = getDateTime('f-co-date','f-co-time');
@@ -732,6 +743,7 @@ async function submitForm() {
   if(!isReturning && !srcSel){alert('請選擇從哪裡得知 Pawradise');document.getElementById('f-source').focus();return;}
   if(!isReturning && srcSel==='其他' && !srcOther){alert('請註明從哪裡得知 Pawradise');document.getElementById('f-source-other').focus();return;}
   if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
+  if(hasAddon() && !document.getElementById('f-addon-ack').checked){alert('請確認明白附加服務需另行透過 WhatsApp 與前台確認時間');return;}
 
   // ✅ 提交前重算 + 攔截：日托（同日）放行，但杜絕無效時序 / $0 落單
   if(coD<=ciD){ alert('Check-out 時間必須在 Check-in 之後（日托請填同日較後的離開時間）'); return; }
