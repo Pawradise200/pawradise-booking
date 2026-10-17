@@ -109,13 +109,14 @@ body{background:var(--pw-cream);color:var(--pw-ink-soft);font-family:var(--sans)
 .stat3 .k{font-size:.58rem;font-weight:800;color:var(--pw-ink-faint)}
 .stat3 .v{font-family:var(--disp);font-weight:700;font-size:1.2rem;color:var(--pw-ink);margin-top:2px}
 .stat3 .s{font-size:.54rem;font-weight:700;color:var(--pw-ink-mute)}
-.wall{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;margin-top:14px}
-.wt{display:flex;flex-direction:column;align-items:center;gap:7px}
-.wt img{width:86px;height:86px;filter:drop-shadow(0 4px 8px rgba(92,62,39,.22))}
-.wt .lk{width:86px;height:86px;display:flex;align-items:center;justify-content:center}
-.wt .lk i{width:74px;height:74px;border-radius:50%;background:#EFE8DA;border:2px dashed #CBBFA8;display:flex;align-items:center;justify-content:center}
-.wt .nm{font-size:.64rem;font-weight:800;color:var(--pw-ink);text-align:center;line-height:1.35}
-.wt.off .nm{color:var(--pw-ink-mute)}
+/* 技能亮點（2026-10-18 Erica 揀 A：分關列表＋星星） */
+.ga{padding:12px 2px 10px;border-top:1px dashed var(--pw-cream-deep)}
+.ga:first-child{border-top:none}
+.ga-h{display:flex;align-items:center;gap:8px;font-weight:900;font-size:.8rem;color:var(--pw-ink)}
+.ga-h img{width:28px;height:28px}
+.ga-r{display:flex;align-items:center;gap:9px;font-size:.76rem;font-weight:800;color:var(--pw-ink);margin:7px 0 0 36px}
+.ga-r .pt{margin-left:auto;font-family:var(--disp);font-weight:700;color:var(--pw-gold-deep);font-size:.8rem}
+.ga-r.off{color:var(--pw-ink-faint)}
 .board{margin-top:16px}
 .board .bh{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .board .bt{font-family:var(--disp);font-weight:700;font-size:.95rem;color:var(--pw-ink)}
@@ -276,7 +277,7 @@ body.has-dogid .status-card{margin-top:16px}
 
     <div class="card" id="afterNote">
       <h2 style="margin-bottom:6px">賽後，這一頁會變成成績表</h2>
-      <div class="note-list">當日完成三個項目後，這裡會出現三項分數、六格技能徽章、電子證書，以及你所屬品種在犬種榮譽榜上的位置。連結不變，用同一條就可以。</div>
+      <div class="note-list">當日完成三個項目後，這裡會出現三項分數、六項技能亮點、電子證書，以及你所屬品種在犬種榮譽榜上的位置。連結不變，用同一條就可以。</div>
     </div>
 
     <div class="card" id="vaccineTodo" style="display:none">
@@ -347,15 +348,15 @@ body.has-dogid .status-card{margin-top:16px}
       <div class="grade-score" id="gradeScore"></div>
       <div class="stat3">
         <div><div class="k">總分</div><div class="v" id="stTotal"></div><div class="s">三項合計</div></div>
-        <div><div class="k">技能徽章</div><div class="v" id="stBadge"></div><div class="s" id="stBadgeSub"></div></div>
+        <div><div class="k">技能亮點</div><div class="v" id="stBadge"></div><div class="s" id="stBadgeSub"></div></div>
         <div><div class="k">參加場次</div><div class="v" id="stSess" style="font-size:.9rem;line-height:1.45"></div><div class="s">2026 首屆</div></div>
       </div>
     </div>
 
     <div class="card">
-      <h2 style="text-align:center">技能徽章牆</h2>
+      <h2 style="text-align:center">技能亮點</h2>
       <div style="text-align:center;font-size:.64rem;font-weight:700;color:var(--pw-ink-faint);margin-top:-8px" id="wallSub"></div>
-      <div class="wall" id="skillGrid"></div>
+      <div id="skillGrid" style="margin-top:6px"></div>
     </div>
     <div class="card board" id="boardTotals">
       <div class="bh"><div class="bt">犬種榮譽榜</div><div class="bn2">總分累積<br>通往隊際盃・犬種組</div></div>
@@ -780,25 +781,27 @@ function renderResult(d){
   var unlocked = r.bonus.filter(Boolean).length;
   el('stTotal').innerHTML = r.total + '<span style="font-size:.7rem;color:var(--pw-ink-faint)"> / 21</span>';
   el('stBadge').textContent = unlocked;
-  el('stBadgeSub').textContent = unlocked === 6 ? '全部解鎖' : '共 6 枚';
+  el('stBadgeSub').textContent = unlocked === 6 ? '全部做到' : '共 6 項';
   el('stSess').textContent = String(d.sessionLabel || '').replace('上晝', '').replace('下晝', '');
   paintConfetti(r.grade);
 
   renderBoards(d);
-  el('wallSub').textContent = '已解鎖 ' + unlocked + ' / 6 —— 每一個徽章都是可以在狗狗幼稚園儲到的能力';
-  var grid = el('skillGrid');
-  grid.innerHTML = '';
-  // 米／啡／黑三種狗色隔住排，睇落更豐富
-  [0, 1, 4, 2, 3, 5].forEach(function(i){
-    var on = r.bonus[i];
-    var div = document.createElement('div');
-    div.className = 'wt' + (on ? '' : ' off');
-    div.innerHTML = (on
-      ? '<img src="../assets/gt-badge-' + (i + 1) + '.png" alt="">'
-      : '<div class="lk"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A8987E" stroke-width="2.2"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></i></div>')
-      + '<div class="nm">' + SKILLS[i] + '</div>';
-    grid.appendChild(div);
+  el('wallSub').textContent = '做到 ' + unlocked + ' / 6 —— 每一項亮點都可以在課堂繼續練習';
+  // 2026-10-18 Erica：技能亮點＝分關列表＋星星（「勳章」只留畀學生頁能力勳章／活動限定勳章）
+  var STAR = 'M12 2.8l2.75 5.6 6.15.9-4.45 4.35 1.05 6.12L12 16.87l-5.5 2.9 1.05-6.12L3.1 9.3l6.15-.9z';
+  var hl = '';
+  GAMES.forEach(function(g){
+    hl += '<div class="ga"><div class="ga-h"><img src="../assets/' + g.img + '" alt="">' + g.nm + '</div>';
+    g.bon.forEach(function(i){
+      var on = r.bonus[i];
+      hl += '<div class="ga-r' + (on ? '' : ' off') + '"><svg width="18" height="18" viewBox="0 0 24 24" stroke-linejoin="round"' +
+        (on ? ' fill="var(--pw-gold)" stroke="var(--pw-gold)" stroke-width="2.2" style="filter:drop-shadow(0 2px 4px rgba(92,62,39,.2))"'
+            : ' fill="#F3EDE2" stroke="#CBBFA8" stroke-width="1.5"') +
+        '><path d="' + STAR + '"></path></svg>' + SKILLS[i] + (on ? '<span class="pt">+1</span>' : '') + '</div>';
+    });
+    hl += '</div>';
   });
+  el('skillGrid').innerHTML = hl;
 
   el('certName').textContent = d.dogName;
   el('certGroup').textContent = (d.breed !== '其他／混種' ? d.breed + ' · ' : '') + d.group;

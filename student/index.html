@@ -608,7 +608,7 @@ function renderGrading(d){
   if (g && g.status === '已確認') {
     chip = '<span class="gt-chip">已確認</span>';
     // [2026-09-29 老闆定] 呈分試頁改名「xxx 的呈分試」，唔再叫專屬頁／同學頁
-    body = today > GT_DATE ? `${dog} 的成績、技能徽章及電子證書，可於「${dog} 的呈分試」頁查看。`
+    body = today > GT_DATE ? `${dog} 的成績、技能亮點及電子證書，可於「${dog} 的呈分試」頁查看。`
                            : `${dog} 已完成報名。「${dog} 的呈分試」頁有報到時間、待辦事項及三關介紹，賽後亦可查看成績。`;
     btn = g.link ? `<a class="gt-a" href="${esc(g.link)}" target="_blank" rel="noopener">打開 ${dog} 的呈分試</a>` : '';
   } else if (g && g.status === '待繳費') {
