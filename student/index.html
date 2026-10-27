@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow">
-<title>學院學生專屬頁 | Pawradise 毛孩社交學院</title>
+<title>MyPawradise | Pawradise 毛孩社交學院</title>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../pawradise-tokens.css">
 <link rel="stylesheet" href="../pawradise.css">
@@ -276,7 +276,7 @@
 
 <header class="pw-header">
   <div class="crest"><img src="../assets/pawradise-crest.png" alt="Pawradise"></div>
-  <div class="htitle"><b>學院學生專屬頁</b><span>Pawradise 毛孩社交學院</span></div>
+  <div class="htitle"><b>MyPawradise</b><span>Pawradise 毛孩社交學院</span></div>
   <div class="spacer"></div>
 </header>
 
@@ -756,7 +756,7 @@ function renderDog(idx, fallbackToken){
   if (d.avatarUrl) setAvatar(d.avatarUrl); else resetAvatar();
   $('avaUp').style.display = (AVATAR_ENABLED && CURRENT_TOKEN) ? 'flex' : 'none';
   $('btnBook').href = BOOKING_PAGE + '?t=' + encodeURIComponent(token);
-  document.title = dog + ' · 學院學生專屬頁 | Pawradise 毛孩社交學院';
+  document.title = dog + ' · MyPawradise | Pawradise 毛孩社交學院';
   $('secLadder').style.display = 'none';
   $('secAtt').style.display = 'none'; $('attList').innerHTML = '';
   $('pastH').style.display = 'none'; $('pastList').innerHTML = '';
