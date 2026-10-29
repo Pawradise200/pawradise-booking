@@ -677,7 +677,8 @@ function renderVote(){
   const byId = id => cands.filter(c => c.id === id)[0];
   let h = '';
   if (v.phase === 'soon') {
-    h = `<p class="vt-note">投票將於當日 <b>${esc(v.opensAt)}</b> 開始，<b>${esc(v.closesAt)}</b> 截止，結果於 <b>${esc(v.announceAt)}</b> 放學時公布。全校家長每個家庭一票，家長不可投給自己的狗狗。</p>`;
+    const dm = String(v.date || '').match(/^\d{4}-(\d{2})-(\d{2})/), day = dm ? (+dm[1]) + '月' + (+dm[2]) + '日' : '當日';
+    h = `<p class="vt-note">投票將於 <b>${esc(day)} ${esc(v.opensAt)}</b> 開始，<b>${esc(v.closesAt)}</b> 截止，結果於 <b>${esc(v.announceAt)}</b> 放學時公布。全校家長每個家庭一票，家長不可投給自己的狗狗。</p>`;
   } else if (v.phase === 'open') {
     const my = v.myVote && byId(v.myVote);
     h = `<p class="vt-note">全校家長每個家庭一票，<b>${esc(v.closesAt)}</b> 前可以更改。家長不可投給自己的狗狗。${my ? `<br>你已投給 <b>${esc(my.dog)}</b>。` : ''}</p>`;
