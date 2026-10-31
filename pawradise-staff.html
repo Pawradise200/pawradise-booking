@@ -232,7 +232,7 @@ input[readonly]{background:#f5f5f0;color:#555;}
         <div class="field"><label>體重 (kg)</label><input type="number" id="int-w" placeholder="確認體重" step="0.1" oninput="calcAll()"/></div>
         <div class="field"><label>同房狗數</label>
           <select id="int-room" onchange="calcAll()">
-            <option value="1">1隻</option><option value="2">2隻</option><option value="3">3隻（9折）</option>
+            <option value="1">1隻</option><option value="2">2隻</option><option value="3">3隻</option>
           </select></div>
       </div>
     </div>
@@ -419,10 +419,10 @@ const CORRECT_PIN = '1234';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz3M2vUVloPLx4Z3Kx0z6pJ7ccR507PRZwe-yiEmHtp-URgPWHSlk6mfBDrqsHp7pisEg/exec';
 
 const PRICING = {
-  small:  { overnight:420, daycare:320 },
-  medium: { overnight:480, daycare:380 },
-  large:  { overnight:550, daycare:450 },
-  giant:  { overnight:680, daycare:580 }
+  small:  { overnight:450, daycare:350 },
+  medium: { overnight:520, daycare:420 },
+  large:  { overnight:620, daycare:520 },
+  giant:  { overnight:720, daycare:620 }
 };
 const GROOMING = {
   small:  { basic:480,  fullset:680,  razor:220, half:320, fullcut:450  },
@@ -616,7 +616,7 @@ function calcAll() {
   if (coD<=ciD) return;
   const nights = Math.floor((coD-ciD)/86400000);
   const lateOut = (coD.getHours()+coD.getMinutes()/60)>=12;
-  const roomDisc = room>=3?0.9:1;
+  const roomDisc = 1; // [2026-11-01] 取消 3 隻同房 9 折
   let disc=1, discLabel='';
   if (nights>=14){disc=0.95;discLabel='14晚以上 95折';}
   const base = nights*pd.overnight;
@@ -626,7 +626,7 @@ function calcAll() {
   const dcFee  = Math.round(dcBase*disc);
 
   let html = `<div class="price-row"><span><span class="size-chip ${getSizeChipClass(sk)}">${getSizeLabel(sk)}</span>過夜 ${nights}晚 × $${pd.overnight}</span><span>$${base}</span></div>`;
-  if (disc<1||roomDisc<1) html+=`<div class="price-row disc"><span>${discLabel}${room>=3?' 同房9折':''}</span><span>-$${base-oTotal}</span></div>`;
+  if (disc<1||roomDisc<1) html+=`<div class="price-row disc"><span>${discLabel}</span><span>-$${base-oTotal}</span></div>`;
   if (lateOut) html+=`<div class="price-row dc"><span>日托${disc<1?' 95折':''}</span><span>+$${dcFee}</span></div>`;
 
   let addons=0;
