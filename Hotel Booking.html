@@ -253,6 +253,34 @@
     </div>
   </div>
 
+  <!-- [2026-11-05 Erica 批] 寄宿緊急授權書（PAW-FRM-009）：未有記錄嘅狗狗先要填；已有記錄只顯示一句 -->
+  <div class="sec" id="eaSec">
+    <div class="sec-label"><svg class="ico"><use href="#ico-check-circle"/></svg>寄宿緊急授權書</div>
+    <div id="eaDone" style="display:none;" class="field-note"><svg class="ico"><use href="#ico-check-circle"/></svg><span id="eaDoneText"></span>　<a href="javascript:void(0)" onclick="eaShowForm(true)">更改授權</a></div>
+    <div id="eaForm">
+      <div class="field-note"><svg class="ico"><use href="#ico-info"/></svg><span>首次入住須填寫本授權書，其後每次寄宿均適用，直至家長以書面通知更改為止。</span></div>
+      <div class="field"><label>家長香港身份證號碼頭 4 個字 <span class="req">*</span></label><input type="text" id="f-ea-hkid" maxlength="4" placeholder="例如 A123" autocapitalize="characters"/><div class="field-hint" style="font-size:12px;color:var(--pw-ink-mute);margin-top:4px;">只用作核實家長身份</div></div>
+      <div class="field"><label>寄宿期間如狗狗需要看醫生而未能即時聯絡您： <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-opt" onclick="selectRadio(this,'f-ea');eaToggle()">
+            <span class="dot"></span><input type="radio" name="f-ea" value="授權看醫生"/><div class="radio-opt-label">授權 Pawradise 帶狗狗看醫生<div class="radio-opt-hint">由 Pawradise 代為安排，並按獸醫建議處理</div></div>
+          </label>
+          <label class="radio-opt" onclick="selectRadio(this,'f-ea');eaToggle()">
+            <span class="dot"></span><input type="radio" name="f-ea" value="由緊急聯絡人決定"/><div class="radio-opt-label">不授權，由緊急聯絡人決定<div class="radio-opt-hint">須填寫緊急聯絡人</div></div>
+          </label>
+        </div>
+      </div>
+      <div class="r2" id="eaContactWrap" style="display:none;">
+        <div class="field"><label>緊急聯絡人姓名 <span class="req">*</span></label><input type="text" id="f-ea-contact" maxlength="40"/></div>
+        <div class="field"><label>緊急聯絡人電話 <span class="req">*</span></label><input type="tel" id="f-ea-phone" maxlength="20" inputmode="tel"/></div>
+      </div>
+      <label class="terms-check">
+        <input type="checkbox" id="f-ea-agree"/>
+        <span>本人確認已細閱並同意《<a class="terms-link" href="assets/terms/emergency-consent.html" target="_blank" rel="noopener">寄宿緊急授權書</a>》之全部條款，包括：狗狗就醫所產生之一切費用概由家長承擔；本授權適用於往後每次寄宿，直至本人以書面通知更改為止；本人所提供之資料僅用作核實身份及寄宿期間之聯絡安排。</span>
+      </label>
+    </div>
+  </div>
+
   <!-- ⑥ 附加服務 -->
   <div class="sec">
     <div class="sec-label"><svg class="ico"><use href="#ico-plus"/></svg>附加服務</div>
@@ -531,6 +559,7 @@ function showDogSelector(dogs) {
 
 function prefillReturning(d) {
   isReturning = true;
+  eaSetFromDog(d);
   document.getElementById('hotelSourceSec').style.display = 'none';   // [2026-09-29] 舊客唔使答得知渠道
   // ★ 修訂：預填資料但允許家長更改（移除 readOnly，保留視覺樣式）
   [['f-owner',d.ownerName],['f-phone',d.phone],['f-email',d.email||''],
@@ -594,7 +623,27 @@ function prefillReturning(d) {
   calcForm();
 }
 
+// [2026-11-05] 寄宿緊急授權：有記錄 → 只顯示一句＋「更改授權」；冇記錄／新客 → 顯示表格
+let _eaHas = false;
+function eaShowForm(show) {
+  document.getElementById('eaForm').style.display = show ? '' : 'none';
+  document.getElementById('eaDone').style.display = show ? 'none' : '';
+}
+function eaSetFromDog(d) {
+  const ea = d && d.emergencyAuth;
+  _eaHas = !!(ea && ea.choice);
+  if (_eaHas) document.getElementById('eaDoneText').textContent =
+    '已有授權記錄：' + (ea.choice === '授權看醫生' ? '授權 Pawradise 帶狗狗看醫生' : '由緊急聯絡人決定') + (ea.date ? '（' + ea.date + '）' : '');
+  eaShowForm(!_eaHas);
+}
+function eaToggle() {
+  const v = document.querySelector('input[name=f-ea]:checked')?.value || '';
+  document.getElementById('eaContactWrap').style.display = v === '由緊急聯絡人決定' ? '' : 'none';
+}
+function eaFormOpen() { return document.getElementById('eaForm').style.display !== 'none'; }
+
 function clearPrefill() {
+  eaSetFromDog(null);
   isReturning=false;
   document.getElementById('hotelSourceSec').style.display = '';       // [2026-09-29] 新客要答得知渠道
   _allDogs=[];
@@ -744,6 +793,18 @@ async function submitForm() {
   if(!isReturning && !srcSel){alert('請選擇從哪裡得知 Pawradise');document.getElementById('f-source').focus();return;}
   if(!isReturning && srcSel==='其他' && !srcOther){alert('請註明從哪裡得知 Pawradise');document.getElementById('f-source-other').focus();return;}
   if(!document.getElementById('f-terms').checked){alert('請確認已閱讀並同意條款及細則');return;}
+  // [2026-11-05] 寄宿緊急授權書
+  const eaOpen = eaFormOpen();
+  const eaChoice = eaOpen ? (document.querySelector('input[name=f-ea]:checked')?.value || '') : '';
+  const eaContact = document.getElementById('f-ea-contact').value.trim();
+  const eaContactPhone = document.getElementById('f-ea-phone').value.trim();
+  const eaHkid4 = document.getElementById('f-ea-hkid').value.trim().toUpperCase();
+  if(eaOpen){
+    if(!eaChoice){alert('請選擇寄宿緊急授權（授權看醫生，或由緊急聯絡人決定）');return;}
+    if(eaChoice==='由緊急聯絡人決定' && (!eaContact || !eaContactPhone)){alert('請填寫緊急聯絡人姓名及電話');return;}
+    if(!/^[A-Z]{1,2}[0-9]{2,3}$/.test(eaHkid4) || eaHkid4.length!==4){alert('請填寫家長香港身份證號碼頭 4 個字（例如 A123）');return;}
+    if(!document.getElementById('f-ea-agree').checked){alert('請確認已細閱並同意寄宿緊急授權書');return;}
+  }
   if(hasAddon() && !document.getElementById('f-addon-ack').checked){alert('請確認明白附加服務需另行透過 WhatsApp 與前台確認時間');return;}
 
   // ✅ 提交前重算 + 攔截：日托（同日）放行，但杜絕無效時序 / $0 落單
@@ -786,6 +847,10 @@ async function submitForm() {
     transportFee: (window._fees && window._fees.transport) || 0,
     status:'待審批',
     source: srcSel === '其他' ? '其他：' + srcOther : srcSel,   // [2026-09-29] 舊客＝空白
+    eaChoice: eaChoice,                                           // [2026-11-05] 寄宿緊急授權（已有記錄＝空白）
+    eaContact: eaChoice === '由緊急聯絡人決定' ? eaContact : '',
+    eaContactPhone: eaChoice === '由緊急聯絡人決定' ? eaContactPhone : '',
+    eaHkid4: eaChoice ? eaHkid4 : '',
   };
 
   try {
