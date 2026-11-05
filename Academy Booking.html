@@ -1762,7 +1762,7 @@ function renderPackages(d) {
     }
 
     if (hasAcademy && !isMonthly && (s1T > 0 || s1R > 0 || s1Booked.length)) {
-      pkgs.push({ name:'S1・狗狗幼稚園', total: s1T, used: s1U, expiry:'', booked: s1Booked, _isLesson:true });
+      pkgs.push({ name:'S1・狗狗幼稚園', total: s1T, used: s1U, expiry: s1TermExpiryText(d), booked: s1Booked, _isLesson:true });
     }
     if (hasAcademy && (s2T > 0 || s2R > 0 || s2Booked.length)) {
       pkgs.push({ name:'S2・情緒重建小組班', total: s2T, used: s2U, expiry:'', booked: s2Booked, _isLesson:true });
@@ -1867,6 +1867,20 @@ function renderMonthly(p) {
 }
 
 // ── 課堂追蹤顯示 ──
+// [2026-11-05 Erica 批] S1 學期有效期：學期開始日＋3 個月；延期日較遲就用延期日（同後端有效期閘一致）
+function s1TermExpiryText(d) {
+  const m = String(d.s1TermStart || '').match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (!m) return '';
+  const y = +m[1], mo = +m[2], dd = +m[3];
+  const last = new Date(y, mo - 1 + 4, 0).getDate();   // 目標月冇嗰日就取月尾
+  const ex = new Date(y, mo - 1 + 3, Math.min(dd, last));
+  const pad = n => String(n).padStart(2, '0');
+  let ymd = `${ex.getFullYear()}-${pad(ex.getMonth() + 1)}-${pad(ex.getDate())}`;
+  const e = String(d.termExt || '').match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (e) { const ey = `${e[1]}-${pad(+e[2])}-${pad(+e[3])}`; if (ey > ymd) ymd = ey; }
+  const [Y, M, D] = ymd.split('-').map(Number);
+  return `${Y}年${M}月${D}日`;
+}
 // ── 課堂追蹤顯示 ──
 function renderTerm(p) {
   const total  = Number(p.total ?? p.classesTotal ?? 0);
