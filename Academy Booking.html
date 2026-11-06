@@ -469,17 +469,6 @@
 
   <p class="lead">填寫資料並選擇課堂日期即可報名，成功報名後將會收到確認電郵，如有問題歡迎 WhatsApp 查詢聯絡。</p>
 
-  <!-- 狗狗呈分試 學院學生專屬入口（2026 活動期；活動完結後移除此區塊即可） -->
-  <a href="grading/index.html?mode=academy" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#FFF3DC,#FFE9C2);border:2px dashed var(--pw-gold-deep);border-radius:var(--pw-r-lg);box-shadow:var(--pw-shadow-card);padding:16px 18px;margin:14px 0 18px;text-decoration:none;color:var(--pw-ink);">
-    <img src="assets/daki-explore.png" alt="DAKI" style="width:64px;height:auto;flex-shrink:0;">
-    <div style="flex:1;min-width:0;">
-      <div style="font-family:var(--pw-font-display);font-weight:700;font-size:1.05rem;color:var(--pw-gold-deep);">狗狗呈分試 2026 <span style="font-size:10px;font-weight:900;background:var(--pw-heart);color:#fff;border-radius:999px;padding:2px 8px;vertical-align:2px;white-space:nowrap;display:inline-block;">10.24</span></div>
-      <div style="font-size:11px;font-weight:800;color:var(--pw-ink-soft);letter-spacing:.05em;margin-top:1px;">狗狗幼稚園學生限場</div>
-      <div style="font-size:12.5px;font-weight:700;color:var(--pw-ink-soft);margin-top:4px;">三關遊戲，找出牠的隱藏實力——家長跟毛孩一起參與校園體驗的大日子。</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;"><span id="gtQuota" style="display:none;font-weight:900;font-size:12px;border-radius:999px;padding:6px 13px;"></span><span style="display:inline-block;margin-left:auto;background:var(--pw-navy);color:#fff;font-family:var(--pw-font-sans);font-weight:900;font-size:13px;border-radius:var(--pw-r-pill);padding:9px 22px;box-shadow:var(--pw-shadow-card);">立即報名 →</span></div>
-    </div>
-  </a>
-
   <div class="notice">
     <div class="notice-title"><svg class="ico"><use href="#ico-clipboard"/></svg>報名前請細閱以下注意事項</div>
     <div class="notice-item"><span class="ndot">·</span><span><b>課堂名額：</b>S1 課堂每堂上限 <b>20 位</b>毛孩；S2 課堂每堂上限 <b>6 組</b>。名額以確認先後為準，額滿即止。</span></div>
@@ -710,6 +699,11 @@
             <strong id="trPriceAmt"></strong>
           </div>
           <div class="tr-price-orig">原價 <span id="trPriceOrig"></span>，學院優惠後 <span id="trPriceFinal"></span></div>
+          <!-- [2026-11-06] 家長意見調查現金券：只顯示扣減，真正扣減由後端驗證（trFee 照送扣減前金額） -->
+          <label class="tr-price-orig" id="trVcRow" style="display:none;cursor:pointer;margin-top:6px;">
+            <input type="checkbox" id="trUseVc" onchange="calcTransport()" style="margin-right:6px;">使用 HK$<span id="trVcAmt">100</span> 現金券（有效期至 <span id="trVcExp"></span>）<span id="trVcAfter"></span>
+          </label>
+          <div class="tr-price-orig" id="trVcNote" style="display:none;font-size:11px;">現金券適用於接送費；不可兌換現金、不可轉讓、不設找續</div>
         </div>
       </div>
     </div>
@@ -1257,6 +1251,7 @@ async function doLookup() {
   try {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
+    window._acVoucher = (json && json.voucher) || null;   // [2026-11-06] 現金券
     if (json.found && (json.data || (Array.isArray(json.dogs) && json.dogs.length))) {
    const upcomingClasses = json.upcomingClasses || [];
       const dogs = (Array.isArray(json.dogs) && json.dogs.length) ? json.dogs : [json.data];
@@ -2117,6 +2112,15 @@ function calcTransport() {
   document.getElementById('trPriceFinal').textContent = '$' + discTotal;
   document.getElementById('trPriceAmt').textContent = '$' + discTotal;
   priceBox.style.display = n === 0 ? 'none' : 'block';
+  // [2026-11-06] 現金券
+  const vc = window._acVoucher, vcRow = document.getElementById('trVcRow'), vcNote = document.getElementById('trVcNote');
+  if (vc && vc.usable && discTotal > 0) {
+    vcRow.style.display = 'block'; vcNote.style.display = 'block';
+    document.getElementById('trVcAmt').textContent = vc.amount;
+    document.getElementById('trVcExp').textContent = vc.expiry;
+    const on = document.getElementById('trUseVc').checked;
+    document.getElementById('trVcAfter').textContent = on ? '，扣減後車費 $' + Math.max(0, discTotal - (Number(vc.amount) || 100)) : '';
+  } else { vcRow.style.display = 'none'; vcNote.style.display = 'none'; document.getElementById('trUseVc').checked = false; }
 }
 
 // ══ VALIDATION ════════════════════════════════════════════════════
@@ -2230,6 +2234,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     trAddress:    document.getElementById('trAddress').value.trim(),
     trFee:        (document.querySelector('input[name=transport]:checked')?.value === '不需要') ? '$0' : (document.getElementById('trPriceAmt')?.textContent || '$0'),   // [Bug2 修復] 自行到校一律 $0
     trClassIds:   trSelectedIds(),
+    useVoucher:   !!(window._acVoucher && window._acVoucher.usable && document.getElementById('trUseVc')?.checked),   // [2026-11-06]
     remarks:      document.getElementById('remarks').value.trim(),
     status:       '待審批',
     // [2026-09-10] 新學員／首次報學院報名時一併剔條款 → 後端 stamp 落 CRM（已同意者條款區隱藏＝空值）
@@ -2351,60 +2356,6 @@ if (_demo) {
 ['dogGender','dogNeutered','dogHealthSel'].forEach(id => {
   document.getElementById(id)?.addEventListener('change', e => e.target.classList.remove('prefilled'));
 });
-</script>
-<script>
-// 呈分試名額（活動完結後連同上面入口一併移除）
-(function(){
-  var API = 'https://script.google.com/macros/s/AKfycbwVzJhnMvs2o0aTjGx8jzSNyATIiBfkPjus2VN6beyw9clpUhjsQrK6PYqJX4CH7n3m/exec';
-  function useCache(){
-    try { var c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null'); if (c && c.ok) paint(c); } catch (e) {}
-  }
-  function paint(q){
-    try { localStorage.setItem('gtQuotaCache', JSON.stringify(q)); } catch (e) {}
-    var el = document.getElementById('gtQuota');
-    if (!el) return;
-    var left = q.academyLeft, style;
-    if (!q.open) { el.textContent = '報名即將開放'; style = 'background:#FEF9C3;color:#A16207'; }
-    else if (left > 0) {
-      el.textContent = '尚餘名額 ' + left + ' 位' + (left <= 5 ? '・額滿即止' : '');
-      style = left <= 5 ? 'background:#FEF9C3;color:#A16207' : 'background:#DCFCE7;color:#15803D';
-    } else { el.textContent = '名額已滿・可登記候補'; style = 'background:#FEE2E2;color:#B91C1C'; }
-    el.setAttribute('style', el.getAttribute('style').replace('display:none', 'display:inline-block') + ';' + style);
-  }
-  // 名額查詢：同時發多個請求（Google 轉址失敗率高，齊頭賽跑最快攞到結果）
-  function raceQuota(url, onOk, onFail){
-    var done = false, round = 0;
-    function burst(){
-      round++;
-      var n = 5;
-      for (var i = 0; i < n; i++) {
-        (function(k){
-          fetch(url + '&_=' + round + '-' + k + '-' + (performance.now() | 0))
-            .then(function(r){ return r.text(); })
-            .then(function(t){
-              if (done) return;
-              var q = null;
-              try { q = JSON.parse(t); } catch (e) { return; }
-              if (q && q.ok) { done = true; onOk(q); }
-            })
-            .catch(function(){});
-        })(i);
-      }
-      if (round < 4) setTimeout(function(){ if (!done) burst(); }, 2500);
-      else setTimeout(function(){ if (!done) onFail(); }, 2500);
-    }
-    burst();
-  }
-  var el0 = document.getElementById('gtQuota');
-  if (el0) { el0.setAttribute('style', el0.getAttribute('style').replace('display:none','display:inline-block') + ';background:#FEF9C3;color:#A16207'); el0.textContent = '名額查詢中⋯⋯'; }
-  raceQuota(API + '?action=quota', paint, function(){
-    var c = null;
-    try { c = JSON.parse(localStorage.getItem('gtQuotaCache') || 'null'); } catch (e) {}
-    if (c && c.ok) { paint(c); return; }
-    var el = document.getElementById('gtQuota');
-    if (el) el.textContent = '名額請向我們查詢';
-  });
-})();
 </script>
 </body>
 </html>

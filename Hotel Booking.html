@@ -496,6 +496,7 @@ function getDateTime(dateId, timeId) {
 let _allDogs = [];
 // [2026-07-26] 套票池：跟電話（同一家長多隻狗共用同一張，唔係每隻狗一張），後端 lookup 回傳，已剔除過期
 let _pkgPool = null;
+let _voucher = null;   // [2026-11-06] 家長意見調查現金券（後端 lookup.voucher）
 
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
@@ -516,6 +517,7 @@ async function doLookup() {
     if (json.found && json.dogs && json.dogs.length > 0) {
       _allDogs = json.dogs;
       _pkgPool = json.pkgPool || null;   // 舊 deployment 未有此欄 → null，跌返舊行為
+      _voucher = json.voucher || null; window._useVc = false;
       if (json.multiDog) {
         // 多隻狗狗：顯示選擇器
         resultEl.className = 'lookup-result found';
@@ -648,6 +650,7 @@ function clearPrefill() {
   document.getElementById('hotelSourceSec').style.display = '';       // [2026-09-29] 新客要答得知渠道
   _allDogs=[];
   _pkgPool=null;
+  _voucher=null; window._useVc=false;
   const selWrap=document.getElementById('dogSelectorWrap');
   if(selWrap){selWrap.style.display='none';selWrap.innerHTML='';}
   ['f-owner','f-phone','f-email','f-dogname','f-breed','f-weight','f-dob'].forEach(id=>{
@@ -767,7 +770,14 @@ function calcForm() {
   const grand=oTotal+dcFee+addons;
   window._grandTotal = grand;  // 讓 submitForm 可以讀取
   window._fees = { grooming: grFeeAmt, academy: acFeeAmt, transport: trFeeAmt };  // 分項（後端拆帳用）
-  html+=`<div class="price-row total"><span>總金額</span><span>$${grand}</span></div>`;
+  // [2026-11-06] 現金券：只係顯示扣減，真正扣減由後端驗證（totalAmount 照送扣減前金額）
+  let vcDisc=0;
+  if(_voucher&&_voucher.usable&&grand>0){
+    vcDisc=window._useVc?Math.min(Number(_voucher.amount)||100,grand):0;
+    html+=`<label class="price-row disc" style="cursor:pointer;"><span><input type="checkbox" ${window._useVc?'checked':''} onchange="window._useVc=this.checked;calcForm();" style="margin-right:6px;">使用 HK$${_voucher.amount} 現金券（有效期至 ${_voucher.expiry}）</span><span>${vcDisc?'-$'+vcDisc:''}</span></label>`;
+    html+=`<div class="price-row" style="font-size:11px;color:var(--pw-ink-mute);"><span>現金券適用於住宿、日托、美容及接送；不可兌換現金、不可轉讓、不設找續</span><span></span></div>`;
+  }
+  html+=`<div class="price-row total"><span>總金額</span><span>$${grand-vcDisc}</span></div>`;
   card.innerHTML=html;
   ps.style.display='block';
 }
@@ -842,6 +852,7 @@ async function submitForm() {
     trDistrict:document.getElementById('f-tr-district')?.value||'',
     trAddress:document.getElementById('f-tr-addr')?.value||'',
     totalAmount: window._grandTotal || 0,
+    useVoucher: !!(window._useVc && _voucher && _voucher.usable),   // [2026-11-06] 後端驗證後先扣
     groomingFee: (window._fees && window._fees.grooming) || 0,
     academyFee: (window._fees && window._fees.academy) || 0,
     transportFee: (window._fees && window._fees.transport) || 0,
