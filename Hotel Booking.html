@@ -392,7 +392,7 @@
     <div class="sec">
       <div class="sec-label"><svg class="ico"><use href="#ico-card"/></svg>付款方式</div>
       <div class="payment-box">
-        <div class="payment-intro"><svg class="ico ico-sm"><use href="#ico-info"/></svg>請按上方金額轉賬至以下任一方式：</div>
+        <div class="payment-intro"><svg class="ico ico-sm"><use href="#ico-info"/></svg>請按上方「扣除保留金額後尚需付款」（如有）或「總金額」轉賬至以下任一方式：</div>
         <div class="payment-method"><span class="payment-label">FPS</span><span>9459 6420（Pawradise Limited）</span></div>
         <div class="payment-method"><span class="payment-label">ATM</span><span>HSBC 741 364962 838</span></div>
       </div>
@@ -498,6 +498,7 @@ let _allDogs = [];
 // [2026-07-26] 套票池：跟電話（同一家長多隻狗共用同一張，唔係每隻狗一張），後端 lookup 回傳，已剔除過期
 let _pkgPool = null;
 let _voucher = null;   // [2026-11-06] 家長意見調查現金券（後端 lookup.voucher）
+let _reserve = null;   // [2026-11-06] 保留金額（後端 lookup.reserve）
 
 async function doLookup() {
   const phone = document.getElementById('lookupPhone').value.trim();
@@ -519,6 +520,7 @@ async function doLookup() {
       _allDogs = json.dogs;
       _pkgPool = json.pkgPool || null;   // 舊 deployment 未有此欄 → null，跌返舊行為
       _voucher = json.voucher || null; window._useVc = false;
+      _reserve = json.reserve || null; window._useRsv = false;
       if (json.multiDog) {
         // 多隻狗狗：顯示選擇器
         resultEl.className = 'lookup-result found';
@@ -652,6 +654,7 @@ function clearPrefill() {
   _allDogs=[];
   _pkgPool=null;
   _voucher=null; window._useVc=false;
+  _reserve=null; window._useRsv=false;
   const selWrap=document.getElementById('dogSelectorWrap');
   if(selWrap){selWrap.style.display='none';selWrap.innerHTML='';}
   ['f-owner','f-phone','f-email','f-dogname','f-breed','f-weight','f-dob'].forEach(id=>{
@@ -779,6 +782,12 @@ function calcForm() {
     html+=`<div class="price-row" style="font-size:11px;color:var(--pw-ink-mute);"><span>現金券適用於住宿、日托、美容及接送；不可兌換現金、不可轉讓、不設找續</span><span></span></div>`;
   }
   html+=`<div class="price-row total"><span>總金額</span><span>$${grand-vcDisc}</span></div>`;
+  // [2026-11-06] 保留金額：確認時先抵（唔改總金額），只係顯示預計抵扣
+  if(_reserve&&Number(_reserve.balance)>0&&(grand-vcDisc)>0){
+    const rsv=window._useRsv?Math.min(Number(_reserve.balance),grand-vcDisc):0;
+    html+=`<label class="price-row disc" style="cursor:pointer;"><span><input type="checkbox" ${window._useRsv?'checked':''} onchange="window._useRsv=this.checked;calcForm();" style="margin-right:6px;">使用保留金額（餘額 $${_reserve.balance}${_reserve.expiry?'，有效期至 '+_reserve.expiry:''}）</span><span>${rsv?'-$'+rsv:''}</span></label>`;
+    if(rsv) html+=`<div class="price-row"><span>扣除保留金額後尚需付款</span><span>$${grand-vcDisc-rsv}</span></div>`;
+  }
   card.innerHTML=html;
   ps.style.display='block';
 }
@@ -854,6 +863,7 @@ async function submitForm() {
     trAddress:document.getElementById('f-tr-addr')?.value||'',
     totalAmount: window._grandTotal || 0,
     useVoucher: !!(window._useVc && _voucher && _voucher.usable),   // [2026-11-06] 後端驗證後先扣
+    useReserve: !!(window._useRsv && _reserve && Number(_reserve.balance) > 0),   // [2026-11-06] 確認時先抵
     groomingFee: (window._fees && window._fees.grooming) || 0,
     academyFee: (window._fees && window._fees.academy) || 0,
     transportFee: (window._fees && window._fees.transport) || 0,
