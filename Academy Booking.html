@@ -704,6 +704,10 @@
             <input type="checkbox" id="trUseVc" onchange="calcTransport()" style="margin-right:6px;">使用 HK$<span id="trVcAmt">100</span> 現金券（有效期至 <span id="trVcExp"></span>）<span id="trVcAfter"></span>
           </label>
           <div class="tr-price-orig" id="trVcNote" style="display:none;font-size:11px;">現金券適用於接送費；不可兌換現金、不可轉讓、不設找續</div>
+          <!-- [2026-11-06] 保留金額：確認時先抵（只顯示預計抵扣） -->
+          <label class="tr-price-orig" id="trRsvRow" style="display:none;cursor:pointer;margin-top:6px;">
+            <input type="checkbox" id="trUseRsv" onchange="calcTransport()" style="margin-right:6px;">使用保留金額（餘額 $<span id="trRsvBal"></span><span id="trRsvExp"></span>）<span id="trRsvAfter"></span>
+          </label>
         </div>
       </div>
     </div>
@@ -1252,6 +1256,7 @@ async function doLookup() {
     const res  = await fetch(`${APPS_SCRIPT_URL}?action=lookup&phone=${phone}`);
     const json = await res.json();
     window._acVoucher = (json && json.voucher) || null;   // [2026-11-06] 現金券
+    window._acReserve = (json && json.reserve) || null;   // [2026-11-06] 保留金額
     if (json.found && (json.data || (Array.isArray(json.dogs) && json.dogs.length))) {
    const upcomingClasses = json.upcomingClasses || [];
       const dogs = (Array.isArray(json.dogs) && json.dogs.length) ? json.dogs : [json.data];
@@ -2121,6 +2126,16 @@ function calcTransport() {
     const on = document.getElementById('trUseVc').checked;
     document.getElementById('trVcAfter').textContent = on ? '，扣減後車費 $' + Math.max(0, discTotal - (Number(vc.amount) || 100)) : '';
   } else { vcRow.style.display = 'none'; vcNote.style.display = 'none'; document.getElementById('trUseVc').checked = false; }
+  // [2026-11-06] 保留金額
+  const rs = window._acReserve, rsRow = document.getElementById('trRsvRow');
+  const afterVc = Math.max(0, discTotal - ((vc && vc.usable && document.getElementById('trUseVc').checked) ? (Number(vc.amount) || 100) : 0));
+  if (rs && Number(rs.balance) > 0 && afterVc > 0) {
+    rsRow.style.display = 'block';
+    document.getElementById('trRsvBal').textContent = rs.balance;
+    document.getElementById('trRsvExp').textContent = rs.expiry ? '，有效期至 ' + rs.expiry : '';
+    const onR = document.getElementById('trUseRsv').checked;
+    document.getElementById('trRsvAfter').textContent = onR ? '，扣除保留金額後尚需付款 $' + Math.max(0, afterVc - Number(rs.balance)) : '';
+  } else { rsRow.style.display = 'none'; document.getElementById('trUseRsv').checked = false; }
 }
 
 // ══ VALIDATION ════════════════════════════════════════════════════
@@ -2235,6 +2250,7 @@ classIds:     [...document.querySelectorAll('input[name=cls]:checked')].map(c =>
     trFee:        (document.querySelector('input[name=transport]:checked')?.value === '不需要') ? '$0' : (document.getElementById('trPriceAmt')?.textContent || '$0'),   // [Bug2 修復] 自行到校一律 $0
     trClassIds:   trSelectedIds(),
     useVoucher:   !!(window._acVoucher && window._acVoucher.usable && document.getElementById('trUseVc')?.checked),   // [2026-11-06]
+    useReserve:   !!(window._acReserve && Number(window._acReserve.balance) > 0 && document.getElementById('trUseRsv')?.checked),   // [2026-11-06]
     remarks:      document.getElementById('remarks').value.trim(),
     status:       '待審批',
     // [2026-09-10] 新學員／首次報學院報名時一併剔條款 → 後端 stamp 落 CRM（已同意者條款區隱藏＝空值）
