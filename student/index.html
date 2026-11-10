@@ -172,6 +172,7 @@
 .fam button.on{background:var(--pw-navy);border-color:var(--pw-navy);color:var(--pw-paper);}
 .sync{font-size:11.5px;font-weight:700;color:var(--pw-ink-faint);text-align:center;margin:-4px 0 10px;display:none;}
 .sync.show{display:block;}
+.demo-bar{font-size:12px;font-weight:700;text-align:center;margin:0 0 10px;padding:6px 10px;border-radius:10px;background:var(--pw-gold, #F4B860);color:var(--pw-navy-deep, #1F3552);}
 /* 學生頁加嘅部分：學籍行、上載相片 */
 .idc-ava img.ph{width:100px;height:100px;object-fit:contain;}
 .idc-up{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:6px;font-size:.62rem;font-weight:900;
@@ -318,6 +319,7 @@
   <div class="view" id="vStudent">
     <div class="fam" id="famTabs" style="display:none"></div>
     <p class="sync" id="syncNote">資料下載中，請稍候片刻</p>
+    <p class="demo-bar" id="demoBar" style="display:none">示範頁面・資料為虛構，按鈕不會儲存任何資料</p>
     <!-- [2026-09-29 老闆批] 狗狗證護照款（assets/dog-passport.js；125×88 真護照比例），每隻狗都有
          簽證（呈分試資料）只喺呈分試專屬頁，呢度唔放 -->
     <div id="dogIdWrap">
@@ -1172,8 +1174,32 @@ function switchDog(){
 }
 
 // INIT：網址有 ?t= 用網址；冇就試本機記住嘅連結；都冇就登入
+// [2026-11-10 Erica 批] 示範模式 ?t=demo：導師喺入學手續時教家長用，全虛構資料，唔連後台、唔寫本機
+function demoData(){
+  const d = new Date(), iso = n => { const x = new Date(d); x.setDate(x.getDate() + n); return x.toLocaleDateString('en-CA', { timeZone: 'Asia/Hong_Kong' }); };
+  return { found: true, gradingEnabled: false, vote: null,
+    notices: [{ target: '全部', date: iso(-2), title: '十二月課堂日曆已經出爐', body: '家長可以在專屬頁按「預約課堂」揀選日子。' }],
+    upcomingClasses: [
+      { dogName: '豆豆', classDate: iso(-7), status: 'done', classLabel: 'S1 狗狗幼稚園', lessonNum: '第 1 堂', classTime: '11:00–17:00' },
+      { dogName: '豆豆', classDate: iso(3),  status: 'upcoming', classLabel: 'S1 狗狗幼稚園', lessonNum: '第 2 堂', classTime: '11:00–17:00' },
+      { dogName: '豆豆', classDate: iso(10), status: 'upcoming', classLabel: 'S1 狗狗幼稚園', lessonNum: '第 3 堂', classTime: '11:00–17:00' } ],
+    dogs: [{ token: '', dogName: '豆豆', breed: '柴犬', gender: '男', dob: '2024-05-01', chipLast4: '1234', dogId: '',
+      courseLevel: 'S1', behavioralLevel: 'B+', s1Total: 9, s1Attended: 1, termStart: iso(-7), termExpiry: iso(83),
+      linkStatus: '有效', reports: [], grading: null }] };
+}
+function startDemo(){
+  const json = demoData();
+  FAMILY = json; renderDog(0, '');
+  CURRENT_TOKEN = '';
+  $('demoBar').style.display = 'block';
+  $('btnBook').href = '#';
+  $('btnBook').onclick = e => { e.preventDefault(); alert('示範頁面：實際使用時，按這裏就可以揀選日子預約課堂。'); };
+  document.title = '示範 · MyPawradise | Pawradise 毛孩社交學院';
+}
 (function(){
-  const t = new URLSearchParams(location.search).get('t') || recall(STORE_KEY);
+  const q = new URLSearchParams(location.search).get('t');
+  if (q === 'demo') { startDemo(); return; }
+  const t = q || recall(STORE_KEY);
   if (t) loadToken(t); else show('vLogin');
 })();
 </script>
