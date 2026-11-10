@@ -1192,8 +1192,7 @@ function startDemo(){
   FAMILY = json; renderDog(0, '');
   CURRENT_TOKEN = '';
   $('demoBar').style.display = 'block';
-  $('btnBook').href = '#';
-  $('btnBook').onclick = e => { e.preventDefault(); alert('示範頁面：實際使用時，按這裏就可以揀選日子預約課堂。'); };
+  $('btnBook').href = BOOKING_PAGE + '?t=demo';   // 練習模式：預約頁用虛構資料，提交唔會傳送
   document.title = '示範 · MyPawradise | Pawradise 毛孩社交學院';
 }
 (function(){

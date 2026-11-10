@@ -895,6 +895,9 @@ let _allDogs = [];
 // DEMO_MODE = true 時，示範號碼按鈕直接載入示範記錄，方便預覽。
 // 正式上線請改為 false。
 const DEMO_MODE = false;
+// [2026-11-10 Erica 批] 練習模式：學生專屬頁示範（?t=demo）撳「預約課堂」入嚟，導師教家長報堂；
+//   用虛構資料、真課堂日曆（只讀），提交唔會傳送任何資料。
+const PRACTICE = new URLSearchParams(location.search).get('t') === 'demo';
 const DEMO_BASE = {
   ownerName: '陳大文', email: 'wangwang@email.com', dogName: '旺旺', breed: '柴犬',
   weight: '8.5', gender: '男（M）', neutered: '是', dob: '2024-03-12', health: '沒有',
@@ -2218,6 +2221,15 @@ document.getElementById('mainForm').addEventListener('submit', async e => {
   // [2026-09-10] 入學手續模式：行 submit_enrollment（資料＋條款同意），唔行報名流程
   if (window.NEEDS_ENROLLMENT) { await submitEnrollment(); return; }
   if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  if (PRACTICE) {   // 練習模式：唔傳送，直接顯示示範完成畫面
+    document.getElementById('mainForm').style.display = 'none';
+    document.querySelector('.notice').style.display   = 'none';
+    document.getElementById('sDog').textContent = document.getElementById('dogName').value.trim();
+    document.getElementById('sRef').textContent = '示範（未有提交）';
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
@@ -2358,7 +2370,14 @@ loadClassesOnce().catch(() => {});  // 預先載入課堂資料：客戶填資�
 // 冇 ?t= 就用學生頁／上次記住嘅連結（同一網域 localStorage）
 let _studentToken = _params.get('t');
 if (!_studentToken) { try { _studentToken = localStorage.getItem('pw_student_t'); } catch (e) {} }
-if (_studentToken && !DEMO_MODE) tokenLookup(_studentToken);
+if (PRACTICE) {
+  const bar = document.createElement('p');
+  bar.textContent = '示範頁面・資料為虛構，提交不會傳送任何資料';
+  bar.style.cssText = 'font-size:12px;font-weight:700;text-align:center;margin:0 0 10px;padding:6px 10px;border-radius:10px;background:#F4B860;color:#1F3552;';
+  const nt = document.querySelector('.notice'); if (nt) nt.parentNode.insertBefore(bar, nt);
+  fillRecord({ ...DEMO_BASE, dogName: '豆豆', breed: '柯基', courseLevel: 'S1', phone: '91234567',
+    packages: [{ name: 'S1・狗狗幼稚園 · 本學期共 9 堂', total: 9, used: 1, firstClass: '', validMonths: 3, remindFrom: 8, booked: [] }] });
+} else if (_studentToken && !DEMO_MODE) tokenLookup(_studentToken);
 const _demo = _params.get('demo');
 if (_demo) {
   const ph = /^\d{8}$/.test(_demo) ? _demo : '92345670';
