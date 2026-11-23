@@ -317,16 +317,15 @@
     </div>
 
     <div class="section-divider"><span>社交學院</span></div>
-    <div class="field"><label>社交學院課堂（$622 / 堂）</label>
+    <div class="field"><label>寄宿期間上社交學院課堂</label>
       <div class="f-ac-row">
         <select id="f-ac" onchange="calcForm()">
           <option value="0">不需要</option>
-          <option value="1">1 堂</option><option value="2">2 堂</option><option value="3">3 堂</option>
-          <option value="4">4 堂</option><option value="5">5 堂</option><option value="6">6 堂</option>
-          <option value="7">7 堂</option><option value="8">8 堂</option><option value="9">9 堂</option>
+          <option value="有興趣">有興趣（由職員確認學位及收費）</option>
         </select>
         <div class="ac-price-tag" id="f-ac-price"></div>
       </div>
+      <div class="hint">首次上堂為 $499 試堂優惠，已包括入學評估及能力報告；評估通過後，其餘日子可以每堂 $622 報讀。學位每日有限，職員會以 WhatsApp 確認日子及收費，此項不計入本預約金額。</div>
     </div>
 
     <div class="section-divider"><span>接送服務</span></div>
@@ -681,7 +680,7 @@ function showGrooming(show){ document.getElementById('f-gr-detail').style.displa
 function showTransport(show){ document.getElementById('f-tr-detail').style.display=show?'block':'none'; }
 function hasAddon(){
   return document.querySelector('input[name=f-gr]:checked')?.value==='yes'
-    || (parseInt(document.getElementById('f-ac')?.value)||0)>0
+    || (document.getElementById('f-ac')?.value||'0')!=='0'
     || (document.querySelector('input[name=f-tr]:checked')?.value||'none')!=='none';
 }
 function updateAddonAck(){ document.getElementById('f-addon-ack-wrap').style.display=hasAddon()?'flex':'none'; }
