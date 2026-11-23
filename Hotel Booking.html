@@ -317,15 +317,14 @@
     </div>
 
     <div class="section-divider"><span>社交學院</span></div>
-    <div class="field"><label>寄宿期間上社交學院課堂</label>
-      <div class="f-ac-row">
-        <select id="f-ac" onchange="calcForm()">
-          <option value="0">不需要</option>
-          <option value="有興趣">有興趣（由職員確認學位及收費）</option>
-        </select>
-        <div class="ac-price-tag" id="f-ac-price"></div>
+    <div class="field"><label>寄宿期間，同步走進狗狗學院</label>
+      <div style="border:1.5px solid var(--pw-gold,#b98a2e);border-radius:12px;padding:12px 14px;margin:6px 0 8px;background:var(--pw-paper,#fff)">
+        <div style="font-size:20px;font-weight:700;color:var(--pw-navy,#22305a)">$499 首次試堂優惠</div>
+        <div style="font-size:13px;margin-top:2px">包括入學評估及能力報告分析・每隻狗狗只限享有一次</div>
       </div>
-      <div class="hint">首次上堂為 $499 試堂優惠，已包括入學評估及能力報告；評估通過後，其餘日子可以每堂 $622 報讀。學位每日有限，職員會以 WhatsApp 確認日子及收費，此項不計入本預約金額。</div>
+      <div class="hint" style="line-height:1.7">評估通過後，可以單堂形式加入學院 S1 課堂（每堂 $622，歡迎向職員查詢學位）；退房 48 小時內報讀學期，已付堂費可全數抵扣。學位有限，以職員 WhatsApp 確認為準。</div>
+      <input type="hidden" id="f-ac" value="0"/>
+      <div id="f-ac-box" class="hint" style="margin-top:10px">填寫 WhatsApp 號碼、毛孩名字及入住／離開日期後，即可揀選試堂日子。</div>
     </div>
 
     <div class="section-divider"><span>接送服務</span></div>
@@ -680,12 +679,81 @@ function showGrooming(show){ document.getElementById('f-gr-detail').style.displa
 function showTransport(show){ document.getElementById('f-tr-detail').style.display=show?'block':'none'; }
 function hasAddon(){
   return document.querySelector('input[name=f-gr]:checked')?.value==='yes'
-    || (document.getElementById('f-ac')?.value||'0')!=='0'
+    || (_acSel && _acSel.length>0)
     || (document.querySelector('input[name=f-tr]:checked')?.value||'none')!=='none';
 }
 function updateAddonAck(){ document.getElementById('f-addon-ack-wrap').style.display=hasAddon()?'flex':'none'; }
 
 // ══ PRICING ENGINE ════════════════════════════════════════════════
+// ══ 寄宿上學院 [2026-11-24] ═════════════════════════════════════
+const STAFF_API = 'https://script.google.com/macros/s/AKfycbwO54JDHOCduudFGsBniyXDW3gh513eTHuoNUA8_jWVBAqM2zT0i3mmZYUXZgSzGVmesA/exec';
+let _acSlots=null, _acLook=null, _acLookPhone='', _acSel=[], _acTimer=null;
+function acDogState(){
+  const dog=(document.getElementById('f-dogname')?.value||'').trim().toLowerCase();
+  const d=_acLook&&_acLook.dogs?_acLook.dogs.find(x=>x.dog.toLowerCase()===dog):null;
+  const used=!!(d&&d.trialUsed), pass=!!(d&&d.trialUsed&&d.fee===622);
+  return {used, pass};
+}
+// [2026-11-24 Erica 改] 網上只可以揀一日 $499 試堂；$622 單堂向職員查詢、退房時繳付
+function acPlan(){
+  const st=acDogState();
+  if(st.used) return [];
+  return [..._acSel].sort().slice(0,1).map(date=>({date,label:'試堂（含入學評估）',fee:499}));
+}
+function acDays(){
+  const cd=document.getElementById('f-ci-date')?.value, ct=document.getElementById('f-ci-time')?.value||'00:00';
+  const od=document.getElementById('f-co-date')?.value, ot=document.getElementById('f-co-time')?.value||'23:59';
+  if(!cd||!od||!_acSlots) return [];
+  return _acSlots.filter(s=>s.date>=cd && s.date<=od && !(s.date===cd && ct>'11:00') && !(s.date===od && ot<'17:00'));
+}
+function acRender(){
+  const box=document.getElementById('f-ac-box'); if(!box) return;
+  const phone=(document.getElementById('f-phone')?.value||'').replace(/\D/g,'').slice(-8);
+  const dog=(document.getElementById('f-dogname')?.value||'').trim();
+  const days=acDays();
+  _acSel=_acSel.filter(d=>days.some(x=>x.date===d));
+  document.getElementById('f-ac').value=_acSel.length?String(_acSel.length):'0';
+  if(phone.length!==8||!dog||!document.getElementById('f-ci-date')?.value||!document.getElementById('f-co-date')?.value){
+    box.innerHTML='填寫 WhatsApp 號碼、毛孩名字及入住／離開日期後，即可揀選試堂日子。'; return; }
+  if(!_acSlots||_acLookPhone!==phone){ box.innerHTML='正在查詢學位…'; return; }
+  const st=acDogState();
+  if(st.used){ _acSel=[]; document.getElementById('f-ac').value='0';
+    box.innerHTML='狗狗已完成試堂。評估通過後，可以單堂形式加入學院 S1 課堂（每堂 $622），歡迎 WhatsApp 向職員查詢學位，堂費可於退房時一併繳付。'; return; }
+  if(!days.length){ box.innerHTML='入住期間沒有可上課的日子（上課時間為 11:00–17:00）。'; return; }
+  const plan=acPlan(); const roleOf=d=>{const x=plan.find(p=>p.date===d);return x?'試堂 $'+x.fee:'';};
+  box.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px">'+days.map(s=>{
+    const on=_acSel.includes(s.date), full=(s.hotelRemaining||0)<=0;
+    const dd=s.date.slice(5).replace('-','/');
+    return `<button type="button" ${full&&!on?'disabled':''} onclick="acToggle('${s.date}')" style="min-width:86px;padding:8px 10px;border-radius:10px;border:1.5px solid ${on?'var(--pw-navy)':'var(--pw-line,#e3dccb)'};background:${on?'var(--pw-paper,#fff)':'var(--pw-cream-soft,#f7f2e8)'};opacity:${full&&!on?.45:1};font:inherit;cursor:${full&&!on?'not-allowed':'pointer'}"><b>${dd}</b><br><span style="font-size:12px">${full&&!on?'已滿':on?roleOf(s.date):'尚餘 '+s.hotelRemaining}</span></button>`;
+  }).join('')+'</div><div style="margin-top:6px">請揀一日試堂（$499）。</div>';
+}
+function acToggle(date){ _acSel=_acSel.includes(date)?[]:[date]; acRender(); calcForm(); }   // 只揀一日
+async function acLoad(){
+  const phone=(document.getElementById('f-phone')?.value||'').replace(/\D/g,'').slice(-8);
+  try{
+    if(!_acSlots){ const r=await (await fetch(STAFF_API+'?action=trialSlots')).json(); _acSlots=(r&&r.slots)||[]; }
+    if(phone.length===8 && _acLookPhone!==phone){ const r=await (await fetch(STAFF_API+'?action=trialLookup&phone='+phone)).json(); _acLook=r&&r.ok?r:{dogs:[]}; _acLookPhone=phone; }
+  }catch(e){ const box=document.getElementById('f-ac-box'); if(box) box.innerHTML='暫時未能查詢學位，請稍後再試或 WhatsApp 查詢。'; return; }
+  acRender(); calcForm();
+}
+function acSchedule(){ clearTimeout(_acTimer); _acTimer=setTimeout(acLoad,400); acRender(); }
+document.addEventListener('input',e=>{ if(['f-phone','f-dogname','f-ci-date','f-ci-time','f-co-date','f-co-time'].includes(e.target.id)) acSchedule(); });
+document.addEventListener('change',e=>{ if(['f-phone','f-dogname','f-ci-date','f-ci-time','f-co-date','f-co-time'].includes(e.target.id)) acSchedule(); });
+/** 提交前逐日留位；回傳實際成功嘅計劃 */
+async function acHold(ref){
+  const plan=acPlan(), ok=[], fail=[];
+  for(const x of plan){
+    const s=(_acSlots||[]).find(y=>y.date===x.date); if(!s){ fail.push(x.date); continue; }
+    const q=new URLSearchParams({action:'trialBook',customerType:'hotel',classId:s.id,dogName:document.getElementById('f-dogname').value.trim(),
+      phone:document.getElementById('f-phone').value.trim(),ownerName:document.getElementById('f-owner').value.trim(),
+      payMethod:'酒店預約待確認',ref:ref});
+    try{ const r=await (await fetch(STAFF_API+'?'+q.toString())).json();
+      if(r&&r.ok){ ok.push({...x,id:r.id,fee:r.fee||x.fee}); } else fail.push(x.date);
+    }catch(e){ fail.push(x.date); }
+  }
+  return {ok,fail};
+}
+
 function calcForm() {
   updateAddonAck();
   const w    = parseFloat(document.getElementById('f-weight')?.value);
@@ -747,15 +815,11 @@ function calcForm() {
     }
   }
 
-  // Academy
-  const acCount=parseInt(document.getElementById('f-ac')?.value)||0;
-  if(acCount>0){
-    const acFee=acCount*622;
-    html+=`<div class="price-row addon"><span>學院課堂 ${acCount} 堂</span><span>$${acFee}</span></div>`;
-    addons+=acFee;
-    acFeeAmt=acFee;
-    const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent='$'+acFee;
-  } else { const ap=document.getElementById('f-ac-price'); if(ap) ap.textContent=''; }
+  // Academy [2026-11-24] 家長自選日子：試堂 $499；評估通過 $622；新客其後日子評估通過後先收（今次 $0）
+  acPlan().forEach(x=>{
+    html+=`<div class="price-row addon"><span>學院 ${x.date.slice(5).replace('-','/')} ${x.label}</span><span>$${x.fee}</span></div>`;
+    addons+=x.fee; acFeeAmt+=x.fee;
+  });
 
   // Transport
   const trSel=document.querySelector('input[name=f-tr]:checked');
@@ -834,9 +898,23 @@ async function submitForm() {
   const btn=document.getElementById('submitBtn');
   const res=document.getElementById('submitResult');
   btn.disabled=true; btn.textContent='提交中…';
+  // [2026-11-24] 寄宿上學院：先逐日留位（學位以實際留到為準），再按結果調整金額
+  const ref='PH-'+Date.now().toString(36).toUpperCase().slice(-6);
+  let acOk=[], acFail=[];
+  if(_acSel.length){
+    btn.textContent='正在預留學院學位…';
+    const plannedFee=acPlan().reduce((a,x)=>a+x.fee,0);
+    const h=await acHold(ref); acOk=h.ok; acFail=h.fail;
+    const actualFee=acOk.reduce((a,x)=>a+x.fee,0);
+    window._grandTotal=(window._grandTotal||0)-plannedFee+actualFee;
+    window._fees=Object.assign({},window._fees||{},{academy:actualFee});
+    btn.textContent='提交中…';
+  }
 
   const payload={
     action:'submit_hotel',
+    ref: ref,
+    academyDays: acOk.map(x=>x.date.slice(5).replace('-','/')+' 試堂#'+x.id).join('；'),
     customerType:isReturning?'舊客':'新客',
     ownerName:document.getElementById('f-owner').value,
     phone:document.getElementById('f-phone').value,
@@ -856,7 +934,7 @@ async function submitForm() {
     checkOut:`${document.getElementById('f-co-date').value} ${document.getElementById('f-co-time').value}`,
     grooming:(document.querySelector('input[name=f-gr]:checked')?.value==='yes')
       ?(document.getElementById('f-gr-type').value==='basic'?'Basic':'Full Set'):'不需要',
-    academyCount:document.getElementById('f-ac').value,
+    academyCount:String(acOk.length||0),
     transport:document.querySelector('input[name=f-tr]:checked')?.value||'none',
     trDistrict:document.getElementById('f-tr-district')?.value||'',
     trAddress:document.getElementById('f-tr-addr')?.value||'',
@@ -882,7 +960,8 @@ async function submitForm() {
     });
 
     res.className='submit-result success';
-    res.textContent='預約申請已成功提交！請參閱下方提示，前台同事將於 24 小時內透過 WhatsApp 及電郵確認。';
+    res.textContent='預約申請已成功提交！請參閱下方提示，前台同事將於 24 小時內透過 WhatsApp 及電郵確認。'+
+      (acFail.length?'（以下學院日子剛剛額滿，未能預留：'+acFail.map(d=>d.slice(5).replace('-','/')).join('、')+'，金額已自動扣除）':'');
     btn.textContent='已提交';
     showSuccessModal();
   } catch(e) {
